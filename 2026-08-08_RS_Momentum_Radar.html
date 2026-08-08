@@ -59,7 +59,7 @@ select{background:var(--surface);border:1px solid var(--border2);color:var(--fg)
   <thead><tr>
     <th>#</th><th>Symbol</th><th>Name</th>
     <th>RS</th><th>1W▲</th><th>2W</th><th>3W</th>
-    <th>Grp#</th><th>AI</th><th>Pivot</th><th>Earnings</th>
+    <th>A/D</th><th>Grp#</th><th>AI</th><th>Pivot</th><th>Earnings</th>
   </tr></thead>
   <tbody id="tableBody"></tbody>
 </table>
@@ -169,6 +169,16 @@ function switchToDetail(sym){
   renderDetail(sym);
 }
 
+function adColor(ad){
+  // same A/D banding as ms_screens_watchlist.py
+  const S={"E":0,"D-":1,"D":2,"C-":3,"C":4,"C+":5,"B-":6,"B":7,"B+":8,"A-":9,"A":10,"A+":11};
+  const v=S[String(ad).trim()];
+  if(v===undefined) return 'var(--dim2)';
+  if(v>=9) return '#00E676';
+  if(v>=7) return '#3FB950';
+  if(v>=5) return '#D29922';
+  return '#F85149';
+}
 function buildTable(){
   const tbody=document.getElementById('tableBody');
   DATA.forEach((s,i)=>{
@@ -184,6 +194,7 @@ function buildTable(){
       <td style="font-weight:700;color:${d1c}">${s.d1w>=0?'+':''}${s.d1w}</td>
       <td style="color:#58A6FF">${s.d2w>=0?'+':''}${s.d2w}</td>
       <td style="color:var(--dim)">${s.d3w>=0?'+':''}${s.d3w}</td>
+      <td style="font-weight:700;color:${adColor(s.ad)}">${s.ad||'—'}</td>
       <td style="color:${grpColor(s.grp)}">${s.grp!=null?s.grp:'—'}</td>
       <td>${aiHtml(s.ai)}</td>
       <td>${pivotCell(s.ptp,s.abovePivot,s.fromPivot)}</td>
