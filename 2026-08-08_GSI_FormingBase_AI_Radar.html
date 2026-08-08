@@ -1,0 +1,1154 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-08-08 GSI · Forming Base · AI Conviction Radar</title>
+<style>
+:root {
+  --bg:#0D1117; --surf:#161B22; --surf2:#21262D; --border:#30363D;
+  --text:#E6EDF3; --muted:#8B949E; --dim:#484F58;
+  --green:#00E676; --amber:#FFD600; --red:#FF4444; --blue:#58A6FF; --teal:#39D0D8;
+  /* deep-research compat */
+  --surface:#161B22; --border2:#30363D; --fg:#E6EDF3; --dim2:#484F58;
+  --yellow:#D29922; --purple:#A371F7; --red2:#F85149;
+}
+.tabs{display:flex;gap:4px;margin-bottom:16px}
+.tab-btn{padding:5px 16px;border-radius:20px;border:1px solid var(--border);cursor:pointer;
+         font-size:11px;color:var(--muted);background:transparent;transition:all .15s}
+.tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.dr-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;margin-right:3px}
+.dr-card{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px}
+.dr-metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;background:#0D1117;border-radius:6px;padding:10px;margin-bottom:10px}
+.dr-metric-box{text-align:center}
+.dr-metric-box .mlabel{font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:2px}
+.dr-metric-box .mval{font-size:16px;font-weight:800}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;line-height:1.5;padding:20px;max-width:1280px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:22px}
+.header-title{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.header-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.badge{background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:11px;color:var(--muted);text-align:right}
+.badge strong{color:var(--amber);display:block;font-size:13px}
+.stat-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px}
+.stat-card{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);margin-bottom:5px}
+.stat-val{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat-note{font-size:11px;color:var(--muted);margin-top:2px}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.section-badge{background:var(--surf2);border-radius:10px;padding:2px 10px;font-size:11px;color:var(--dim)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;margin-bottom:28px}
+.card{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start}
+.card-left{display:flex;gap:10px;align-items:center}
+.card-right{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.sym{font-size:16px;font-weight:800;color:var(--blue);font-family:monospace}
+.coname{font-size:11px;color:var(--muted)}
+.card-ig{font-size:11px;color:var(--dim)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.metric{background:var(--surf2);border-radius:6px;padding:7px 8px}
+.mlabel{font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:var(--dim);margin-bottom:2px}
+.mval{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.card-bottom{display:flex;gap:10px;align-items:flex-start}
+.sparkwrap{flex-shrink:0}
+.trigger-box{flex:1;background:var(--surf2);border-radius:6px;padding:7px 9px}
+.trigger-text{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4}
+.gsi-info{flex-shrink:0;text-align:right}
+.gsi-date{font-size:12px;font-weight:600;color:var(--amber)}
+.score-ring{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;border:2px solid;flex-shrink:0}
+.score-elite{border-color:var(--green);color:var(--green)}
+.score-high{border-color:var(--amber);color:var(--amber)}
+.score-mid{border-color:var(--dim);color:var(--muted)}
+.pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.pill-high{background:#052A10;color:var(--green);border:1px solid #1a5c2a}
+.pill-med{background:#1A1500;color:var(--amber);border:1px solid #4a3c00}
+.pill-low{background:#1A0A00;color:#FF9800;border:1px solid #4a2800}
+.pill-prob{background:var(--surf2);color:var(--muted);border:1px solid var(--border)}
+.pill-forming{background:#0D1B35;color:var(--blue);border:1px solid #1e3a6e}
+.pill-buy{background:#0D2020;color:var(--teal);border:1px solid #1a4040}
+.green{color:var(--green)} .amber{color:var(--amber)} .red{color:var(--red)} .muted{color:var(--muted)}
+.azad-box{background:var(--surf);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:22px;font-size:12px}
+.azad-box strong{color:var(--text)} .azad-box p{color:var(--muted);margin-top:3px;line-height:1.5}
+.empty{color:var(--dim);font-size:12px;padding:20px;text-align:center;background:var(--surf);border:1px solid var(--border);border-radius:8px}
+.footer{text-align:center;color:var(--dim);font-size:11px;padding-top:14px;border-top:1px solid var(--border);margin-top:8px}
+.backtested-section{margin-top:36px;border-top:1px solid var(--border);padding-top:22px}
+.backtested-header{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.backtested-sub{font-size:11px;color:var(--dim);margin-bottom:16px}
+.bt-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:18px}
+.bt-card{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative}
+.bt-card.winner{border-color:#1a5c2a}
+.bt-badge{position:absolute;top:12px;right:12px;background:#052A10;color:var(--green);border:1px solid #1a5c2a;border-radius:10px;padding:2px 10px;font-size:11px;font-weight:700}
+.bt-symbol{font-size:18px;font-weight:800;color:var(--text);letter-spacing:.5px;margin-bottom:2px}
+.bt-date{font-size:11px;color:var(--dim);margin-bottom:10px}
+.bt-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--border2)}
+.bt-label{font-size:11px;color:var(--muted)} .bt-val{font-size:11px;font-weight:600;color:var(--text)}
+.bt-val.forming{color:var(--blue)} .bt-val.buyz{color:var(--teal)}
+.bt-timeline{margin:10px 0 8px;display:flex;flex-direction:column;gap:4px}
+.bt-tl-item{display:flex;align-items:center;gap:8px;font-size:11px}
+.bt-tl-day{width:36px;color:var(--dim);flex-shrink:0} .bt-tl-ret{width:52px;font-weight:700;flex-shrink:0}
+.bt-tl-ret.win{color:var(--green)} .bt-tl-ret.win.big{color:#00ff88} .bt-tl-ret.loss{color:var(--red)}
+.bt-tl-note{color:var(--muted);font-size:10px}
+.bt-lesson{margin-top:10px;font-size:11px;color:var(--muted);background:var(--surf2);border-radius:6px;padding:8px 10px;line-height:1.5}
+.bt-stats-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.bt-stat{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:10px 16px;display:flex;flex-direction:column;align-items:center;min-width:120px;flex:1}
+.bt-stat-val{font-size:20px;font-weight:800;margin-bottom:2px}
+.bt-stat-val.green{color:var(--green)} .bt-stat-val.amber{color:var(--amber)} .bt-stat-val.red{color:var(--red)}
+.bt-stat-lbl{font-size:10px;color:var(--dim);text-align:center}
+.legend-section{margin-top:36px;border-top:1px solid var(--border);padding-top:22px}
+.legend-header{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.legend-sub{font-size:11px;color:var(--dim);margin-bottom:16px}
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.legend-item{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:11px 14px;display:flex;flex-direction:column;gap:4px}
+.legend-name{font-size:12px;font-weight:700;color:var(--blue)}
+.legend-gate{font-size:10px;color:var(--amber);font-weight:600;margin-bottom:1px}
+.legend-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.legend-tip{font-size:10px;color:var(--dim);margin-top:3px;font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">GSI · Forming Base · AI Conviction Radar</div>
+    <div class="header-sub">AZAD-style pre-breakout scan · GSI Forming Base + Buy Zone · RS rising · Shallow base</div>
+  </div>
+  <div class="badge"><strong>2026-08-08</strong>Daily scan</div>
+</div>
+
+<div class="stat-bar">
+  <div class="stat-card"><div class="stat-label">Forming Base</div><div class="stat-val green">10</div><div class="stat-note">Priority picks</div></div>
+  <div class="stat-card"><div class="stat-label">Buy Zone</div><div class="stat-val amber">3</div><div class="stat-note">Secondary picks</div></div>
+  <div class="stat-card"><div class="stat-label">Total</div><div class="stat-val">13</div><div class="stat-note">After all gates</div></div>
+  <div class="stat-card"><div class="stat-label">Top Score</div><div class="stat-val green">75</div><div class="stat-note">PICCADIL</div></div>
+  <div class="stat-card"><div class="stat-label">AZAD Baseline</div><div class="stat-val amber">+22.7%</div><div class="stat-note">10d return Jun 29 entry</div></div>
+</div>
+
+<div class="azad-box">
+  <strong>AZAD profile (the template)</strong>
+  <p>Jun 29 entry · RS 85 (rising) · Composite 93 · EPS 89 · Group #59 · Forming Base · 65% prob · 3 blue dots · -14% from 52W high · First day dipped -1.8% then never looked back · Peak +22.7% on day 10 · Still +17.5% on day 27</p>
+  <p style="margin-top:6px"><strong>Key signal:</strong> RS rising + shallow base (within 20% of high) + blue dots accumulating + Leader tag + Forming Base. First-day dip on low volume = buy, not sell.</p>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('tab-table',this)">📋 Table</button>
+  <button class="tab-btn" onclick="switchTab('tab-detail',this)">🔍 Detail</button>
+  <button class="tab-btn" onclick="switchTab('tab-method',this)">📖 Method</button>
+</div>
+
+<div id="tab-table" class="tab-pane active">
+
+
+<div style="background:#161B22;border:1px solid #30363D;border-radius:10px;padding:16px 18px;margin-bottom:22px">
+  <div style="font-size:13px;font-weight:700;color:#E6EDF3;margin-bottom:4px">Signal Ranking — today's picks scored</div>
+  <div style="font-size:11px;color:#8B949E;margin-bottom:14px">All stocks ranked by combined signal strength: AI conviction · RS momentum · base freshness · depth · fundamentals. ⚠ = RS falling or stale entry (&gt;30d).</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:18px">
+    
+        <div style="background:#161B22;border:2px solid #58A6FF;border-radius:10px;padding:14px 16px;position:relative">
+          <span style="position:absolute;top:10px;right:10px;background:#21262D;color:#58A6FF;border:1px solid #58A6FF;border-radius:10px;padding:2px 9px;font-size:10px;font-weight:700">#1 top pick</span>
+          <div style="font-size:18px;font-weight:800;color:#58A6FF;font-family:monospace;margin-bottom:1px">LUMAXTECH</div>
+          <div style="font-size:11px;color:#8B949E;margin-bottom:8px">Lumax Auto Technologies</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+            <span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span>
+            <span class="pill pill-forming">Forming Base</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:11px">
+            <span style="color:#484F58">RS</span><span style="color:#00E676;font-weight:600">84</span>
+            <span style="color:#484F58">RS 2W delta</span><span style="font-weight:600"><span style="color:#00E676">+12</span></span>
+            <span style="color:#484F58">vs 52W high</span><span style="font-weight:600"><span style="color:#00E676">-9.2%</span></span>
+            <span style="color:#484F58">GSI entry</span><span style="font-weight:600"><span style="color:#00E676">5d</span></span>
+            <span style="color:#484F58">Comp</span><span style="color:#E6EDF3;font-weight:600">98</span>
+            <span style="color:#484F58">Blue dots</span><span style="color:#FFD600;font-weight:600">0</span>
+          </div>
+          <div style="font-size:10px;color:#484F58;margin-top:6px">Score 102.7</div>
+          <div style="background:#21262D;border-radius:3px;height:5px;width:100%;margin-top:4px"><div style="height:5px;border-radius:3px;background:#00E676;width:100%"></div></div>
+          <div style="font-size:10px;color:#8B949E;margin-top:5px;line-height:1.4">HIGH/85% — top conviction tier · RS accelerating +12 (strongest momentum) · shallow base -9.2% (near breakout)</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px"><span title="Growth 50" style="border:1px solid #00E676;color:#00E676;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default">Growth 50</span><span title="Near Pivot Stocks" style="border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default">Near Pivot</span><span title="William O'Neil Screen" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default">O'Neil</span></div>
+          <span title="Earnings on 2026-08-10 (2d away)" style="border:1px solid #F85149;color:#F85149;background:rgba(0,0,0,0.2);border-radius:4px;padding:1px 5px;font-size:10px;white-space:nowrap;margin-right:3px">⚡ Earn 08-10</span>
+        </div>
+        <div style="background:#161B22;border:1px solid #30363D;border-radius:10px;padding:14px 16px;position:relative">
+          <span style="position:absolute;top:10px;right:10px;background:#21262D;color:#00E676;border:1px solid #00E676;border-radius:10px;padding:2px 9px;font-size:10px;font-weight:700">#2</span>
+          <div style="font-size:18px;font-weight:800;color:#58A6FF;font-family:monospace;margin-bottom:1px">SMSPHARMA</div>
+          <div style="font-size:11px;color:#8B949E;margin-bottom:8px">Sms Pharmaceuticals</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+            <span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span>
+            <span class="pill pill-forming">Forming Base</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:11px">
+            <span style="color:#484F58">RS</span><span style="color:#00E676;font-weight:600">80</span>
+            <span style="color:#484F58">RS 2W delta</span><span style="font-weight:600"><span style="color:#FF4444">-2 ⚠</span></span>
+            <span style="color:#484F58">vs 52W high</span><span style="font-weight:600"><span style="color:#8B949E">-15.6%</span></span>
+            <span style="color:#484F58">GSI entry</span><span style="font-weight:600"><span style="color:#8B949E">39d</span></span>
+            <span style="color:#484F58">Comp</span><span style="color:#E6EDF3;font-weight:600">87</span>
+            <span style="color:#484F58">Blue dots</span><span style="color:#FFD600;font-weight:600">0</span>
+          </div>
+          <div style="font-size:10px;color:#484F58;margin-top:6px">Score 85.6</div>
+          <div style="background:#21262D;border-radius:3px;height:5px;width:100%;margin-top:4px"><div style="height:5px;border-radius:3px;background:#FFD600;width:83%"></div></div>
+          <div style="font-size:10px;color:#8B949E;margin-top:5px;line-height:1.4">HIGH/85% — top conviction tier</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px"><span title="Up On Volume" style="border:1px solid #D29922;color:#D29922;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default">Up Vol</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span></div>
+          
+        </div>
+        <div style="background:#161B22;border:1px solid #30363D;border-radius:10px;padding:14px 16px;position:relative">
+          <span style="position:absolute;top:10px;right:10px;background:#21262D;color:#FFD600;border:1px solid #FFD600;border-radius:10px;padding:2px 9px;font-size:10px;font-weight:700">#3</span>
+          <div style="font-size:18px;font-weight:800;color:#58A6FF;font-family:monospace;margin-bottom:1px">NATIONALUM</div>
+          <div style="font-size:11px;color:#8B949E;margin-bottom:8px">National Aluminium (Nse)</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+            <span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span>
+            <span class="pill pill-forming">Forming Base</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:11px">
+            <span style="color:#484F58">RS</span><span style="color:#00E676;font-weight:600">87</span>
+            <span style="color:#484F58">RS 2W delta</span><span style="font-weight:600"><span style="color:#00E676">+9</span></span>
+            <span style="color:#484F58">vs 52W high</span><span style="font-weight:600"><span style="color:#8B949E">-14.4%</span></span>
+            <span style="color:#484F58">GSI entry</span><span style="font-weight:600"><span style="color:#00E676">4d</span></span>
+            <span style="color:#484F58">Comp</span><span style="color:#E6EDF3;font-weight:600">88</span>
+            <span style="color:#484F58">Blue dots</span><span style="color:#FFD600;font-weight:600">0</span>
+          </div>
+          <div style="font-size:10px;color:#484F58;margin-top:6px">Score 85.3</div>
+          <div style="background:#21262D;border-radius:3px;height:5px;width:100%;margin-top:4px"><div style="height:5px;border-radius:3px;background:#FFD600;width:83%"></div></div>
+          <div style="font-size:10px;color:#8B949E;margin-top:5px;line-height:1.4">HIGH/85% — top conviction tier · RS rising +9</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px"><span title="Greatest Improvement In Masterscore" style="border:1px solid #58A6FF;color:#58A6FF;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default">↑ Masterscore</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span><span title="Income Stocks" style="border:1px solid #484F58;color:#484F58;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default">Income</span><span title="Industry Group Rank Up" style="border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default">Grp Rank↑</span></div>
+          
+        </div>
+  </div>
+
+  <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#484F58;margin-bottom:6px">Forming Base — full list</div>
+  <table style="width:100%;border-collapse:collapse;font-family:inherit">
+    <thead><tr style="border-bottom:1px solid #30363D"><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600"></th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">Symbol</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">AI / Prob</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">RS</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">RS 2W</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">vs 52H</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">Days</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">Score</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">MSI Lists</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">Earnings</th></tr></thead>
+    <tbody><tr><td style="color:#8B949E;width:28px">#1</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">LUMAXTECH</td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:#00E676;font-weight:600">84</td><td style="font-weight:600"><span style="color:#00E676">+12</span></td><td style="font-weight:600"><span style="color:#00E676">-9.2%</span></td><td style="font-weight:600"><span style="color:#00E676">5d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#00E676;width:100%"></div></div>    <span style="font-size:11px;color:#00E676;font-weight:700;min-width:24px">102</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Growth 50" style="border:1px solid #00E676;color:#00E676;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Growth 50</span><span title="Near Pivot Stocks" style="border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Near Pivot</span><span title="William O'Neil Screen" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">O'Neil</span></div></td><td style="white-space:nowrap"><span title="Earnings on 2026-08-10 (2d away)" style="border:1px solid #F85149;color:#F85149;background:rgba(0,0,0,0.2);border-radius:4px;padding:1px 5px;font-size:10px;white-space:nowrap;margin-right:3px">⚡ Earn 08-10</span></td></tr><tr><td style="color:#8B949E;width:28px">#2</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">SMSPHARMA ⚠</td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:#00E676;font-weight:600">80</td><td style="font-weight:600"><span style="color:#FF4444">-2 ⚠</span></td><td style="font-weight:600"><span style="color:#8B949E">-15.6%</span></td><td style="font-weight:600"><span style="color:#8B949E">39d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#FFD600;width:83%"></div></div>    <span style="font-size:11px;color:#FFD600;font-weight:700;min-width:24px">85</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Up On Volume" style="border:1px solid #D29922;color:#D29922;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Up Vol</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span></div></td><td style="white-space:nowrap"></td></tr><tr><td style="color:#8B949E;width:28px">#3</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">NATIONALUM</td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:#00E676;font-weight:600">87</td><td style="font-weight:600"><span style="color:#00E676">+9</span></td><td style="font-weight:600"><span style="color:#8B949E">-14.4%</span></td><td style="font-weight:600"><span style="color:#00E676">4d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#FFD600;width:83%"></div></div>    <span style="font-size:11px;color:#FFD600;font-weight:700;min-width:24px">85</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Greatest Improvement In Masterscore" style="border:1px solid #58A6FF;color:#58A6FF;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">↑ Masterscore</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span><span title="Income Stocks" style="border:1px solid #484F58;color:#484F58;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Income</span><span title="Industry Group Rank Up" style="border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Grp Rank↑</span></div></td><td style="white-space:nowrap"></td></tr><tr><td style="color:#8B949E;width:28px">#4</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">MANORAMA ⚠</td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:#00E676;font-weight:600">75</td><td style="font-weight:600"><span style="color:#FF4444">-3 ⚠</span></td><td style="font-weight:600"><span style="color:#00E676">-4.1%</span></td><td style="font-weight:600"><span style="color:#8B949E">40d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#FFD600;width:80%"></div></div>    <span style="font-size:11px;color:#FFD600;font-weight:700;min-width:24px">82</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Near Pivot Stocks" style="border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Near Pivot</span><span title="Minervini TT 1 Month" style="border:1px solid #FFA198;color:#FFA198;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Minervini 1M</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span></div></td><td style="white-space:nowrap"></td></tr><tr><td style="color:#8B949E;width:28px">#5</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">RAMRAT ⚠</td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:#00E676;font-weight:600">86</td><td style="font-weight:600"><span style="color:#00E676">+4</span></td><td style="font-weight:600"><span style="color:#8B949E">-11.2%</span></td><td style="font-weight:600"><span style="color:#8B949E">31d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#FFD600;width:79%"></div></div>    <span style="font-size:11px;color:#FFD600;font-weight:700;min-width:24px">81</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Growth 50" style="border:1px solid #00E676;color:#00E676;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Growth 50</span><span title="Minervini TT 1 Month" style="border:1px solid #FFA198;color:#FFA198;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Minervini 1M</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span><span title="William O'Neil Screen" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">O'Neil</span><span title="Multi-Guru Overlap" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Guru×2</span></div></td><td style="white-space:nowrap"></td></tr><tr><td style="color:#8B949E;width:28px">#6</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">SEAMECLTD</td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:#00E676;font-weight:600">89</td><td style="font-weight:600"><span style="color:#00E676">+4</span></td><td style="font-weight:600"><span style="color:#8B949E">-10.6%</span></td><td style="font-weight:600"><span style="color:#8B949E">24d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#FFD600;width:75%"></div></div>    <span style="font-size:11px;color:#FFD600;font-weight:700;min-width:24px">77</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Minervini TT 5 Months" style="border:1px solid #E3B341;color:#E3B341;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Minervini 5M</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span></div></td><td style="white-space:nowrap"></td></tr><tr><td style="color:#8B949E;width:28px">#7</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">PICCADIL ⚠</td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">65%</span></td><td style="color:#00E676;font-weight:600">79</td><td style="font-weight:600"><span style="color:#FF4444">-1 ⚠</span></td><td style="font-weight:600"><span style="color:#00E676">-7.7%</span></td><td style="font-weight:600"><span style="color:#8B949E">19d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#FFD600;width:73%"></div></div>    <span style="font-size:11px;color:#FFD600;font-weight:700;min-width:24px">75</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Near Pivot Stocks" style="border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Near Pivot</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span></div></td><td style="white-space:nowrap"><span title="Earnings on 2026-08-11 (3d away)" style="border:1px solid #F85149;color:#F85149;background:rgba(0,0,0,0.2);border-radius:4px;padding:1px 5px;font-size:10px;white-space:nowrap;margin-right:3px">⚡ Earn 08-11</span></td></tr><tr><td style="color:#8B949E;width:28px">#8</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">PTCIL</td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">65%</span></td><td style="color:#00E676;font-weight:600">76</td><td style="font-weight:600"><span style="color:#00E676">+4</span></td><td style="font-weight:600"><span style="color:#00E676">-3.9%</span></td><td style="font-weight:600"><span style="color:#00E676">2d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#FFD600;width:71%"></div></div>    <span style="font-size:11px;color:#FFD600;font-weight:700;min-width:24px">73</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Up On Volume" style="border:1px solid #D29922;color:#D29922;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Up Vol</span><span title="Growth 50" style="border:1px solid #00E676;color:#00E676;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Growth 50</span><span title="Near Pivot Stocks" style="border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Near Pivot</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span></div></td><td style="white-space:nowrap"><span title="Earnings on 2026-08-14 (6d away)" style="border:1px solid #D29922;color:#D29922;background:rgba(0,0,0,0.2);border-radius:4px;padding:1px 5px;font-size:10px;white-space:nowrap;margin-right:3px">📅 Earn 08-14</span></td></tr><tr><td style="color:#8B949E;width:28px">#9</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">IIFL</td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">65%</span></td><td style="color:#00E676;font-weight:600">84</td><td style="font-weight:600"><span style="color:#00E676">+4</span></td><td style="font-weight:600"><span style="color:#00E676">-9.4%</span></td><td style="font-weight:600"><span style="color:#8B949E">18d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#FFD600;width:71%"></div></div>    <span style="font-size:11px;color:#FFD600;font-weight:700;min-width:24px">73</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Growth 50" style="border:1px solid #00E676;color:#00E676;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Growth 50</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span></div></td><td style="white-space:nowrap"></td></tr><tr><td style="color:#8B949E;width:28px">#10</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">ASHAPURMIN</td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:#00E676;font-weight:600">80</td><td style="font-weight:600"><span style="color:#00E676">+3</span></td><td style="font-weight:600"><span style="color:#FF4444">-20.2%</span></td><td style="font-weight:600"><span style="color:#8B949E">24d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#484F58;width:63%"></div></div>    <span style="font-size:11px;color:#484F58;font-weight:700;min-width:24px">64</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Up On Volume" style="border:1px solid #D29922;color:#D29922;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Up Vol</span></div></td><td style="white-space:nowrap"></td></tr></tbody>
+  </table>
+  
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#484F58;margin:14px 0 6px">Buy Zone</div>
+        <table style="width:100%;border-collapse:collapse;font-family:inherit">
+          <thead><tr style="border-bottom:1px solid #30363D"><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600"></th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">Symbol</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">AI / Prob</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">RS</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">RS 2W</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">vs 52H</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">Days</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">Score</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">MSI Lists</th><th style="text-align:left;padding:0 6px 6px;font-size:10px;color:#484F58;font-weight:600">Earnings</th></tr></thead>
+          <tbody style="--td:padding:5px 6px;border-bottom:1px solid #21262D;font-size:12px"><tr><td style="color:#8B949E;width:28px">#1</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">FCL ⚠</td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:#00E676;font-weight:600">94</td><td style="font-weight:600"><span style="color:#8B949E">0</span></td><td style="font-weight:600"><span style="color:#8B949E">-11.7%</span></td><td style="font-weight:600"><span style="color:#8B949E">39d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#FFD600;width:66%"></div></div>    <span style="font-size:11px;color:#FFD600;font-weight:700;min-width:24px">68</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Income Stocks" style="border:1px solid #484F58;color:#484F58;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Income</span></div></td><td style="white-space:nowrap"></td></tr><tr><td style="color:#8B949E;width:28px">#2</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">ELGIEQUIP</td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">65%</span></td><td style="color:#00E676;font-weight:600">76</td><td style="font-weight:600"><span style="color:#8B949E">0</span></td><td style="font-weight:600"><span style="color:#00E676">-7.2%</span></td><td style="font-weight:600"><span style="color:#8B949E">18d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#484F58;width:64%"></div></div>    <span style="font-size:11px;color:#484F58;font-weight:700;min-width:24px">66</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span></div></td><td style="white-space:nowrap"></td></tr><tr><td style="color:#8B949E;width:28px">#3</td><td style="color:#58A6FF;font-family:monospace;font-weight:800">USHAMART ⚠</td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:#00E676;font-weight:600">80</td><td style="font-weight:600"><span style="color:#8B949E">0</span></td><td style="font-weight:600"><span style="color:#00E676">-2.4%</span></td><td style="font-weight:600"><span style="color:#8B949E">40d</span></td><td style="min-width:90px">  <div style="display:flex;align-items:center;gap:6px">    <div style="flex:1;background:#21262D;border-radius:3px;height:4px">      <div style="height:4px;border-radius:3px;background:#484F58;width:56%"></div></div>    <span style="font-size:11px;color:#484F58;font-weight:700;min-width:24px">58</span>  </div></td><td style="max-width:120px"><div style="display:flex;gap:2px;flex-wrap:wrap"><span title="Minervini TT 5 Months" style="border:1px solid #E3B341;color:#E3B341;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Minervini 5M</span><span title="Blue Dot List" style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">● Blue Dot</span></div></td><td style="white-space:nowrap"></td></tr></tbody>
+        </table>
+</div>
+
+<div class="section-header">
+  <span class="section-title">🎯 Forming Base</span>
+  <span class="section-badge">10 stocks · must-watch</span>
+</div>
+<div class="card-grid">
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-high">75</div>
+              <div>
+                <div class="sym">PICCADIL</div>
+                <div class="coname">Piccadily Agro Inds.</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-med">MED</span>
+              <span class="pill pill-prob">65%</span>
+              <span class="pill pill-forming">Forming Base</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Food-Packaged            · Group #77</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">79</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="red">-1</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">88</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">91</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">9</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-7.7%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹743</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">7.3kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,22.0 12.8,10.4 25.6,0.0 38.4,3.9 51.2,3.9 64.0,5.2" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="5.2" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">Watch for volume dry-up + bounce from base low, or range expansion break on 2x volume</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">19d ago</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">73</div>
+              <div>
+                <div class="sym">IIFL</div>
+                <div class="coname">Iifl Finance</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-med">MED</span>
+              <span class="pill pill-prob">65%</span>
+              <span class="pill pill-forming">Forming Base</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Finance-Consumer Loans   · Group #79</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">84</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="green">+4</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">75</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">90</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">1</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-9.4%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹612</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">26.0kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,22.0 12.8,17.4 25.6,16.2 38.4,5.8 51.2,0.0 64.0,1.2" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="1.2" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">Watch for volume dry-up + bounce from base low, or range expansion break on 2x volume</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">18d ago</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">RAMRAT</div>
+                <div class="coname">Ram Ratna Wires</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-med">MED</span>
+              <span class="pill pill-prob">60%</span>
+              <span class="pill pill-forming">Forming Base</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Electrical-Power/Equipmt · Group #33</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">86</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="green">+4</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">92</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">98</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-11.2%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹462</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">4.3kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,22.0 12.8,4.4 25.6,22.0 38.4,22.0 51.2,13.2 64.0,4.4" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="4.4" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">Watch for volume dry-up + bounce from base low, or range expansion break on 2x volume</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">31d ago</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">LUMAXTECH</div>
+                <div class="coname">Lumax Auto Technologies</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-high">HIGH</span>
+              <span class="pill pill-prob">85%</span>
+              <span class="pill pill-forming">Forming Base</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Auto/Truck-Original Eqp  · Group #31</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">84</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="green">+12</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">94</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">98</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-9.2%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹1722</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">11.7kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,18.7 12.8,17.1 25.6,22.0 38.4,9.8 51.2,3.3 64.0,0.0" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="0.0" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">Watch for volume dry-up + bounce from base low, or range expansion break on 2x volume</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">5d ago</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">PTCIL</div>
+                <div class="coname">Ptc Industries</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-med">MED</span>
+              <span class="pill pill-prob">65%</span>
+              <span class="pill pill-forming">Forming Base</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Steel-Producers          · Group #88</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">76</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="green">+4</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">96</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">96</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-3.9%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹19076</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">28.6kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,22.0 12.8,13.2 25.6,4.4 38.4,17.6 51.2,22.0 64.0,0.0" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="0.0" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">Watch for volume dry-up + bounce from base low, or range expansion break on 2x volume</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">2d ago</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">SEAMECLTD</div>
+                <div class="coname">Seamec (Nse)</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-med">MED</span>
+              <span class="pill pill-prob">60%</span>
+              <span class="pill pill-forming">Forming Base</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Oil&Gas-Field Services   · Group #49</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">89</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="green">+4</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">82</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">94</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-10.6%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹1528</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">3.9kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,22.0 12.8,11.0 25.6,14.7 38.4,14.7 51.2,11.0 64.0,0.0" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="0.0" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">Watch for volume dry-up + bounce from base low, or range expansion break on 2x volume</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">24d ago</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">NATIONALUM</div>
+                <div class="coname">National Aluminium (Nse)</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-high">HIGH</span>
+              <span class="pill pill-prob">85%</span>
+              <span class="pill pill-forming">Forming Base</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Metal Proc & Fabrication · Group #92</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">87</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="green">+9</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">77</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">88</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-14.4%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹381</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">70.0kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,17.1 12.8,12.2 25.6,19.6 38.4,22.0 51.2,12.2 64.0,0.0" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="0.0" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">Watch for volume dry-up + bounce from base low, or range expansion break on 2x volume</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">4d ago</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">MANORAMA</div>
+                <div class="coname">Manorama Industries</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-high">HIGH</span>
+              <span class="pill pill-prob">85%</span>
+              <span class="pill pill-forming">Forming Base</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Food-Packaged            · Group #77</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">75</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="red">-3</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">91</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">93</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-4.1%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹1636</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">10.3kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,22.0 12.8,4.4 25.6,22.0 38.4,4.4 51.2,22.0 64.0,17.6" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="17.6" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">Watch for volume dry-up + bounce from base low, or range expansion break on 2x volume</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">40d ago</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">SMSPHARMA</div>
+                <div class="coname">Sms Pharmaceuticals</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-high">HIGH</span>
+              <span class="pill pill-prob">85%</span>
+              <span class="pill pill-forming">Forming Base</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Medical-Generic Drugs    · Group #39</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">80</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="red">-2</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">87</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">87</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-15.6%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹378</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">3.4kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,0.0 12.8,11.0 25.6,22.0 38.4,14.7 51.2,18.3 64.0,22.0" fill="none" stroke="#FF4444" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="22.0" r="2.5" fill="#FF4444"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">Watch for volume dry-up + bounce from base low, or range expansion break on 2x volume</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">39d ago</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">ASHAPURMIN</div>
+                <div class="coname">Ashapura Minechem</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-med">MED</span>
+              <span class="pill pill-prob">60%</span>
+              <span class="pill pill-forming">Forming Base</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Mining-Metal Ores        · Group #85</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">80</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="green">+3</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">82</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">90</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-20.2%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹738</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">7.1kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,15.4 12.8,19.8 25.6,22.0 38.4,6.6 51.2,8.8 64.0,0.0" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="0.0" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">Watch for volume dry-up + bounce from base low, or range expansion break on 2x volume</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">24d ago</div>
+            </div>
+          </div>
+        </div>
+</div>
+
+
+        <div class="section-header">
+          <span class="section-title">Buy Zone</span>
+          <span class="section-badge">3 stocks · lower priority</span>
+        </div>
+        <div class="card-grid">
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">USHAMART</div>
+                <div class="coname">Usha Martin (Nse)</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-med">MED</span>
+              <span class="pill pill-prob">60%</span>
+              <span class="pill pill-buy">Buy Zone</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Steel-Producers          · Group #88</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">80</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="muted">0</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">84</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">94</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-2.4%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹515</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">15.7kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,13.2 12.8,17.6 25.6,22.0 38.4,13.2 51.2,22.0 64.0,13.2" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="13.2" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">In buy zone — enter on pullback to EMA or on next volume expansion</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">40d ago</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">FCL</div>
+                <div class="coname">Fineotex Chemical</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-med">MED</span>
+              <span class="pill pill-prob">60%</span>
+              <span class="pill pill-buy">Buy Zone</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Chemicals-Specialty      · Group #44</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">94</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="muted">0</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">90</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">98</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-11.7%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹42</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">4.8kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,13.2 12.8,22.0 25.6,13.2 38.4,13.2 51.2,13.2 64.0,13.2" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="13.2" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">In buy zone — enter on pullback to EMA or on next volume expansion</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">39d ago</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="score-ring score-mid">0</div>
+              <div>
+                <div class="sym">ELGIEQUIP</div>
+                <div class="coname">Elgi Equipments (Nse)</div>
+              </div>
+            </div>
+            <div class="card-right">
+              <span class="pill pill-med">MED</span>
+              <span class="pill pill-prob">65%</span>
+              <span class="pill pill-buy">Buy Zone</span>
+            </div>
+          </div>
+
+          <div class="card-ig">Machinery-Gen Industrial · Group #30</div>
+
+          <div class="metrics">
+            <div class="metric"><div class="mlabel">RS</div><div class="mval green">76</div></div>
+            <div class="metric"><div class="mlabel">RS 2W</div><div class="mval"><span class="muted">0</span></div></div>
+            <div class="metric"><div class="mlabel">EPS</div><div class="mval">81</div></div>
+            <div class="metric"><div class="mlabel">Comp</div><div class="mval">92</div></div>
+            <div class="metric"><div class="mlabel">Blue Dots</div><div class="mval amber">0</div></div>
+            <div class="metric"><div class="mlabel">vs 52H</div><div class="mval">-7.2%</div></div>
+            <div class="metric"><div class="mlabel">Price</div><div class="mval">₹588</div></div>
+            <div class="metric"><div class="mlabel">MCap</div><div class="mval">18.6kCr</div></div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="sparkwrap">
+              <div class="mlabel">RS 6W</div>
+              <svg width="64" height="22" viewBox="0 0 64 22"><polyline points="0.0,17.6 12.8,13.2 25.6,0.0 38.4,13.2 51.2,22.0 64.0,13.2" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linejoin="round"/><circle cx="64.0" cy="13.2" r="2.5" fill="#00E676"/></svg>
+            </div>
+            <div class="trigger-box">
+              <div class="mlabel">Entry trigger</div>
+              <div class="trigger-text">In buy zone — enter on pullback to EMA or on next volume expansion</div>
+            </div>
+            <div class="gsi-info">
+              <div class="mlabel">GSI entered</div>
+              <div class="gsi-date">18d ago</div>
+            </div>
+          </div>
+        </div></div>
+
+</div><!-- end tab-table -->
+
+<div id="tab-detail" class="tab-pane">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <span style="color:var(--muted);font-size:11px">Select stock:</span>
+    <select id="stockSel" onchange="renderDetail(this.value)" style="background:var(--surf);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;font-size:12px"></select>
+  </div>
+  <div id="detailContent"></div>
+</div>
+
+<div id="tab-method" class="tab-pane">
+
+<!-- MSI Badge Legend -->
+<div style="margin:28px 0;background:#161B22;border:1px solid #30363D;border-radius:8px;padding:16px">
+  <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#484F58;margin-bottom:12px">MSI List Badge Reference</div>
+  <table style="width:100%;border-collapse:collapse;font-size:12px">
+    <thead>
+      <tr style="border-bottom:1px solid #30363D">
+        <th style="text-align:left;padding:4px 10px 8px;color:#484F58;font-size:10px;font-weight:600;text-transform:uppercase">Badge</th>
+        <th style="text-align:left;padding:4px 10px 8px;color:#484F58;font-size:10px;font-weight:600;text-transform:uppercase">MSI List</th>
+        <th style="text-align:left;padding:4px 10px 8px;color:#484F58;font-size:10px;font-weight:600;text-transform:uppercase">What it means</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">● Blue Dot</span></td><td style="padding:5px 10px;color:#8B949E">Blue Dot List</td><td style="padding:5px 10px;color:#E6EDF3">Institutional accumulation detected — smart money buying</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Near Pivot</span></td><td style="padding:5px 10px;color:#8B949E">Near Pivot Stocks</td><td style="padding:5px 10px;color:#E6EDF3">Within striking distance of a potential breakout pivot</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #F78166;color:#F78166;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Breaking Out!</span></td><td style="padding:5px 10px;color:#8B949E">Breaking Out Today-Weekly Bases</td><td style="padding:5px 10px;color:#E6EDF3">Breaking out from a weekly base <strong style="color:#F78166">today</strong> — highest urgency</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #E3B341;color:#E3B341;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Minervini 5M</span></td><td style="padding:5px 10px;color:#8B949E">Minervini TT 5 Months</td><td style="padding:5px 10px;color:#E6EDF3">On Minervini Trend Template for 5 months — sustained strength</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #FFA198;color:#FFA198;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Minervini 1M</span></td><td style="padding:5px 10px;color:#8B949E">Minervini TT 1 Month</td><td style="padding:5px 10px;color:#E6EDF3">On Minervini Trend Template for 1 month — recently entering stage 2</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #00E676;color:#00E676;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Growth 50</span></td><td style="padding:5px 10px;color:#8B949E">Growth 50</td><td style="padding:5px 10px;color:#E6EDF3">Top 50 growth stocks by MSI composite ranking</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #D29922;color:#D29922;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Up Vol</span></td><td style="padding:5px 10px;color:#8B949E">Up On Volume</td><td style="padding:5px 10px;color:#E6EDF3">Closed up on above-average volume — demand confirmation</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #A371F7;color:#A371F7;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Hi EPS+RS</span></td><td style="padding:5px 10px;color:#8B949E">Highest EPS &amp; Relative Strength</td><td style="padding:5px 10px;color:#E6EDF3">Top-ranked by both earnings growth and price momentum</td></tr>
+      <tr><td style="padding:5px 10px"><span style="border:1px solid #58A6FF;color:#58A6FF;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">↑ Masterscore</span></td><td style="padding:5px 10px;color:#8B949E">Greatest Improvement In Masterscore</td><td style="padding:5px 10px;color:#E6EDF3">Biggest week-over-week jump in MSI composite score — accelerating</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="backtested-section">
+  <div class="backtested-header">📚 Backtested Anchors — Why We Trust Forming Base</div>
+  <div class="backtested-sub">Real entries from this system. Each stock teaches a lesson. Study these before entering any new pick.</div>
+  <div class="bt-cards">
+
+    <div class="bt-card winner">
+      <div class="bt-badge">+22.7% · 10 days</div>
+      <div class="bt-symbol">AZAD</div>
+      <div class="bt-date">Entry: Jun 29, 2026 · ₹2,020</div>
+      <div class="bt-row"><span class="bt-label">GSI Status</span><span class="bt-val forming">Forming Base</span></div>
+      <div class="bt-row"><span class="bt-label">RS</span><span class="bt-val">85 → 92 (rising)</span></div>
+      <div class="bt-row"><span class="bt-label">Composite</span><span class="bt-val">93</span></div>
+      <div class="bt-row"><span class="bt-label">EPS</span><span class="bt-val">89</span></div>
+      <div class="bt-row"><span class="bt-label">Group Rank</span><span class="bt-val">#59 · Leader</span></div>
+      <div class="bt-row"><span class="bt-label">GSI Prob / AI</span><span class="bt-val">65% · Medium</span></div>
+      <div class="bt-row"><span class="bt-label">Blue Dots / vs52H</span><span class="bt-val">3 dots · −14%</span></div>
+      <div class="bt-timeline">
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 1</span><span class="bt-tl-ret loss">−1.8%</span><span class="bt-tl-note">Shakeout — not a warning</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 5</span><span class="bt-tl-ret win">+6.4%</span><span class="bt-tl-note">Base holding</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 7</span><span class="bt-tl-ret win">+14.6%</span><span class="bt-tl-note">Forming → Complete (breakout)</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 10</span><span class="bt-tl-ret win big">+22.7%</span><span class="bt-tl-note">Peak return</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 27</span><span class="bt-tl-ret win">+17.5%</span><span class="bt-tl-note">Still holding Aug 5</span></div>
+      </div>
+      <div class="bt-lesson">💡 First-day dip on low volume into Forming Base = entry opportunity, not exit. RS rising 85→92 alongside price confirms institutional accumulation before the move is visible.</div>
+    </div>
+
+    <div class="bt-card winner">
+      <div class="bt-badge">+19.7% · 10 days</div>
+      <div class="bt-symbol">SPECTRUM</div>
+      <div class="bt-date">Entry: Jul 22, 2026</div>
+      <div class="bt-row"><span class="bt-label">GSI Status</span><span class="bt-val forming">Forming Base</span></div>
+      <div class="bt-row"><span class="bt-label">RS</span><span class="bt-val">97</span></div>
+      <div class="bt-row"><span class="bt-label">Composite</span><span class="bt-val">99</span></div>
+      <div class="bt-row"><span class="bt-label">Group Rank</span><span class="bt-val">#28 · Elec-Power · Leader</span></div>
+      <div class="bt-row"><span class="bt-label">AI Verdict</span><span class="bt-val">High</span></div>
+      <div class="bt-timeline">
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 5</span><span class="bt-tl-ret win">+11.1%</span><span class="bt-tl-note">Strong momentum</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 10</span><span class="bt-tl-ret win big">+19.7%</span><span class="bt-tl-note">Peak return</span></div>
+      </div>
+      <div class="bt-lesson">💡 Sector tailwind (Group #28 rising fast) amplifies Forming Base gains. When one stock in a rising group breaks out, rotate the whole group watchlist — INDOTECH/RRKABEL followed in same theme.</div>
+    </div>
+
+    <div class="bt-card winner">
+      <div class="bt-badge">+12.6% · 10 days</div>
+      <div class="bt-symbol">INDOTECH</div>
+      <div class="bt-date">Entry: Jun 29, 2026</div>
+      <div class="bt-row"><span class="bt-label">GSI Status</span><span class="bt-val buyz">Buy Zone</span></div>
+      <div class="bt-row"><span class="bt-label">RS</span><span class="bt-val">96</span></div>
+      <div class="bt-row"><span class="bt-label">Composite</span><span class="bt-val">99</span></div>
+      <div class="bt-row"><span class="bt-label">EPS</span><span class="bt-val">88</span></div>
+      <div class="bt-row"><span class="bt-label">Group Rank</span><span class="bt-val">#28 · Elec-Power · Leader</span></div>
+      <div class="bt-row"><span class="bt-label">AI Verdict</span><span class="bt-val">High</span></div>
+      <div class="bt-timeline">
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 1</span><span class="bt-tl-ret win">+5.0%</span><span class="bt-tl-note">Immediate strength</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 2</span><span class="bt-tl-ret win">+12.4%</span><span class="bt-tl-note">Gap continuation</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 10</span><span class="bt-tl-ret win big">+12.6%</span><span class="bt-tl-note">Held gains</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 20</span><span class="bt-tl-ret win">+16.4%</span><span class="bt-tl-note">Extended further</span></div>
+      </div>
+      <div class="bt-lesson">💡 Buy Zone still works when RS=96, Composite=99, AI=High, Group #28 rising. Elite combo (RS 95+ + prob≥75% + AI=High) averaged +10% in 10 days across all entries.</div>
+    </div>
+
+  </div>
+
+  <div class="bt-stats-row">
+    <div class="bt-stat"><span class="bt-stat-val green">90%</span><span class="bt-stat-lbl">Forming Base win rate (n=10)</span></div>
+    <div class="bt-stat"><span class="bt-stat-val green">+6.1%</span><span class="bt-stat-lbl">Mean 10d · Forming Base</span></div>
+    <div class="bt-stat"><span class="bt-stat-val amber">70%</span><span class="bt-stat-lbl">Buy Zone win rate (n=40)</span></div>
+    <div class="bt-stat"><span class="bt-stat-val amber">+1.1%</span><span class="bt-stat-lbl">Mean 10d · Buy Zone</span></div>
+    <div class="bt-stat"><span class="bt-stat-val red">25%</span><span class="bt-stat-lbl">Extended BKO win rate (n=4)</span></div>
+    <div class="bt-stat"><span class="bt-stat-val red">−1.6%</span><span class="bt-stat-lbl">Mean 10d · Extended BKO</span></div>
+  </div>
+</div>
+
+<div class="legend-section">
+  <div class="legend-header">📖 Column Guide — What Each Metric Means</div>
+  <div class="legend-sub">Every metric shown on the stock cards, explained. Gates marked in amber are hard filters — stock must pass to appear here.</div>
+  <div class="legend-grid">
+
+    <div class="legend-item">
+      <div class="legend-name">GSI Status (pill: Forming Base / Buy Zone)</div>
+      <div class="legend-gate">Hard gate: must be Forming Base or Buy Zone in BOTH GSI and today's timeseries</div>
+      <div class="legend-desc">MarketSmith's assessment of where the stock is in its base cycle. <strong>Forming Base</strong> = stock is still building the base — the optimal low-risk entry window. <strong>Buy Zone</strong> = base is complete, stock is in the buyable range just above the pivot. <strong>Complete</strong> = base done but stock has moved, risk is higher — excluded from this report.</div>
+      <div class="legend-tip">Forming Base is priority. AZAD was Forming Base on Jun 29 — returned +22.7% in 10 days.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">AI (pill: High / Med / Low)</div>
+      <div class="legend-gate">Display only — no hard gate</div>
+      <div class="legend-desc">MarketSmith AI conviction verdict on this GSI entry. <strong>High</strong> = strong institutional conviction signal, multiple confirming factors. <strong>Med</strong> = moderate conviction, valid setup but fewer confirmations. <strong>Low</strong> = weak conviction — treat with extra caution.</div>
+      <div class="legend-tip">Elite combo: AI=High + prob≥75% + RS 95+ → mean +10% in 10 days (backtested).</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Prob % (pill: e.g. 65%)</div>
+      <div class="legend-gate">Hard gate: ≥ 60%</div>
+      <div class="legend-desc">GSI's probability score for this entry being a successful breakout. Higher = more confident. Scores of 75%+ combined with AI=High have historically produced the best outcomes.</div>
+      <div class="legend-tip">AZAD had 65% prob — mid-tier. NATIONALUM and LUMAXTECH have 85% — top tier.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">RS (Relative Strength Rating)</div>
+      <div class="legend-gate">Hard gate: 75 – 94</div>
+      <div class="legend-desc">How the stock has performed vs all other stocks over the last 12 months, on a 1–99 scale. 99 = top 1%. We cap at 94 because RS 95+ stocks are often already extended — the pre-breakout sweet spot is 75–94 with RS rising.</div>
+      <div class="legend-tip">AZAD was RS 85 on entry. RS rose to 92 as price moved — confirms institutional buying.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">RS 2W (2-week RS delta)</div>
+      <div class="legend-gate">Hard gate: ≥ −3 (RS must be stable or rising)</div>
+      <div class="legend-desc">How much the RS Rating has changed in the last 2 weeks (e.g. +12 means RS rose 12 points). A rising RS while price is still in the base = institutions are accumulating quietly before the breakout. A falling RS = distribution — avoid.</div>
+      <div class="legend-tip">Green sparkline = RS rising. Flat or rising RS inside a base is the strongest pre-breakout signal.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">EPS (Earnings Per Share Rating)</div>
+      <div class="legend-gate">Hard gate: ≥ 75</div>
+      <div class="legend-desc">Composite score of recent EPS growth (last 2 quarters) + annual EPS trend on a 1–99 scale. Ensures the stock has real fundamental earnings momentum behind the price move.</div>
+      <div class="legend-tip">EPS 75+ = earnings are accelerating or strong. Below 75 = stock may be running on hype.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Comp (Composite Strength)</div>
+      <div class="legend-gate">Hard gate: ≥ 82</div>
+      <div class="legend-desc">MarketSmith's overall fundamental score combining EPS growth, sales growth, profit margins, and ROE on a 1–99 scale. A high Composite means the business itself is in excellent shape — not just the stock price.</div>
+      <div class="legend-tip">Composite 90+ = elite fundamentals. QPOWER, POLYCAB, LUMAXTECH are all 96–99.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Group # (Industry Group Rank)</div>
+      <div class="legend-gate">Hard gate: ≤ 100 (top half of ~197 groups)</div>
+      <div class="legend-desc">Where this stock's industry group ranks among all MarketSmith industry groups by recent price performance. Group #1 = strongest group. Stocks in rising groups get a sector tailwind — a rising tide lifts all boats. Stocks in groups #100+ face a structural headwind.</div>
+      <div class="legend-tip">QPOWER, POLYCAB are in Group #28 (Electrical-Power) — one of the hottest groups right now.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Blue Dots</div>
+      <div class="legend-gate">Display only — removed as hard gate (was too restrictive)</div>
+      <div class="legend-desc">Count of "blue dot" accumulation days — days where the stock closed up on significantly above-average volume, a sign of institutional buying. More dots = more institutional demand. Zero dots doesn't mean no accumulation — it may just not have had a big-volume up day yet.</div>
+      <div class="legend-tip">PICCADIL has 8 blue dots = heavy accumulation. QPOWER has 0 but Composite=99 — institutions are still in it.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">vs 52H (% from 52-Week High)</div>
+      <div class="legend-gate">Hard gate: −35% to −2%</div>
+      <div class="legend-desc">How far below the 52-week high the stock is currently trading. −14% = stock is 14% below its 52W high, still in base territory. −2% = near breakout point. −35% = deeper base, more work needed. We exclude stocks at 0% (at highs = extended) or beyond −35% (too deep, broken structure).</div>
+      <div class="legend-tip">AZAD was at −14% on entry. The shallower the base (−5% to −15%), the closer to breakout.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Price</div>
+      <div class="legend-gate">Display only</div>
+      <div class="legend-desc">Current market price of the stock in INR (₹). Useful for position sizing — higher-priced stocks require larger capital per share for the same position value.</div>
+      <div class="legend-tip">No gate on price — focus on MCap for size filter instead.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">MCap (Market Capitalisation)</div>
+      <div class="legend-gate">Hard gate: ≥ 300 Cr</div>
+      <div class="legend-desc">Total market value of the company in Crores (₹). We require at least ₹300 Cr to avoid illiquid micro-caps where institutions cannot take meaningful positions. Shown as kCr (thousands of crores) for large-caps.</div>
+      <div class="legend-tip">₹300 Cr minimum ensures enough liquidity for institutional participation — a prerequisite for sustained moves.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">RS 6W Sparkline</div>
+      <div class="legend-gate">Display only</div>
+      <div class="legend-desc">Mini chart showing how the RS Rating has trended over the last 6 weeks (weekly snapshots). <strong>Green rising line</strong> = RS accelerating upward while stock is still in base = best signal. <strong>Red falling line</strong> = RS deteriorating = caution.</div>
+      <div class="legend-tip">A rising RS sparkline inside a Forming Base = the best pre-breakout setup we look for.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">AZAD Score (ring number)</div>
+      <div class="legend-gate">Display only — ranks stocks within the filtered list</div>
+      <div class="legend-desc">Our composite similarity score to the AZAD entry profile (the backtest template). Combines RS (25%), Composite (20%), EPS (15%), Group rank (15%), RS momentum (12%), probability (8%), AI verdict (5%), base shallowness bonus. Higher = more AZAD-like. ≥85 = elite, 70–84 = high, &lt;70 = moderate.</div>
+      <div class="legend-tip">Green ring = elite (≥85), amber ring = high (70–84), grey ring = moderate (&lt;70).</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">GSI Entered (days ago)</div>
+      <div class="legend-gate">Display only</div>
+      <div class="legend-desc">How many trading days ago this stock first appeared in the GSI watchlist. Earlier entries (fewer days ago) are fresher signals. Stocks that entered 30+ days ago and are still in Forming Base may be taking longer to set up — check if the base is still healthy.</div>
+      <div class="legend-tip">Fresh entries (&lt;10 days) are generally higher priority — the signal is more current.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Entry Trigger</div>
+      <div class="legend-gate">Display only — actionable guidance</div>
+      <div class="legend-desc">Suggested entry condition based on the base type. <strong>Forming Base:</strong> watch for volume dry-up (3–4 consecutive low-volume days) followed by a bounce, or a range expansion day on 2× average volume. <strong>Buy Zone:</strong> enter on a pullback to the 21EMA or 10EMA, or on next volume expansion above the pivot.</div>
+      <div class="legend-tip">Never chase — wait for the trigger. AZAD's day-1 dip was the entry, not the high.</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  Hard gates: Leader · GSI Forming Base or Buy Zone · RS 75–94 · RS 2W delta ≥-3 · Group ≤100 · EPS ≥75 · Comp ≥82 · vs52H -35% to -2% · MCap ≥300Cr
+</div>
+
+</div><!-- end tab-method -->
+
+<script>
+const DATA = [{"sym": "PICCADIL", "name": "Piccadily Agro Inds.", "rs": 79, "rsDelta": -1, "eps": 88, "comp": 91, "grp": 77, "price": 743.15, "vs52": -7.68, "bd": 9, "ad": "B+", "score": 75, "ai": "Medium", "ca": "Forming Base", "prob": 65, "priority": 1, "group": "Food-Packaged           ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Near Pivot Stocks", "Blue Dot List"], "earnDate": "2026-08-11", "earnDays": 3}, {"sym": "IIFL", "name": "Iifl Finance", "rs": 84, "rsDelta": 4, "eps": 75, "comp": 90, "grp": 79, "price": 611.75, "vs52": -9.37, "bd": 1, "ad": "A-", "score": 73, "ai": "Medium", "ca": "Forming Base", "prob": 65, "priority": 1, "group": "Finance-Consumer Loans  ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Growth 50", "Blue Dot List"], "earnDate": null, "earnDays": null}, {"sym": "RAMRAT", "name": "Ram Ratna Wires", "rs": 86, "rsDelta": 4, "eps": 92, "comp": 98, "grp": 33, "price": 461.6, "vs52": -11.23, "bd": 0, "ad": "B+", "score": 0, "ai": "Medium", "ca": "Forming Base", "prob": 60, "priority": 1, "group": "Electrical-Power/Equipmt", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Growth 50", "Minervini TT 1 Month", "Blue Dot List", "William O'Neil Screen", "Multi-Guru Overlap", "Upcoming Earnings"], "earnDate": null, "earnDays": null}, {"sym": "LUMAXTECH", "name": "Lumax Auto Technologies", "rs": 84, "rsDelta": 12, "eps": 94, "comp": 98, "grp": 31, "price": 1722.4, "vs52": -9.25, "bd": 0, "ad": "B+", "score": 0, "ai": "High", "ca": "Forming Base", "prob": 85, "priority": 1, "group": "Auto/Truck-Original Eqp ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Growth 50", "Near Pivot Stocks", "William O'Neil Screen"], "earnDate": "2026-08-10", "earnDays": 2}, {"sym": "PTCIL", "name": "Ptc Industries", "rs": 76, "rsDelta": 4, "eps": 96, "comp": 96, "grp": 88, "price": 19076.0, "vs52": -3.9, "bd": 0, "ad": "B", "score": 0, "ai": "Medium", "ca": "Forming Base", "prob": 65, "priority": 1, "group": "Steel-Producers         ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Up On Volume", "Growth 50", "Near Pivot Stocks", "Blue Dot List"], "earnDate": "2026-08-14", "earnDays": 6}, {"sym": "SEAMECLTD", "name": "Seamec (Nse)", "rs": 89, "rsDelta": 4, "eps": 82, "comp": 94, "grp": 49, "price": 1527.7, "vs52": -10.62, "bd": 0, "ad": "B+", "score": 0, "ai": "Medium", "ca": "Forming Base", "prob": 60, "priority": 1, "group": "Oil&Gas-Field Services  ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Minervini TT 5 Months", "Blue Dot List"], "earnDate": null, "earnDays": null}, {"sym": "NATIONALUM", "name": "National Aluminium (Nse)", "rs": 87, "rsDelta": 9, "eps": 77, "comp": 88, "grp": 92, "price": 381.0, "vs52": -14.41, "bd": 0, "ad": "B+", "score": 0, "ai": "High", "ca": "Forming Base", "prob": 85, "priority": 1, "group": "Metal Proc & Fabrication", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Greatest Improvement In Masterscore", "Blue Dot List", "Income Stocks", "Industry Group Rank Up"], "earnDate": null, "earnDays": null}, {"sym": "MANORAMA", "name": "Manorama Industries", "rs": 75, "rsDelta": -3, "eps": 91, "comp": 93, "grp": 77, "price": 1636.2, "vs52": -4.14, "bd": 0, "ad": "B", "score": 0, "ai": "High", "ca": "Forming Base", "prob": 85, "priority": 1, "group": "Food-Packaged           ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Near Pivot Stocks", "Minervini TT 1 Month", "Blue Dot List"], "earnDate": null, "earnDays": null}, {"sym": "SMSPHARMA", "name": "Sms Pharmaceuticals", "rs": 80, "rsDelta": -2, "eps": 87, "comp": 87, "grp": 39, "price": 378.1, "vs52": -15.56, "bd": 0, "ad": "B-", "score": 0, "ai": "High", "ca": "Forming Base", "prob": 85, "priority": 1, "group": "Medical-Generic Drugs   ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Up On Volume", "Blue Dot List"], "earnDate": null, "earnDays": null}, {"sym": "ASHAPURMIN", "name": "Ashapura Minechem", "rs": 80, "rsDelta": 3, "eps": 82, "comp": 90, "grp": 85, "price": 738.35, "vs52": -20.17, "bd": 0, "ad": "A-", "score": 0, "ai": "Medium", "ca": "Forming Base", "prob": 60, "priority": 1, "group": "Mining-Metal Ores       ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Up On Volume"], "earnDate": null, "earnDays": null}, {"sym": "USHAMART", "name": "Usha Martin (Nse)", "rs": 80, "rsDelta": 0, "eps": 84, "comp": 94, "grp": 88, "price": 515.05, "vs52": -2.36, "bd": 0, "ad": "A-", "score": 0, "ai": "Medium", "ca": "Buy Zone", "prob": 60, "priority": 2, "group": "Steel-Producers         ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Recent Breakouts", "Minervini TT 5 Months", "Blue Dot List"], "earnDate": null, "earnDays": null}, {"sym": "FCL", "name": "Fineotex Chemical", "rs": 94, "rsDelta": 0, "eps": 90, "comp": 98, "grp": 44, "price": 41.64, "vs52": -11.74, "bd": 0, "ad": "A-", "score": 0, "ai": "Medium", "ca": "Buy Zone", "prob": 60, "priority": 2, "group": "Chemicals-Specialty     ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Income Stocks"], "earnDate": null, "earnDays": null}, {"sym": "ELGIEQUIP", "name": "Elgi Equipments (Nse)", "rs": 76, "rsDelta": 0, "eps": 81, "comp": 92, "grp": 30, "price": 588.45, "vs52": -7.16, "bd": 0, "ad": "A", "score": 0, "ai": "Medium", "ca": "Buy Zone", "prob": 65, "priority": 2, "group": "Machinery-Gen Industrial", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Blue Dot List"], "earnDate": null, "earnDays": null}];
+
+function earnHtml(d,days){
+  if(!d||days==null) return '<span style="color:var(--dim)">—</span>';
+  const mm=d.slice(5).replace('-','‑');
+  if(days<=3)  return `<span style="color:#F85149;font-weight:600">⚡ ${mm} <small>(${days}d)</small></span>`;
+  if(days<=7)  return `<span style="color:#D29922;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  if(days<=14) return `<span style="color:#58A6FF;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  return '<span style="color:var(--dim)">—</span>';
+}
+function msiPills(lists){
+  const M={
+    "Greatest Improvement In Masterscore":["↑ MS","#58A6FF"],
+    "Highest EPS & Relative Strength":["Hi EPS+RS","#A371F7"],
+    "Up On Volume":["Up Vol","#D29922"],
+    "Breaking Out Today-Weekly Bases":["Breaking Out!","#F78166"],
+    "Growth 50":["Growth 50","#00E676"],
+    "Near Pivot Stocks":["Near Pivot","#79C0FF"],
+    "Minervini TT 5 Months":["Minervini 5M","#E3B341"],
+    "Minervini TT 1 Month":["Minervini 1M","#FFA198"],
+    "Blue Dot List":["● Blue Dot","#FFD600"],
+  };
+  return lists.map(l=>{
+    const[ab,col]=M[l]||[l.slice(0,10),'#8B949E'];
+    return `<span class="dr-badge" style="border:1px solid ${col};color:${col};background:transparent">${ab}</span>`;
+  }).join('');
+}
+function grpColor(g){
+  if(!g) return '#484F58';
+  if(g<=20) return '#3FB950'; if(g<=40) return '#58A6FF';
+  if(g<=60) return '#D29922'; return '#8B949E';
+}
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function renderDetail(sym){
+  const s=DATA.find(x=>x.sym===sym);
+  if(!s) return;
+  const scoreCol=s.score>=85?'#00E676':s.score>=70?'#FFD600':'#484F58';
+  const aiStr=s.ai==='High'?'<span style="background:rgba(0,230,118,.15);color:#00E676;border:1px solid rgba(0,230,118,.4);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">HIGH</span>':s.ai==='Medium'?'<span style="background:rgba(255,214,0,.12);color:#FFD600;border:1px solid rgba(255,214,0,.3);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">MED</span>':'';
+  const pType=s.priority===1?'<span style="background:#0D1B35;color:#58A6FF;border:1px solid #1e3a6e;border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700">Forming Base</span>':'<span style="background:#0D2020;color:#39D0D8;border:1px solid #1a4040;border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700">Buy Zone</span>';
+  document.getElementById('detailContent').innerHTML=`
+  <div class="dr-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;font-weight:700;font-size:15px;border:2px solid ${scoreCol};color:${scoreCol}">${s.score}</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-size:20px;font-weight:800;color:#58A6FF;font-family:monospace;text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>
+            ${aiStr} ${pType}
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">${s.name}</div>
+          <div style="font-size:10px;color:var(--dim)">${s.group} · Grp #${s.grp||'—'}</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:18px;font-weight:700">₹${s.price.toLocaleString('en-IN',{minimumFractionDigits:1})}</div>
+        <div style="font-size:10px;color:${(s.vs52||0)>=-15?'#00E676':'#D29922'}">${s.vs52!=null?s.vs52.toFixed(1)+'%':'—'} vs 52W high</div>
+        <div style="margin-top:4px">${earnHtml(s.earnDate,s.earnDays)}</div>
+      </div>
+    </div>
+
+    <div class="dr-metric-grid">
+      <div class="dr-metric-box"><div class="mlabel">RS</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:#00E676">${s.rs!=null?s.rs:'—'}</div></div>
+      <div class="dr-metric-box"><div class="mlabel">RS 2W</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:${s.rsDelta>=0?'#3FB950':'#F85149'}">${s.rsDelta>=0?'+':''}${s.rsDelta}</div></div>
+      <div class="dr-metric-box"><div class="mlabel">EPS</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:#D29922">${s.eps!=null?s.eps:'—'}</div></div>
+      <div class="dr-metric-box"><div class="mlabel">Comp</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:#A371F7">${s.comp!=null?s.comp:'—'}</div></div>
+      <div class="dr-metric-box"><div class="mlabel">Grp#</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:${grpColor(s.grp)}">${s.grp!=null?s.grp:'—'}</div></div>
+      <div class="dr-metric-box"><div class="mlabel">Blue Dots</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:${s.bd>=3?'#FFD600':'#484F58'}">${s.bd||'—'}</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div style="background:#0D1117;border:1px solid var(--border2);border-radius:5px;padding:10px">
+        <div style="font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:3px">AI Prob %</div>
+        <div style="font-size:14px;font-weight:700;color:${s.prob>=75?'#00E676':s.prob>=60?'#FFD600':'#484F58'}">${s.prob}%</div>
+      </div>
+      <div style="background:#0D1117;border:1px solid var(--border2);border-radius:5px;padding:10px">
+        <div style="font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:3px">Chart Action</div>
+        <div style="font-size:12px;font-weight:600;color:var(--muted)">${s.ca}</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:6px">${msiPills(s.ms_lists)}</div>
+  </div>`;
+}
+
+const sel=document.getElementById('stockSel');
+DATA.forEach(s=>{
+  const o=document.createElement('option');
+  o.value=s.sym; o.text=s.sym+' — '+s.name+(s.priority===1?' [FB]':' [BZ]');
+  sel.appendChild(o);
+});
+if(DATA.length) renderDetail(DATA[0].sym);
+</script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-08-08 RS Momentum Radar</title>
+<style>
+:root{--bg:#0D1117;--surface:#161B22;--border:#21262D;--border2:#30363D;
+      --fg:#E6EDF3;--dim:#8B949E;--dim2:#484F58;
+      --green:#3FB950;--blue:#58A6FF;--purple:#A371F7;
+      --yellow:#D29922;--red:#F85149;--teal:#00E676}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     font-size:13px;line-height:1.5;padding:20px;max-width:1040px;margin:0 auto}
+.tabs{display:flex;gap:4px;margin-bottom:16px}
+.tab-btn{padding:5px 16px;border-radius:20px;border:1px solid var(--border2);cursor:pointer;
+         font-size:11px;color:var(--dim);background:transparent;transition:all .15s}
+.tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+table{width:100%;border-collapse:collapse}
+th{padding:5px 8px 8px;font-size:10px;color:#FFFFFF;text-transform:uppercase;
+   border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr.clickable{cursor:pointer}tr.clickable:hover td{background:rgba(255,255,255,.025)}
+.badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;margin-right:3px}
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:16px;margin-bottom:12px}
+.metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;
+             background:#161B22;border:1px solid var(--border2);border-radius:6px;padding:12px;margin-bottom:10px}
+.metric-box{text-align:center;background:#0D1117;border:1px solid #21262D;border-radius:5px;padding:8px 4px}
+.metric-box .mlabel{font-size:9px;color:#FFFFFF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.metric-box .mval{font-size:17px;font-weight:800;line-height:1.2}
+select{background:var(--surface);border:1px solid var(--border2);color:var(--fg);
+       padding:4px 8px;border-radius:4px;font-size:12px}
+@media(prefers-color-scheme:light){
+  :root{--bg:#f6f8fa;--surface:#fff;--border:#e1e4e8;--border2:#d0d7de;
+        --fg:#24292f;--dim:#57606a;--dim2:#6e7781}
+}
+</style>
+</head>
+<body>
+
+<div style="padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:20px">
+  <div style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Daily Radar · 2026-08-08</div>
+  <div style="font-size:24px;font-weight:800">📈 RS Momentum Leaders</div>
+  <div style="font-size:12px;color:var(--dim);margin-top:4px">
+    14 stocks · biggest RS improvement · ranked by 1W jump → 2W → 3W · today=2026-08-08 · 1W=2026-08-01 · 2W=2026-07-25 · 3W=2026-07-18
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('tab-table',this)">📋 Table</button>
+  <button class="tab-btn" onclick="switchTab('tab-detail',this)">🔍 Detail</button>
+  <button class="tab-btn" onclick="switchTab('tab-method',this)">📖 Method</button>
+</div>
+
+<div id="tab-table" class="tab-pane active">
+<div style="overflow-x:auto">
+<table>
+  <thead><tr>
+    <th>#</th><th>Symbol</th><th>Name</th>
+    <th>RS</th><th>1W▲</th><th>2W</th><th>3W</th>
+    <th>Grp#</th><th>AI</th><th>Pivot</th><th>Earnings</th>
+  </tr></thead>
+  <tbody id="tableBody"></tbody>
+</table>
+</div>
+</div>
+
+<div id="tab-detail" class="tab-pane">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <span style="color:var(--dim);font-size:11px">Select stock:</span>
+    <select id="stockSel" onchange="renderDetail(this.value)"></select>
+  </div>
+  <div id="detailContent"></div>
+</div>
+
+<div id="tab-method" class="tab-pane">
+<div class="card">
+  <div style="font-size:14px;font-weight:700;margin-bottom:10px">RS Momentum Selection</div>
+  <p style="color:var(--dim);font-size:12px;line-height:1.7">
+    RS Momentum selects stocks where RS is accelerating fastest over 1W/2W/3W.<br>
+    <b style="color:var(--fg)">Ranking:</b> 1W jump × 3 + 2W × 1 + 3W × 0.5 + Blue Dots × 2.<br>
+    <b style="color:var(--fg)">Filter:</b> RS≥70, 1W jump≥+5, MCap≥₹300Cr, Group≤130, AD≥B−, GSI=Forming Base or Buy Zone, ≤5% from pivot.<br><br>
+    Rising RS while price still in base = institutional buying before breakout is visible to the market.
+  </p>
+</div>
+</div>
+
+<script>
+const DATA = [{"sym": "DALMIASUG", "name": "Dalmia Bht.Sug.& Inds.", "rs": 79, "rs1w": 58, "rs2w": 65, "rs3w": 64, "d1w": 21, "d2w": 14, "d3w": 15, "eps": 43, "comp": 67, "grp": 77, "grpMom": -2, "price": 404.4, "vs52": -5.29, "bd": 0, "ad": "A-", "ptp": null, "fromPivot": -3.484511, "abovePivot": false, "ai": "Medium", "ca": "Buy Zone", "base": "Complete", "btype": "Cup With Handle", "ms_lists": ["Recent Breakouts"], "earnDate": null, "earnDays": null}, {"sym": "PGEL", "name": "Pg Electroplast", "rs": 76, "rs1w": 67, "rs2w": 55, "rs3w": 60, "d1w": 9, "d2w": 21, "d3w": 16, "eps": 70, "comp": 88, "grp": 53, "grpMom": 11, "price": 630.65, "vs52": -15.52, "bd": 0, "ad": "A", "ptp": null, "fromPivot": -0.630269, "abovePivot": false, "ai": "Medium", "ca": "Forming Base", "base": "Complete", "btype": "Consolidation", "ms_lists": ["Up On Volume", "Breaking Out Today-Weekly Bases"], "earnDate": null, "earnDays": null}, {"sym": "SUDARSCHEM", "name": "Sudarshan Chemicals", "rs": 72, "rs1w": 56, "rs2w": 68, "rs3w": 66, "d1w": 16, "d2w": 4, "d3w": 6, "eps": 37, "comp": 71, "grp": 44, "grpMom": 10, "price": 1139.6, "vs52": -28.91, "bd": 0, "ad": "A-", "ptp": null, "fromPivot": 4.713774, "abovePivot": true, "ai": "Medium", "ca": "Forming Base", "base": "Complete", "btype": "Cup With Handle", "ms_lists": ["Recent Breakouts", "Up On Volume"], "earnDate": "2026-08-12", "earnDays": 4}, {"sym": "AIIL", "name": "Authum Invs & Infra", "rs": 76, "rs1w": 66, "rs2w": 60, "rs3w": 68, "d1w": 10, "d2w": 16, "d3w": 8, "eps": 53, "comp": 70, "grp": 111, "grpMom": 1, "price": 596.6, "vs52": -12.65, "bd": 0, "ad": "B+", "ptp": null, "fromPivot": 2.009062, "abovePivot": true, "ai": "Medium", "ca": "Forming Base", "base": "Complete", "btype": "Cup With Handle", "ms_lists": ["Recent Breakouts"], "earnDate": null, "earnDays": null}, {"sym": "GARFIBRES", "name": "Garware Technical Fibres Ltd", "rs": 78, "rs1w": 67, "rs2w": 71, "rs3w": 71, "d1w": 11, "d2w": 7, "d3w": 7, "eps": 56, "comp": 79, "grp": 72, "grpMom": 4, "price": 811.85, "vs52": -6.73, "bd": 1, "ad": "B+", "ptp": null, "fromPivot": -0.830611, "abovePivot": false, "ai": "Medium", "ca": "Forming Base", "base": "Complete", "btype": "Flat Base", "ms_lists": ["Recent Breakouts", "Blue Dot List"], "earnDate": null, "earnDays": null}, {"sym": "MIDHANI", "name": "Mishra Dhatu Nigam", "rs": 74, "rs1w": 63, "rs2w": 68, "rs3w": 71, "d1w": 11, "d2w": 6, "d3w": 3, "eps": 50, "comp": 76, "grp": 88, "grpMom": 0, "price": 435.15, "vs52": -4.32, "bd": 0, "ad": "A-", "ptp": 4.320602, "fromPivot": null, "abovePivot": false, "ai": "High", "ca": "Buy Zone", "base": "Forming", "btype": "Cup With Handle", "ms_lists": ["Near Pivot Stocks", "Minervini TT 1 Month", "Blue Dot List"], "earnDate": "2026-08-12", "earnDays": 4}, {"sym": "HAL", "name": "Hindustan Aeronautics", "rs": 71, "rs1w": 65, "rs2w": 64, "rs3w": 57, "d1w": 6, "d2w": 7, "d3w": 14, "eps": 78, "comp": 85, "grp": 78, "grpMom": 11, "price": 4910.0, "vs52": -1.37, "bd": 1, "ad": "B", "ptp": 4.937076, "fromPivot": null, "abovePivot": false, "ai": "High", "ca": "Forming Base", "base": "Forming", "btype": "Consolidation", "ms_lists": ["Recent Breakouts", "Blue Dot List", "Price Gaps Up"], "earnDate": "2026-08-12", "earnDays": 4}, {"sym": "PNBHOUSING", "name": "Pnb Housing Finance", "rs": 82, "rs1w": 77, "rs2w": 74, "rs3w": 80, "d1w": 5, "d2w": 8, "d3w": 2, "eps": 75, "comp": 90, "grp": 79, "grpMom": 5, "price": 1143.0, "vs52": -2.06, "bd": 4, "ad": "A", "ptp": null, "fromPivot": 0.096331, "abovePivot": true, "ai": "Medium", "ca": "Buy Zone", "base": "Complete", "btype": "Consolidation", "ms_lists": ["Minervini TT 1 Month", "Blue Dot List"], "earnDate": null, "earnDays": null}, {"sym": "JAMNAAUTO", "name": "Jamna Auto Inds.", "rs": 86, "rs1w": 81, "rs2w": 82, "rs3w": 80, "d1w": 5, "d2w": 4, "d3w": 6, "eps": 85, "comp": 98, "grp": 31, "grpMom": 8, "price": 144.7, "vs52": -5.18, "bd": 2, "ad": "A+", "ptp": null, "fromPivot": 2.624113, "abovePivot": true, "ai": "Medium", "ca": "Forming Base", "base": "Complete", "btype": "Cup With Handle", "ms_lists": ["Recent Breakouts", "Growth 50", "Minervini TT 5 Months", "Blue Dot List", "William O'Neil Screen"], "earnDate": null, "earnDays": null}, {"sym": "KEI", "name": "Kei Industries", "rs": 84, "rs1w": 79, "rs2w": 78, "rs3w": 75, "d1w": 5, "d2w": 6, "d3w": 9, "eps": 88, "comp": 94, "grp": 33, "grpMom": 0, "price": 5600.0, "vs52": -1.89, "bd": 0, "ad": "B", "ptp": 1.892081, "fromPivot": null, "abovePivot": false, "ai": "Medium", "ca": "Forming Base", "base": "Forming", "btype": "Cup Without Handle", "ms_lists": ["Near Pivot Stocks", "Minervini TT 5 Months", "Blue Dot List", "New High With Best EPS Rank", "Largest Quarterly EPS % Changes"], "earnDate": null, "earnDays": null}, {"sym": "ABB", "name": "ABB India", "rs": 86, "rs1w": 81, "rs2w": 84, "rs3w": 86, "d1w": 5, "d2w": 2, "d3w": 0, "eps": 91, "comp": 95, "grp": 33, "grpMom": 0, "price": 7600.0, "vs52": -4.09, "bd": 4, "ad": "B+", "ptp": null, "fromPivot": -2.844359, "abovePivot": false, "ai": "Medium", "ca": "Forming Base", "base": "Complete", "btype": "Consolidation", "ms_lists": ["Minervini TT 5 Months", "Blue Dot List", "William O'Neil Screen"], "earnDate": null, "earnDays": null}, {"sym": "ROSSTECH", "name": "Rossell Techsys Ltd", "rs": 91, "rs1w": 85, "rs2w": 89, "rs3w": 91, "d1w": 6, "d2w": 2, "d3w": 0, "eps": 51, "comp": 89, "grp": 78, "grpMom": 11, "price": 1092.65, "vs52": -2.62, "bd": 0, "ad": "A", "ptp": 2.615865, "fromPivot": null, "abovePivot": false, "ai": "Medium", "ca": "Forming Base", "base": "Forming", "btype": "Consolidation", "ms_lists": ["Near Pivot Stocks", "Minervini TT 5 Months", "Blue Dot List"], "earnDate": null, "earnDays": null}, {"sym": "PTCIL", "name": "Ptc Industries", "rs": 76, "rs1w": 71, "rs2w": 72, "rs3w": 75, "d1w": 5, "d2w": 4, "d3w": 1, "eps": 96, "comp": 96, "grp": 88, "grpMom": 0, "price": 19076.0, "vs52": -3.9, "bd": 0, "ad": "B", "ptp": 3.904085, "fromPivot": null, "abovePivot": false, "ai": "Medium", "ca": "Forming Base", "base": "Forming", "btype": "Cup Without Handle", "ms_lists": ["Up On Volume", "Growth 50", "Near Pivot Stocks", "Blue Dot List"], "earnDate": "2026-08-14", "earnDays": 6}, {"sym": "JSWINFRA", "name": "Jsw Infrastructure Ltd", "rs": 80, "rs1w": 75, "rs2w": 77, "rs3w": 83, "d1w": 5, "d2w": 3, "d3w": -3, "eps": 66, "comp": 90, "grp": 22, "grpMom": 1, "price": 335.75, "vs52": -5.64, "bd": 1, "ad": "A-", "ptp": null, "fromPivot": -2.241957, "abovePivot": false, "ai": "High", "ca": "Buy Zone", "base": "Complete", "btype": "Cup With Handle", "ms_lists": ["Minervini TT 1 Month", "Blue Dot List"], "earnDate": null, "earnDays": null}];
+
+function pivotCell(ptp, abovePivot, fp){
+  if(abovePivot && fp!=null && fp>0){
+    const ext=parseFloat(fp);
+    const col=ext<=5?'#3FB950':ext<=10?'#D29922':'#F85149';
+    return `<span style="color:${col};font-weight:600" title="Already broke out. ${ext.toFixed(1)}% above buy point">🚀 +${ext.toFixed(1)}% <small style="color:var(--dim2)">(above pivot)</small></span>`;
+  }
+  if(ptp!=null && ptp>=0){
+    const v=parseFloat(ptp);
+    let col,icon;
+    if(v<=2)      {col='#3FB950';icon='✅'}
+    else if(v<=5) {col='#00E676';icon='🟢'}
+    else if(v<=8) {col='#D29922';icon='🟡'}
+    else          {col='#8B949E';icon='⏳'}
+    return `<span style="color:${col};font-weight:600">${icon} ${v.toFixed(1)}% <small style="color:var(--dim2)">(to pivot)</small></span>`;
+  }
+  if(fp!=null && fp<0){
+    const v=Math.abs(parseFloat(fp));
+    const col=v<=3?'#3FB950':v<=6?'#00E676':v<=10?'#D29922':'#8B949E';
+    const icon=v<=2?'✅':v<=5?'🟢':v<=8?'🟡':'⏳';
+    return `<span style="color:${col};font-weight:600">${icon} ${v.toFixed(1)}% <small style="color:var(--dim2)">(from pivot, below)</small></span>`;
+  }
+  return '<span style="color:var(--dim2)">—</span>';
+}
+function earnHtml(d,days){
+  if(!d||days==null) return '<span style="color:var(--dim2)">—</span>';
+  const mm=d.slice(5).replace('-','‑');
+  if(days<=3)  return `<span style="color:#F85149;font-weight:600">⚡ ${mm} <small>(${days}d)</small></span>`;
+  if(days<=7)  return `<span style="color:#D29922;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  if(days<=14) return `<span style="color:#58A6FF;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  return '<span style="color:var(--dim2)">—</span>';
+}
+function msiPills(lists){
+  const M={
+    "Greatest Improvement In Masterscore":["↑ MS","#58A6FF"],
+    "Highest EPS & Relative Strength":["Hi EPS+RS","#A371F7"],
+    "Up On Volume":["Up Vol","#D29922"],
+    "Breaking Out Today-Weekly Bases":["Breaking Out!","#F78166"],
+    "Growth 50":["Growth 50","#00E676"],
+    "Near Pivot Stocks":["Near Pivot","#79C0FF"],
+    "Minervini TT 5 Months":["Minervini 5M","#E3B341"],
+    "Minervini TT 1 Month":["Minervini 1M","#FFA198"],
+    "Blue Dot List":["● Blue Dot","#FFD600"],
+    "New High With Best EPS Rank":["Hi EPS NH","#C9B8FF"],
+    "Largest Quarterly EPS % Changes":["Big EPS Qtr","#00E676"],
+    "New High In RS Line":["RS Line Hi","#3FB950"],
+    "Potential High Tight Flag":["HTF","#F78166"],
+  };
+  return lists.map(l=>{
+    const[ab,col]=M[l]||[l.slice(0,10),'#8B949E'];
+    return `<span class="badge" style="border:1px solid ${col};color:${col};background:transparent">${ab}</span>`;
+  }).join('');
+}
+function grpColor(g){
+  if(!g) return '#484F58';
+  if(g<=20) return '#3FB950'; if(g<=40) return '#58A6FF';
+  if(g<=60) return '#D29922'; return '#8B949E';
+}
+function deltaColor(d){
+  if(d>=8) return '#3FB950'; if(d>=4) return '#00E676';
+  if(d>0) return '#D29922'; return '#F85149';
+}
+function aiHtml(ai){
+  if(ai==='High')   return '<span style="background:rgba(63,185,80,.15);color:#3FB950;border:1px solid rgba(63,185,80,.4);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">HIGH</span>';
+  if(ai==='Medium') return '<span style="background:rgba(210,153,34,.15);color:#D29922;border:1px solid rgba(210,153,34,.4);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">MED</span>';
+  return '<span style="color:var(--dim2)">—</span>';
+}
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function switchToDetail(sym){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-detail').classList.add('active');
+  document.querySelectorAll('.tab-btn')[1].classList.add('active');
+  renderDetail(sym);
+}
+
+function buildTable(){
+  const tbody=document.getElementById('tableBody');
+  DATA.forEach((s,i)=>{
+    const d1c=deltaColor(s.d1w);
+    const gmS=s.grpMom>0?'+'+s.grpMom:s.grpMom<0?String(s.grpMom):'—';
+    const gmC=s.grpMom>0?'#3FB950':s.grpMom<0?'#F85149':'#484F58';
+    tbody.innerHTML+=`
+    <tr class="clickable" onclick="switchToDetail('${s.sym}')">
+      <td style="color:var(--dim2);font-size:11px">${i+1}</td>
+      <td><a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-family:monospace;font-weight:700;font-size:13px;color:var(--blue);text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a></td>
+      <td style="color:var(--dim);font-size:11px">${s.name.slice(0,20)}</td>
+      <td style="font-weight:700;color:#3FB950">${s.rs!=null?s.rs:'—'}</td>
+      <td style="font-weight:700;color:${d1c}">${s.d1w>=0?'+':''}${s.d1w}</td>
+      <td style="color:#58A6FF">${s.d2w>=0?'+':''}${s.d2w}</td>
+      <td style="color:var(--dim)">${s.d3w>=0?'+':''}${s.d3w}</td>
+      <td style="color:${grpColor(s.grp)}">${s.grp!=null?s.grp:'—'}</td>
+      <td>${aiHtml(s.ai)}</td>
+      <td>${pivotCell(s.ptp,s.abovePivot,s.fromPivot)}</td>
+      <td>${earnHtml(s.earnDate,s.earnDays)}</td>
+    </tr>`;
+  });
+}
+
+function renderDetail(sym){
+  const s=DATA.find(x=>x.sym===sym);
+  if(!s) return;
+  const rs2 = s.rs1w!=null ? s.rs1w : (s.rs!=null?s.rs-s.d2w:null);
+  const rs3 = s.rs2w!=null ? s.rs2w : null;
+  const trendStr = rs3!=null
+    ? `${rs3} → ${s.rs1w||'?'} → ${s.rs}`
+    : `${s.rs1w||'?'} → ${s.rs}`;
+  document.getElementById('detailContent').innerHTML=`
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div>
+        <span style="font-size:22px;font-weight:800;color:var(--blue);font-family:monospace">${s.sym}</span>
+        ${aiHtml(s.ai)}
+        <div style="font-size:12px;color:var(--dim);margin-top:2px">${s.name}</div>
+        <div style="font-size:10px;color:var(--dim2)">${s.base} · ${s.btype}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:18px;font-weight:700">₹${s.price.toLocaleString('en-IN',{minimumFractionDigits:1})}</div>
+        <div style="font-size:10px;color:${(s.vs52||0)>=-10?'#3FB950':'#D29922'}">${s.vs52!=null?s.vs52.toFixed(1)+'%':'—'} vs 52W</div>
+        <div style="margin-top:4px">${earnHtml(s.earnDate,s.earnDays)}</div>
+      </div>
+    </div>
+
+    <div style="background:#0D1117;border-radius:6px;padding:10px;margin-bottom:10px">
+      <div style="font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:6px">RS Trend (3W → 2W → 1W → Now)</div>
+      <div style="font-size:16px;font-weight:800;font-family:monospace;color:#3FB950">${trendStr}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
+        <div style="text-align:center">
+          <div style="font-size:9px;color:var(--dim2);margin-bottom:3px">1W ▲</div>
+          <div style="font-size:16px;font-weight:700;color:${deltaColor(s.d1w)}">${s.d1w>=0?'+':''}${s.d1w}</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:9px;color:var(--dim2);margin-bottom:3px">2W ▲</div>
+          <div style="font-size:16px;font-weight:700;color:#58A6FF">${s.d2w>=0?'+':''}${s.d2w}</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:9px;color:var(--dim2);margin-bottom:3px">3W ▲</div>
+          <div style="font-size:16px;font-weight:700;color:var(--dim)">${s.d3w>=0?'+':''}${s.d3w}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-box"><div class="mlabel">EPS</div><div class="mval" style="color:#D29922">${s.eps!=null?s.eps:'—'}</div></div>
+      <div class="metric-box"><div class="mlabel">Comp</div><div class="mval" style="color:#A371F7">${s.comp!=null?s.comp:'—'}</div></div>
+      <div class="metric-box"><div class="mlabel">Blue Dots</div><div class="mval" style="color:${s.bd>=3?'#FFD600':'var(--dim2)'}">${s.bd||'—'}</div></div>
+      <div class="metric-box"><div class="mlabel">A/D</div><div class="mval" style="color:var(--dim)">${s.ad}</div></div>
+      <div class="metric-box"><div class="mlabel">Grp#</div><div class="mval" style="color:${grpColor(s.grp)}">${s.grp!=null?s.grp:'—'}</div></div>
+      <div class="metric-box"><div class="mlabel">Pivot</div><div style="font-size:11px;margin-top:3px">${pivotCell(s.ptp,s.abovePivot,s.fromPivot)}</div></div>
+    </div>
+
+    <div style="margin-bottom:8px">${msiPills(s.ms_lists)}</div>
+  </div>`;
+}
+
+buildTable();
+const sel=document.getElementById('stockSel');
+DATA.forEach(s=>{
+  const o=document.createElement('option');
+  o.value=s.sym; o.text=s.sym+' — '+s.name;
+  sel.appendChild(o);
+});
+if(DATA.length) renderDetail(DATA[0].sym);
+</script>
+
+<div style="margin-top:16px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--dim2);text-align:center">
+  Generated 2026-08-08 · Data: MarketSmith Timeseries + GSI · Not investment advice
+</div>
+</body>
+</html>
