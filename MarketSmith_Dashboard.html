@@ -98,6 +98,35 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
 .empty{text-align:center;padding:60px 20px;color:var(--dim)}
 .empty h2{font-size:18px;margin-bottom:8px;color:var(--fg)}
 
+/* Orientation guide */
+.guide{margin-top:22px;background:var(--surface);border:1px solid var(--border2);border-radius:10px}
+.guide+.guide{margin-top:10px}
+.guide>summary{cursor:pointer;padding:13px 18px;font-size:13px;font-weight:700;color:var(--fg);
+                list-style:none;display:flex;align-items:center;gap:8px}
+.guide>summary::-webkit-details-marker{display:none}
+.guide>summary::before{content:"▸";color:var(--dim);font-size:11px;transition:transform .15s}
+.guide[open]>summary::before{content:"▾"}
+.guide-body{padding:0 18px 18px;font-size:12.5px;line-height:1.65;color:var(--dim)}
+.guide-lead{margin-bottom:14px}
+.guide-lead b{color:var(--fg)}
+.guide-step{display:flex;gap:11px;margin-bottom:11px;align-items:flex-start}
+.guide-step b{color:var(--fg)}
+.gs-n{flex:none;width:21px;height:21px;border-radius:50%;display:flex;align-items:center;
+       justify-content:center;font-size:11px;font-weight:800;color:#fff;margin-top:1px}
+.gs-1{background:#F78166} .gs-2{background:#D29922}
+.gs-3{background:#A371F7} .gs-4{background:#3FB950}
+.caveat{display:block;margin-top:3px;font-size:11.5px;color:var(--dim2);font-style:italic}
+.guide-rules{margin-top:16px;padding:13px 15px;background:var(--bg);border:1px solid var(--border);
+              border-radius:7px;display:flex;flex-direction:column;gap:8px}
+.gr-title{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim2);font-weight:700}
+.guide-rules b{color:var(--fg)}
+.guide-foot{margin-top:13px;font-size:11.5px;color:var(--dim2);font-style:italic}
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:11px}
+.gl{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:11px 13px;font-size:12px}
+.gl-t{font-size:12.5px;font-weight:700;color:var(--fg);margin-bottom:4px}
+.gl-s{font-size:10px;font-weight:600;color:var(--dim2);text-transform:uppercase;letter-spacing:.4px;margin-left:5px}
+.gl b{color:var(--fg)}
+
 /* Scrollbar */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -223,6 +252,93 @@ function renderMain(dateStr) {
     <div class="date-label">${dateStr}${isToday ? ' <span style="font-size:13px;color:var(--green);font-weight:500">· Today</span>' : ''}</div>
     <div class="date-sub">${count} of 4 files available</div>
     <div class="grid">${cards}</div>
+    
+<details class="guide" open>
+  <summary>Where to start — which tab matters most</summary>
+  <div class="guide-body">
+    <p class="guide-lead">Four tabs is a lot to stare at. They are not equally useful, and they are ordered
+    left to right by how early they catch a move. The goal of this system is to find stocks
+    <b>60&ndash;90 days before</b> the big advance, so the earliest tab is the one that carries the edge.</p>
+
+    <div class="guide-step"><span class="gs-n gs-1">1</span>
+      <div><b>GSI Radar</b> &mdash; your primary. It is the only tab that finds stocks <i>while they are still
+      building a base</i>, which is the only place that 60&ndash;90 day lead time exists. Start here every day.
+      <span class="caveat">Caveat: its backtest is 90% win rate / +6.1% mean 10-day, but on only 10 trades.
+      Treat that as a hypothesis, not a proven result.</span></div></div>
+
+    <div class="guide-step"><span class="gs-n gs-2">2</span>
+      <div><b>Multi-Screen</b> &mdash; your filter. Every name here was picked independently by 2 or more
+      screens, so it is the shortest list and the highest information per minute. If you only have
+      one minute, read this one.</div></div>
+
+    <div class="guide-step"><span class="gs-n gs-3">3</span>
+      <div><b>MS Screens</b> &mdash; the fuller watchlist, confluence-scored. Go here when you have time to
+      work through candidates properly rather than skim.</div></div>
+
+    <div class="guide-step"><span class="gs-n gs-4">4</span>
+      <div><b>RS Momentum</b> &mdash; the most reactive. A big RS jump means part of the move already happened,
+      so it is best used to <i>confirm</i> a name you found in tabs 1&ndash;3, not to source new ideas.</div></div>
+
+    <div class="guide-rules">
+      <div class="gr-title">Three rules that matter more than any screen</div>
+      <div><b>Never skip the stop.</b> Sell at 7&ndash;8% below your buy price, decided before you buy. This is
+      the single rule that protects a beginner from a permanent loss.</div>
+      <div><b>The group carries roughly half the outcome.</b> About 37% of a stock's move comes from its
+      industry group and another 12% from its sector. A good company in a weak group is a hard trade.</div>
+      <div><b>Write down what would make you wrong.</b> Before buying, note what evidence would break the
+      idea. If you cannot answer that, you are not analysing a position &mdash; you are defending a memory.</div>
+    </div>
+
+    <p class="guide-foot">A screen is a starting point, not a verdict. None of these tabs remove risk,
+    and appearing on one is not a recommendation to buy.</p>
+  </div>
+</details>
+
+<details class="guide">
+  <summary>What the ratings mean</summary>
+  <div class="guide-body">
+    <div class="gloss">
+      <div class="gl"><div class="gl-t">RS Rating <span class="gl-s">1&ndash;99</span></div>
+        How the stock performed against the Nifty 500 over the past year. RS 85 means it beat 85% of the
+        market. <b>80 is the minimum for a leader</b>; the best performers averaged <b>87</b> before their
+        major advance. A falling RS is a warning even while the price is rising.</div>
+
+      <div class="gl"><div class="gl-t">RS Line</div>
+        The stock's price divided by the index, drawn as a line. When it makes a <b>new 52-week high before
+        the price breaks out</b>, that is one of the earliest signs of leadership.</div>
+
+      <div class="gl"><div class="gl-t">EPS Rating <span class="gl-s">1&ndash;99</span></div>
+        Earnings-per-share growth ranked against all stocks. The classic requirement is current quarterly
+        earnings up at least <b>18&ndash;25% year on year</b>. These screens gate at 70+.</div>
+
+      <div class="gl"><div class="gl-t">A/D Rating <span class="gl-s">A to E</span></div>
+        Also called Buyer Demand. Grades 13 weeks of price-and-volume to infer whether institutions are net
+        buyers. <b>A or B means accumulation</b>; D or E means distribution. This system requires at least B.</div>
+
+      <div class="gl"><div class="gl-t">Group Rank <span class="gl-s">1&ndash;197</span></div>
+        Where the stock's industry group ranks among 197 groups, 1 being strongest. Roughly <b>half a stock's
+        move is explained by its group and sector</b>, so prefer names in the top 40 groups.</div>
+
+      <div class="gl"><div class="gl-t">Blue Dot</div>
+        Flags a stock whose RS line just hit a 52-week high <b>while still building or just emerging from a
+        base</b>. It is a prompt to research, not a verdict &mdash; it says nothing about the company's risks,
+        whether the base will resolve upward, or whether the group will stay strong.</div>
+
+      <div class="gl"><div class="gl-t">Pivot / buy point</div>
+        The price at which the base's resistance breaks. <b>% to pivot</b> is how far it still has to rise.
+        A genuine breakout should come on volume roughly <b>40&ndash;50% above the 50-day average</b>.</div>
+
+      <div class="gl"><div class="gl-t">Forming Base vs Buy Zone</div>
+        <b>Forming Base</b> means the pattern is still building &mdash; earliest, and the priority here.
+        <b>Buy Zone</b> means it is at or near an actionable level.</div>
+
+      <div class="gl"><div class="gl-t">Score / AI Prob <span class="gl-s">GSI Radar</span></div>
+        A composite of how closely the setup resembles the reference winning profile, blending RS, earnings,
+        group rank, RS momentum and base depth. Higher is more similar, not more certain.</div>
+    </div>
+  </div>
+</details>
+
   `;
 }
 
