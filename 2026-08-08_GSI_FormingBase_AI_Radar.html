@@ -112,11 +112,14 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .legend-gate{font-size:10px;color:var(--amber);font-weight:600;margin-bottom:1px}
 .legend-desc{font-size:11px;color:var(--muted);line-height:1.5}
 .legend-tip{font-size:10px;color:var(--dim);margin-top:3px;font-style:italic}
-@media(prefers-color-scheme:light){
+/* Light theme pinned on: this was @media(prefers-color-scheme:light), which
+   made pages follow the OS and flip dark at night. `@media all` always
+   matches, so these overrides win in both OS modes. */
+@media all{
   /* mirrors the override in ms_screens_watchlist.py — structural colours only,
      so accent colours stay identical to the other pages. --amber is the one
      exception: #FFD600 is unreadable on white. */
-  :root{--bg:#f6f8fa;--surf:#fff;--surf2:#eaeef2;--border:#d0d7de;
+  :root{color-scheme:light;--bg:#f6f8fa;--surf:#fff;--surf2:#eaeef2;--border:#d0d7de;
         --text:#24292f;--muted:#57606a;--dim:#6e7781;
         --surface:#fff;--border2:#d0d7de;--fg:#24292f;--dim2:#6e7781;
         --amber:#9a6700;--green:#1a7f37;--red:#cf222e;--blue:#0969da;--teal:#137775}

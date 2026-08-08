@@ -31,7 +31,7 @@
 </script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
+:root{color-scheme:light;
   --bg:#0D1117;--surface:#161B22;--border:#21262D;--border2:#30363D;
   --fg:#E6EDF3;--dim:#8B949E;--dim2:#484F58;
   --blue:#58A6FF;--green:#3FB950;--purple:#A371F7;
@@ -101,11 +101,38 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
 /* Orientation guide */
 .guide{margin-top:22px;background:var(--surface);border:1px solid var(--border2);border-radius:10px}
 .guide+.guide{margin-top:10px}
-.guide>summary{cursor:pointer;padding:13px 18px;font-size:13px;font-weight:700;color:var(--fg);
-                list-style:none;display:flex;align-items:center;gap:8px}
+/* Market direction strip */
+.mkt{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:9px 20px;
+      font-size:12.5px;border-bottom:1px solid var(--border)}
+.mkt-ok{background:rgba(63,185,80,.10);border-bottom-color:rgba(63,185,80,.35)}
+.mkt-warn{background:rgba(210,153,34,.13);border-bottom-color:rgba(210,153,34,.45)}
+.mkt-dot{font-size:14px;line-height:1}
+.mkt-label{font-weight:800;letter-spacing:.3px;color:var(--fg)}
+.mkt-meta{color:var(--dim)}
+.mkt-stale{font-size:10.5px;color:var(--dim2);border:1px solid var(--border2);
+            border-radius:20px;padding:1px 8px}
+.mkt-stance{margin-left:auto;font-weight:700}
+.mkt-ok .mkt-stance{color:#1a7f37}
+.mkt-warn .mkt-stance{color:#9a6700}
+
+.guide-hint{margin-top:22px;margin-bottom:-12px;font-size:11.5px;color:var(--dim2);
+             display:flex;align-items:center;gap:6px}
+.guide-hint::before{content:"👇";font-size:13px}
+.guide>summary{cursor:pointer;padding:13px 16px;font-size:13px;font-weight:700;color:var(--fg);
+                list-style:none;display:flex;align-items:center;gap:11px;border-radius:9px;
+                transition:background .12s}
+.guide>summary:hover{background:rgba(88,166,255,.07)}
 .guide>summary::-webkit-details-marker{display:none}
-.guide>summary::before{content:"▸";color:var(--dim);font-size:11px;transition:transform .15s}
-.guide[open]>summary::before{content:"▾"}
+.sm-ico{flex:none;font-size:17px;line-height:1}
+.sm-txt{flex:1;display:flex;flex-direction:column;gap:2px}
+.sm-sub{font-size:11.5px;font-weight:400;color:var(--dim)}
+.sm-cta{flex:none;font-size:11px;font-weight:700;color:var(--blue);border:1px solid var(--blue);
+         border-radius:20px;padding:3px 12px;white-space:nowrap}
+.guide>summary:hover .sm-cta{background:var(--blue);color:#fff}
+/* Label tracks open/closed state without JS — the markup text is ignored. */
+.sm-cta{font-size:0}
+.sm-cta::after{font-size:11px;content:"Show"}
+.guide[open]>summary .sm-cta::after{content:"Hide"}
 .guide-body{padding:0 18px 18px;font-size:12.5px;line-height:1.65;color:var(--dim)}
 .guide-lead{margin-bottom:14px}
 .guide-lead b{color:var(--fg)}
@@ -136,7 +163,10 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
    dashboard follows the OS theme like every page it links to.
    The three rules below use hardcoded dark values a :root override
    cannot reach, so they are restated here. */
-@media(prefers-color-scheme:light){
+/* Light theme pinned on: this was @media(prefers-color-scheme:light), which
+   made pages follow the OS and flip dark at night. `@media all` always
+   matches, so these overrides win in both OS modes. */
+@media all{
   :root{--bg:#f6f8fa;--surface:#fff;--border:#e1e4e8;--border2:#d0d7de;
         --fg:#24292f;--dim:#57606a;--dim2:#6e7781}
   .badge-count{background:#eaeef2}
@@ -169,6 +199,8 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
   </div>
   <div class="badge-count" id="totalDates"></div>
 </div>
+
+<div class="mkt mkt-warn"><span class="mkt-dot">🟡</span><span class="mkt-label">UPTREND UNDER PRESSURE</span> <span class="mkt-meta">(since 2026-05-13 &middot; Nifty +4.94%)</span><span class="mkt-stance">⚠️ Defensive &mdash; avoid new buys</span></div>
 
 <div class="layout">
   <div class="sidebar">
@@ -253,8 +285,13 @@ function renderMain(dateStr) {
     <div class="date-sub">${count} of 4 files available</div>
     <div class="grid">${cards}</div>
     
+<div class="guide-hint">New here? Start with these two &mdash; click either to expand.</div>
+
 <details class="guide" open>
-  <summary>Where to start — which tab matters most</summary>
+  <summary><span class="sm-ico">🧭</span>
+    <span class="sm-txt">Where to start &mdash; which tab matters most
+      <span class="sm-sub">Which of the four to read first, and the 3 rules that matter most</span></span>
+    <span class="sm-cta">Hide</span></summary>
   <div class="guide-body">
     <p class="guide-lead">Four tabs is a lot to stare at. They are not equally useful, and they are ordered
     left to right by how early they catch a move. The goal of this system is to find stocks
@@ -295,7 +332,10 @@ function renderMain(dateStr) {
 </details>
 
 <details class="guide">
-  <summary>What the ratings mean</summary>
+  <summary><span class="sm-ico">📖</span>
+    <span class="sm-txt">What the ratings mean
+      <span class="sm-sub">RS &middot; EPS &middot; A/D &middot; Group Rank &middot; Blue Dot &middot; Pivot &mdash; in plain English</span></span>
+    <span class="sm-cta">Show</span></summary>
   <div class="guide-body">
     <div class="gloss">
       <div class="gl"><div class="gl-t">RS Rating <span class="gl-s">1&ndash;99</span></div>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>2026-08-08 MS Screens Watchlist</title>
 <style>
-:root{--bg:#0D1117;--surface:#161B22;--border:#21262D;--border2:#30363D;
+:root{color-scheme:light;--bg:#0D1117;--surface:#161B22;--border:#21262D;--border2:#30363D;
       --fg:#E6EDF3;--dim:#8B949E;--dim2:#484F58;
       --green:#3FB950;--blue:#58A6FF;--purple:#A371F7;
       --yellow:#D29922;--red:#F85149;--teal:#00E676}
@@ -33,7 +33,10 @@ tr.clickable{cursor:pointer}tr.clickable:hover td{background:rgba(255,255,255,.0
 .bar-fill{height:5px;border-radius:3px}
 select{background:var(--surface);border:1px solid var(--border2);color:var(--fg);
        padding:4px 8px;border-radius:4px;font-size:12px}
-@media(prefers-color-scheme:light){
+/* Light theme pinned on: this was @media(prefers-color-scheme:light), which
+   made pages follow the OS and flip dark at night. `@media all` always
+   matches, so these overrides win in both OS modes. */
+@media all{
   :root{--bg:#f6f8fa;--surface:#fff;--border:#e1e4e8;--border2:#d0d7de;
         --fg:#24292f;--dim:#57606a;--dim2:#6e7781}
 }
