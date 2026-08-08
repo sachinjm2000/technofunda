@@ -102,8 +102,12 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
 .guide{margin-top:22px;background:var(--surface);border:1px solid var(--border2);border-radius:10px}
 .guide+.guide{margin-top:10px}
 /* Market direction strip */
-.mkt{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:9px 20px;
+/* Single line: label, status, then the stance immediately after — not pushed
+   to the far edge, so the warning reads as part of the same sentence. */
+.mkt{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:9px 20px;
       font-size:12.5px;border-bottom:1px solid var(--border)}
+.mkt-pre{color:var(--dim);font-weight:600}
+.mkt-sep{color:var(--dim2)}
 .mkt-ok{background:rgba(63,185,80,.10);border-bottom-color:rgba(63,185,80,.35)}
 .mkt-warn{background:rgba(210,153,34,.13);border-bottom-color:rgba(210,153,34,.45)}
 .mkt-dot{font-size:14px;line-height:1}
@@ -111,7 +115,7 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
 .mkt-meta{color:var(--dim)}
 .mkt-stale{font-size:10.5px;color:var(--dim2);border:1px solid var(--border2);
             border-radius:20px;padding:1px 8px}
-.mkt-stance{margin-left:auto;font-weight:700}
+.mkt-stance{font-weight:700}
 .mkt-ok .mkt-stance{color:#1a7f37}
 .mkt-warn .mkt-stance{color:#9a6700}
 
@@ -200,7 +204,7 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
   <div class="badge-count" id="totalDates"></div>
 </div>
 
-<div class="mkt mkt-warn"><span class="mkt-dot">🟡</span><span class="mkt-label">UPTREND UNDER PRESSURE</span> <span class="mkt-meta">(since 2026-05-13 &middot; Nifty +4.94%)</span><span class="mkt-stance">⚠️ Defensive &mdash; avoid new buys</span></div>
+<div class="mkt mkt-warn"><span class="mkt-pre">Market status:</span><span class="mkt-dot">🟡</span><span class="mkt-label">UPTREND UNDER PRESSURE</span> <span class="mkt-meta">(since 2026-05-13 &middot; Nifty +4.94%)</span><span class="mkt-sep">&mdash;</span><span class="mkt-stance">⚠️ Defensive &mdash; avoid new buys</span></div>
 
 <div class="layout">
   <div class="sidebar">
