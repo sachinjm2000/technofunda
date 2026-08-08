@@ -4,6 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MarketSmith Dashboard</title>
+<script>
+(function(){
+  const KEY = 'ms_auth';
+  const PASS = 'msresearch2025';
+  if(sessionStorage.getItem(KEY) === '1') return;
+  document.addEventListener('DOMContentLoaded', function(){
+    var overlay = document.getElementById('auth-overlay');
+    overlay.style.display = 'flex';
+    document.getElementById('auth-input').focus();
+    document.getElementById('auth-btn').onclick = tryLogin;
+    document.getElementById('auth-input').onkeydown = function(e){ if(e.key==='Enter') tryLogin(); };
+    function tryLogin(){
+      var val = document.getElementById('auth-input').value;
+      if(val === PASS){
+        sessionStorage.setItem(KEY, '1');
+        overlay.style.display = 'none';
+      } else {
+        document.getElementById('auth-err').style.display = 'block';
+        document.getElementById('auth-input').value = '';
+        document.getElementById('auth-input').focus();
+      }
+    }
+  });
+})();
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -80,6 +105,21 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
 </style>
 </head>
 <body>
+
+<div id="auth-overlay" style="display:none;position:fixed;inset:0;background:rgba(13,17,23,.97);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+  <div style="background:#161B22;border:1px solid #30363D;border-radius:12px;padding:40px 48px;text-align:center;min-width:320px">
+    <div style="font-size:32px;margin-bottom:12px">📊</div>
+    <div style="font-size:18px;font-weight:700;color:#E6EDF3;margin-bottom:4px">MarketSmith Dashboard</div>
+    <div style="font-size:12px;color:#8B949E;margin-bottom:24px">Enter password to continue</div>
+    <input id="auth-input" type="password" placeholder="Password"
+      style="width:100%;padding:10px 14px;background:#0D1117;border:1px solid #30363D;border-radius:6px;
+             color:#E6EDF3;font-size:14px;outline:none;margin-bottom:10px;box-sizing:border-box">
+    <div id="auth-err" style="display:none;color:#F85149;font-size:12px;margin-bottom:10px">Incorrect password</div>
+    <button id="auth-btn"
+      style="width:100%;padding:10px;background:#1F6FEB;border:none;border-radius:6px;
+             color:#fff;font-size:14px;font-weight:600;cursor:pointer">Unlock</button>
+  </div>
+</div>
 
 <div class="header">
   <div>
