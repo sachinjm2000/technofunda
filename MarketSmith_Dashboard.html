@@ -157,6 +157,10 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
 .gl-t{font-size:12.5px;font-weight:700;color:var(--fg);margin-bottom:4px}
 .gl-s{font-size:10px;font-weight:600;color:var(--dim2);text-transform:uppercase;letter-spacing:.4px;margin-left:5px}
 .gl b{color:var(--fg)}
+.gl-src{font-size:11.5px;color:var(--dim2);font-style:italic;margin:2px 0 12px}
+.gl-group{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;
+           color:var(--dim2);margin:16px 0 8px;padding-top:12px;border-top:1px solid var(--border)}
+.gl-group:first-of-type{margin-top:6px;padding-top:0;border-top:none}
 
 /* Scrollbar */
 ::-webkit-scrollbar{width:5px;height:5px}
@@ -338,13 +342,13 @@ function renderMain(dateStr) {
 <details class="guide">
   <summary><span class="sm-ico">📖</span>
     <span class="sm-txt">What the ratings mean
-      <span class="sm-sub">RS &middot; EPS &middot; A/D &middot; Group Rank &middot; Blue Dot &middot; Pivot &mdash; in plain English</span></span>
+      <span class="sm-sub">Our columns explained, plus all 32 MarketSmith glossary terms</span></span>
     <span class="sm-cta">Show</span></summary>
   <div class="guide-body">
     <div class="gloss">
       <div class="gl"><div class="gl-t">RS Rating <span class="gl-s">1&ndash;99</span></div>
-        How the stock performed against the Nifty 500 over the past year. RS 85 means it beat 85% of the
-        market. <b>80 is the minimum for a leader</b>; the best performers averaged <b>87</b> before their
+        A percentile rank of the stock's 12-month price change against <b>every other stock in India</b>,
+        with recent months weighted more. RS 85 means it beat 85% of the market. <b>80 is the minimum for a leader</b>; the best performers averaged <b>87</b> before their
         major advance. A falling RS is a warning even while the price is rising.</div>
 
       <div class="gl"><div class="gl-t">RS Line</div>
@@ -356,8 +360,8 @@ function renderMain(dateStr) {
         earnings up at least <b>18&ndash;25% year on year</b>. These screens gate at 70+.</div>
 
       <div class="gl"><div class="gl-t">A/D Rating <span class="gl-s">A to E</span></div>
-        Also called Buyer Demand. Grades 13 weeks of price-and-volume to infer whether institutions are net
-        buyers. <b>A or B means accumulation</b>; D or E means distribution. This system requires at least B.</div>
+        Also called Buyer Demand. An exponential moving average of price-and-volume; a single day's effect fades after about
+        60 sessions. <b>A or B = accumulation</b>, <b>C is neutral</b>, D or E = distribution. This system requires at least B.</div>
 
       <div class="gl"><div class="gl-t">Group Rank <span class="gl-s">1&ndash;197</span></div>
         Where the stock's industry group ranks among 197 groups, 1 being strongest. Roughly <b>half a stock's
@@ -379,6 +383,59 @@ function renderMain(dateStr) {
       <div class="gl"><div class="gl-t">Score / AI Prob <span class="gl-s">GSI Radar</span></div>
         A composite of how closely the setup resembles the reference winning profile, blending RS, earnings,
         group rank, RS momentum and base depth. Higher is more similar, not more certain.</div>
+    </div>
+
+    <div class="gl-src">Below: all 32 definitions from MarketSmith India's own glossary, verbatim.</div>
+
+    <div class="gl-group">Market condition</div>
+    <div class="gloss">
+      <div class="gl"><div class="gl-t">Confirmed Uptrend</div>A Confirmed Uptrend market status indicates the Nifty is in an uptrend. The uptrend begins with a follow-through day or when the index reclaims its previous uptrend high. At this stage, the index is not showing signs of significant distribution or heavy selling by institutional investors. This is the perfect time to be looking out for fundamentally strong stocks at proper buy points.</div>
+      <div class="gl"><div class="gl-t">Uptrend Under Pressure</div>An Uptrend Under Pressure market status is normally associated with rising number of distribution days on the Nifty. The index has 3-4 distribution days in the last five weeks and is showing some signs of deterioration. The index may be close to its 50-day and/or 200-day moving average support level, but is typically above at least one of the levels. Investors need to exercise caution and keep their buying decisions reserved to fundamentally strong stocks showing technical strength.</div>
+      <div class="gl"><div class="gl-t">Correction</div>A major index generally goes into Correction when the number of distribution days in the last five weeks rises to 5-6. The index has typically declined 5-7% or more from its recent high. Also, the index most likely breaches its support levels of 50-day and 200-day moving averages. Investors should avoid new purchases, get off margin, and raise cash. This is a good time to build your watch list of fundamentally-strong stocks that you would like to own when market condition improves.</div>
+      <div class="gl"><div class="gl-t">Rally Attempt</div>A Rally Attempt begins the third day the index closes higher off the most recent bottom after being in a Correction (also known as Downtrend). During a Rally Attempt, we are on the lookout for a Follow-Through Day to confirm the trend has reversed and we have entered a Confirmed Uptrend . A Rally Attempt fails and the index goes back into a Correction if it undercuts the most recent low.</div>
+    </div>
+    <div class="gl-group">Distribution &amp; follow-through</div>
+    <div class="gloss">
+      <div class="gl"><div class="gl-t">Follow-Through Day</div>A follow-through day is identified when a major index (Sensex or Nifty 50) closes significantly higher, over 1.5% for the day, on higher volume than the previous session. It happens on fourth day or later of an attempted rally . The most powerful follow-through days often happen on fourth through seventh day of an attempted rally . They serve as a confirmation that the market has really changed direction and is in a new uptrend . The strength in a follow-through day can be gauged by the action in leading stocks. A follow-through day coupled with leading stocks breaking out from their base patterns provides signs of a sustainable rally . A follow-through day is a key concept in the market-timing system developed by MarketSmith founder, William J. O&#x27;Neil.</div>
+      <div class="gl"><div class="gl-t">Distribution Day</div>A distribution day is indicated by a major market index such as the Sensex closing down 0.2% or more on higher volume than the previous day. Distribution in the stock market refers to the increased selling of stock by large institutions. The number of distribution days on the Sensex helps us in tracking the general market condition. Our studies have shown that four to six days of distribution over a period of five weeks are often enough to turn a previously advancing market into decline. Once you notice increasing distribution, it is best to hold off on any further stock purchases, and perhaps even cut back on some of your positions, especially if you are on margin.</div>
+      <div class="gl"><div class="gl-t">Distribution Day Count</div>The count refers to the number of distribution days in the last 25 trading sessions. It is reset to zero whenever the market status is changed to Correction . The distribution day count resumes from zero when the market enters into a Confirmed Uptrend . Distribution days are dropped if the Sensex has advanced 5% or more from the close of a particular distribution day or the distribution day has aged out i.e. fallen out from the 25 trading session window. This lowers the overall count.</div>
+      <div class="gl"><div class="gl-t">Distribution Day Reversal</div>Once an index rises 5% from the close of a particular distribution day , it signals strength in the market. In such cases, we drop off that distribution day from our count, thereby reducing the number of distribution days in the last 25 trading sessions.</div>
+      <div class="gl"><div class="gl-t">Ageing of a Distribution Day</div>A distribution day becomes too old if it is no longer within the window of last 25 trading sessions. The distribution day is then dropped due to age and the total distribution day count reduces accordingly.</div>
+    </div>
+    <div class="gl-group">Base patterns</div>
+    <div class="gloss">
+      <div class="gl"><div class="gl-t">Base Pattern</div>A base is a term used by technical analysts to refer to a type of stock chart pattern. Base patterns indicate periods when a stock levels off or corrects after having advanced for a while; a base is just another term for a period of consolidation . There are several different base patterns, including the cup-with-handle , cup , double bottom , flat, and consolidation base.</div>
+      <div class="gl"><div class="gl-t">Cup With Handle</div>A stock chart pattern discovered by MarketSmith founder William J. O&#x27;Neil, this pattern on a high-low-close bar chart looks like a cup with a handle when the outline of a cup is viewed from the side.</div>
+      <div class="gl"><div class="gl-t">Cup</div>A cup base pattern is similar to a cup-with-handle pattern, except there is no final dip or shakeout before the stock breaks out . Thus, the pattern looks like a cup with no handle.</div>
+      <div class="gl"><div class="gl-t">Double Bottom</div>A stock chart pattern identified by MarketSmith founder William J. O&#x27;Neil, this pattern looks like the letter W. In almost all cases, the second leg down should undercut the low price of the first leg. This ensures weak investors in the stock are shaken out.</div>
+      <div class="gl"><div class="gl-t">Flat Base</div>A stock chart pattern studied by MarketSmith founder William J. O&#x27;Neil, a flat base moves straight sideways in a relatively narrow price range. Flat bases often occur after a stock runs up after breaking out of one of the other chart patterns.</div>
+      <div class="gl"><div class="gl-t">Consolidation</div>A consolidation is just another term for a base. Base patterns indicate periods when a stock levels off or recoups after having advanced for a while.</div>
+      <div class="gl"><div class="gl-t">Tight Areas</div>Tight area or a tight chart pattern is established when a stock trades tight and closes narrowly for three weeks in a row. In a tight chart pattern, the close of week two is within 1.5% of week one&#x27;s close; and the close of week three is within 1.5% of week two&#x27;s close. A tight area can be a great opportunity to add shares to a current holding. Often top-quality consolidations show tight trading. This pattern tends to work best with the market&#x27;s top leaders like stocks with excellent fundamentals and price action. MarketSmith&#x27;s Pattern Recognition feature will highlight the area with a blue oval when such a condition is reached.</div>
+      <div class="gl"><div class="gl-t">Power from Pivot Flag</div>PowerFromPivotFlag Stocks advancing in price 20% or more within 15 days (3 weeks) after breaking out above their pivot are marked with a Power from Pivot flag on the chart when our Pattern Recognition feature is enabled. If you encounter this scenario with a stock that has good fundamentals and is looking strong technically, MarketSmith founder William J. O&#x27;Neil advises you consider holding the stock for at least eight weeks from the pivot to avoid getting shaken out of a stock that might have the possibility of being a big winner.</div>
+    </div>
+    <div class="gl-group">Entry &amp; price action</div>
+    <div class="gloss">
+      <div class="gl"><div class="gl-t">Pivot</div>A pivot represents an area of resistance i.e., a price ceiling at which the stock has previously encountered selling. In our study of winning stocks and their technical breakouts , we have identified pivot as an optimal buy point. When a stock charges above the pivot on above-average trading volume, there is a high probability that it will move even higher.</div>
+      <div class="gl"><div class="gl-t">BreakOut</div>Breakout A breakout occurs when a stock&#x27;s price rises above its resistance level, i.e., a price ceiling at which the stock has previously encountered selling. This price ceiling is known as pivot . When a stock charges above the pivot on above-average trading volume, there is a high probablity that it will move even higher. We like to see volume at least 40% to 50% above average on the breakout day.</div>
+      <div class="gl"><div class="gl-t">Buy Range</div>A stock is considered to be in an ideal buy range if it is close to its pivot price and has not extended by more than 5-7% from the recent pivot.</div>
+      <div class="gl"><div class="gl-t">Extended</div>A stock becomes extended from its buy point, if it rises more than 5-7% from the pivot . Buying extended stocks is considered to be a lot risky, since a normal retracement in the stock could force us to sell it due to our 8% stop-loss rule. Winning stocks often experience retracement before they move higher.</div>
+      <div class="gl"><div class="gl-t">Resistance</div>Resistance refers to a price level at which the stock has previously encountered selling. A stock often faces selling pressure when it approaches its recent highs and this level could halt the stock&#x27;s upward movement.</div>
+      <div class="gl"><div class="gl-t">Pullback</div>A pullback happens when a stock falls from its recent high, facing some selling pressure post a technical breakout . This could be a temporary reversal, where weak investors sell off their positions based on the gains made from the initial surge in price, causing the stock price to come down.</div>
+      <div class="gl"><div class="gl-t">Gap Up</div>Gap up represents a strong up day in the stock market, when the Sensex low of the day in question is higher than the index high on the previous day.</div>
+      <div class="gl"><div class="gl-t">Gap Down</div>Gap Down represents a weak day in the stock market, when the Sensex high of the day in question is lower than the index low on the previous day.</div>
+      <div class="gl"><div class="gl-t">OFF High</div>OFF High(OH) OFF High OFF High provides an idea about where the stock is currently trading in comparison to its 52-week high price in percentage terms. The formula to calculate OH is current price minus 52-week high price divided by 52-week high price.</div>
+      <div class="gl"><div class="gl-t">OFF Low</div>OFF Low(OL) OFF Low OFF Low provides an idea about where the stock is currently trading in comparison to its 52-week low price in percentage terms. The formula to calculate OL is current price minus 52-week low price divided by 52-week low price.</div>
+    </div>
+    <div class="gl-group">Ratings &amp; lists</div>
+    <div class="gloss">
+      <div class="gl"><div class="gl-t">Relative Strength Rating</div>The Relative Strength Rating looks at a stock&#x27;s percentage price change over the last 12 months with most recent periods receiving higher weight. All stocks are arranged in order of greatest price percentage change and assigned a rank from 99 (highest) to 1 (lowest). For example, a value of 85 means the stock has outperformed 85% of all other stocks in India.</div>
+      <div class="gl"><div class="gl-t">Accumulation/Distribution Rating</div>Accumulation/Distribution is a proprietary rating calculated as an exponential moving average of inter- and intra-day price and volume statistics. The effect of a single day&#x27;s trading becomes insignificant after about 60 days. The ratings range from A to E. An A or B rating means a stock has been showing accumulation. C is a neutral rating, and a D or E means a stock has been under distribution.</div>
+      <div class="gl"><div class="gl-t">Growth 50</div>Growth 50 Index The Growth 50 Index tracks the performance of stocks listed in Growth 50, a proprietary list of the 47 top-ranked companies generated every Monday. Companies are ranked based on superior fundamentals and strong price performance over the last 12 months. It is a weekly computer-generated ranking of leading companies trading in the Indian market.</div>
+    </div>
+    <div class="gl-group">Moving averages</div>
+    <div class="gloss">
+      <div class="gl"><div class="gl-t">50-DMA</div>The 50-day moving average, a simple average of the last 50 days&#x27; closing prices, provides the best balance between the long-term trend and immediate direction for a stock/index. Many institutions view the 50-day line as a level at which they can add to their positions at a reasonable price. This is the reason why quality growth stocks with good institutional sponsorship often find support around the 50-day moving average level. The 50-day is the most widely followed moving average by investors and analysts.</div>
+      <div class="gl"><div class="gl-t">200-DMA</div>The 200-day moving average, a simple average of the last 200 days&#x27; closing prices is a key indicator for the long-term trend of a stock/index. It often acts as a support or a resistance level for the stock/index.</div>
     </div>
   </div>
 </details>
