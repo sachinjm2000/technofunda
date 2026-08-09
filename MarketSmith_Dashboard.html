@@ -145,7 +145,7 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
 .gs-n{flex:none;width:21px;height:21px;border-radius:50%;display:flex;align-items:center;
        justify-content:center;font-size:11px;font-weight:800;color:#fff;margin-top:1px}
 .gs-1{background:#F78166} .gs-2{background:#D29922}
-.gs-3{background:#A371F7} .gs-4{background:#3FB950}
+.gs-3{background:#A371F7} .gs-4{background:#3FB950} .gs-5{background:#6e7781}
 .caveat{display:block;margin-top:3px;font-size:11.5px;color:var(--dim2);font-style:italic}
 .guide-rules{margin-top:16px;padding:13px 15px;background:var(--bg);border:1px solid var(--border);
               border-radius:7px;display:flex;flex-direction:column;gap:8px}
@@ -298,31 +298,40 @@ function renderMain(dateStr) {
 <details class="guide">
   <summary><span class="sm-ico">🧭</span>
     <span class="sm-txt">Where to start &mdash; which tab matters most
-      <span class="sm-sub">Which of the four to read first, and the 3 rules that matter most</span></span>
+      <span class="sm-sub">Which of the five to read first, and the 3 rules that matter most</span></span>
     <span class="sm-cta">Hide</span></summary>
   <div class="guide-body">
-    <p class="guide-lead">Four tabs is a lot to stare at. They are not equally useful, and they are ordered
-    left to right by how early they catch a move. The goal of this system is to find stocks
-    <b>60&ndash;90 days before</b> the big advance, so the earliest tab is the one that carries the edge.</p>
+    <p class="guide-lead">Five tabs is a lot to stare at, and they are not equally useful. Two questions split them:
+    <b>what can I act on today</b>, and <b>what is setting up for later</b>. The system's goal is to find stocks
+    <b>60&ndash;90 days before</b> the big advance, so the early-stage tabs carry the edge &mdash; but the
+    Quality Screen is where the names that clear every bar <i>right now</i> surface.</p>
 
     <div class="guide-step"><span class="gs-n gs-1">1</span>
-      <div><b>GSI Radar</b> &mdash; your primary. It is the only tab that finds stocks <i>while they are still
-      building a base</i>, which is the only place that 60&ndash;90 day lead time exists. Start here every day.
+      <div><b>Quality Screen</b> &mdash; the strictest list, and the only one with a <i>timing</i> gate.
+      Eight hard filters: Composite 90+, EPS/RS/SMR 80+, A/D A or B, top-40 industry group, within
+      &minus;3% to +4.5% of the pivot, and tradeable liquidity. A name here has cleared every quality bar
+      <b>and</b> is at a buy point.
+      <span class="caveat">Expect it to be short &mdash; often one or two names, sometimes none. An empty
+      day is the screen working, not failing. It refuses to chase anything more than 3% past its pivot.</span></div></div>
+
+    <div class="guide-step"><span class="gs-n gs-2">2</span>
+      <div><b>GSI Radar</b> &mdash; the earliest look. The only tab that finds stocks <i>while they are still
+      building a base</i>, which is where the 60&ndash;90 day lead time exists. Read it daily even when the
+      Quality Screen is empty &mdash; today's forming base is next month's buy point.
       <span class="caveat">Caveat: its backtest is 90% win rate / +6.1% mean 10-day, but on only 10 trades.
       Treat that as a hypothesis, not a proven result.</span></div></div>
 
-    <div class="guide-step"><span class="gs-n gs-2">2</span>
-      <div><b>Multi-Screen</b> &mdash; your filter. Every name here was picked independently by 2 or more
-      screens, so it is the shortest list and the highest information per minute. If you only have
-      one minute, read this one.</div></div>
-
     <div class="guide-step"><span class="gs-n gs-3">3</span>
+      <div><b>Multi-Screen</b> &mdash; the consensus check. Every name was picked independently by 2 or more
+      screens, so it is short and high information per minute. If you only have one minute, read this one.</div></div>
+
+    <div class="guide-step"><span class="gs-n gs-4">4</span>
       <div><b>MS Screens</b> &mdash; the fuller watchlist, confluence-scored. Go here when you have time to
       work through candidates properly rather than skim.</div></div>
 
-    <div class="guide-step"><span class="gs-n gs-4">4</span>
+    <div class="guide-step"><span class="gs-n gs-5">5</span>
       <div><b>RS Momentum</b> &mdash; the most reactive. A big RS jump means part of the move already happened,
-      so it is best used to <i>confirm</i> a name you found in tabs 1&ndash;3, not to source new ideas.</div></div>
+      so it is best used to <i>confirm</i> a name you found in tabs 1&ndash;4, not to source new ideas.</div></div>
 
     <div class="guide-rules">
       <div class="gr-title">Three rules that matter more than any screen</div>
