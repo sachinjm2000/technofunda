@@ -142,9 +142,16 @@ const DATA = [{"sym": "APARINDS", "name": "Apar Industries (Nse)", "price": 1663
 
 // Caution flag. Identical meaning on every tab: RS is falling. Kept in sync
 // with screen_common.caution_flag() -- if one changes, change both.
-function cautionFlag(d){
-  if(d==null || d>=0) return '';
-  return ` <span title="Caution: RS has fallen ${Math.abs(Math.round(d))} points over the last 10 sessions." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span>`;
+function cautionFlag(s){
+  const R=[];
+  if(s.rsDelta!=null && s.rsDelta<0) R.push(`RS has fallen ${Math.abs(Math.round(s.rsDelta))} points over the last 10 sessions`);
+  if(s.grp!=null && s.grp>40)        R.push(`industry group ranks ${Math.round(s.grp)}, outside the top 40`);
+  if(s.earnDays!=null && s.earnDays>=0 && s.earnDays<=7) R.push(`earnings in ${Math.round(s.earnDays)} days`);
+  if(s.turn!=null && s.turn<5)       R.push(`thin trade at Rs ${s.turn.toFixed(1)} Cr/day`);
+  if(s.pivAge!=null && s.pivAge>=20) R.push(`breakout is ${Math.round(s.pivAge)} sessions old, near the 25-session cutoff`);
+  if(s.fromPivot!=null && s.fromPivot>4) R.push(`${s.fromPivot.toFixed(1)}% above the buy point`);
+  if(!R.length) return '';
+  return ` <span title="Caution: ${R.join('; ')}." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span>`;
 }
 
 // Distance to the buy point. One scale across every tab:
@@ -255,7 +262,7 @@ function buildTable(){
       <td style="color:var(--dim2);font-size:11px">${i+1}
         <div class="bar-wrap" style="margin-left:4px"><div class="bar-fill" style="width:${barW}%;background:${sc}"></div></div>
       </td>
-      <td><a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-family:monospace;font-weight:700;font-size:13px;color:var(--blue);text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>${cautionFlag(s.rsDelta)}
+      <td><a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-family:monospace;font-weight:700;font-size:13px;color:var(--blue);text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>${cautionFlag(s)}
           ${s.inGsi?'<span style="font-size:10px;color:#F78166;font-weight:700;margin-left:4px">GSI</span>':''}
       </td>
       <td style="color:var(--dim);font-size:11px">${s.name.slice(0,22)}</td>
@@ -290,7 +297,7 @@ function renderDetail(sym){
                     display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:${sc}">${s.score}</div>
         <div>
           <div style="display:flex;align-items:center;gap:8px">
-            <a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-size:20px;font-weight:800;color:var(--blue);font-family:monospace;text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>${cautionFlag(s.rsDelta)}
+            <a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-size:20px;font-weight:800;color:var(--blue);font-family:monospace;text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>${cautionFlag(s)}
             ${gsi}
           </div>
           <div style="font-size:12px;color:var(--dim);margin-top:1px">${s.name}</div>

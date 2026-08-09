@@ -94,9 +94,16 @@ const DATA = [{"sym": "DALMIASUG", "name": "Dalmia Bht.Sug.& Inds.", "rs": 79, "
 
 // Caution flag. Identical meaning on every tab: RS is falling. Kept in sync
 // with screen_common.caution_flag() -- if one changes, change both.
-function cautionFlag(d){
-  if(d==null || d>=0) return '';
-  return ` <span title="Caution: RS has fallen ${Math.abs(Math.round(d))} points over the last 10 sessions." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span>`;
+function cautionFlag(s){
+  const R=[];
+  if(s.rsDelta!=null && s.rsDelta<0) R.push(`RS has fallen ${Math.abs(Math.round(s.rsDelta))} points over the last 10 sessions`);
+  if(s.grp!=null && s.grp>40)        R.push(`industry group ranks ${Math.round(s.grp)}, outside the top 40`);
+  if(s.earnDays!=null && s.earnDays>=0 && s.earnDays<=7) R.push(`earnings in ${Math.round(s.earnDays)} days`);
+  if(s.turn!=null && s.turn<5)       R.push(`thin trade at Rs ${s.turn.toFixed(1)} Cr/day`);
+  if(s.pivAge!=null && s.pivAge>=20) R.push(`breakout is ${Math.round(s.pivAge)} sessions old, near the 25-session cutoff`);
+  if(s.fromPivot!=null && s.fromPivot>4) R.push(`${s.fromPivot.toFixed(1)}% above the buy point`);
+  if(!R.length) return '';
+  return ` <span title="Caution: ${R.join('; ')}." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span>`;
 }
 
 // Distance to the buy point. One scale across every tab:
@@ -226,7 +233,7 @@ function buildTable(){
     tbody.innerHTML+=`
     <tr class="clickable" onclick="switchToDetail('${s.sym}')">
       <td style="color:var(--dim2);font-size:11px">${i+1}</td>
-      <td><a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-family:monospace;font-weight:700;font-size:13px;color:var(--blue);text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>${cautionFlag(s.rsDelta)}</td>
+      <td><a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-family:monospace;font-weight:700;font-size:13px;color:var(--blue);text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>${cautionFlag(s)}</td>
       <td style="color:var(--dim);font-size:11px">${s.name.slice(0,20)}</td>
       <td style="font-weight:700;color:#3FB950">${s.rs!=null?s.rs:'—'}</td>
       <td style="font-weight:700;color:${d1c}">${s.d1w>=0?'+':''}${s.d1w}</td>
