@@ -143,15 +143,12 @@ const DATA = [{"sym": "APARINDS", "name": "Apar Industries (Nse)", "price": 1663
 // Caution flag. Identical meaning on every tab: RS is falling. Kept in sync
 // with screen_common.caution_flag() -- if one changes, change both.
 function cautionFlag(s){
-  const R=[];
-  if(s.rsDelta!=null && s.rsDelta<0) R.push(`RS has fallen ${Math.abs(Math.round(s.rsDelta))} points over the last 10 sessions`);
-  if(s.grp!=null && s.grp>40)        R.push(`industry group ranks ${Math.round(s.grp)}, outside the top 40`);
-  if(s.earnDays!=null && s.earnDays>=0 && s.earnDays<=7) R.push(`earnings in ${Math.round(s.earnDays)} days`);
-  if(s.turn!=null && s.turn<5)       R.push(`thin trade at Rs ${s.turn.toFixed(1)} Cr/day`);
-  if(s.pivAge!=null && s.pivAge>=20) R.push(`breakout is ${Math.round(s.pivAge)} sessions old, near the 25-session cutoff`);
-  if(s.fromPivot!=null && s.fromPivot>4) R.push(`${s.fromPivot.toFixed(1)}% above the buy point`);
-  if(!R.length) return '';
-  return ` <span title="Caution: ${R.join('; ')}." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span>`;
+  // Crossed above the buy point, then fell back below it, base <= 25 sessions.
+  // Same single condition as screen_common.caution_reasons().
+  if(s.fromPivot==null || s.fromPivot>=0) return '';
+  if(s.pivAge==null || s.pivAge>25) return '';
+  const tip=`Caution: crossed the buy point ${Math.round(s.pivAge)} sessions ago and has since fallen ${Math.abs(s.fromPivot).toFixed(1)}% back below it.`;
+  return ` <span title="${tip}" style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span>`;
 }
 
 // Distance to the buy point. One scale across every tab:
