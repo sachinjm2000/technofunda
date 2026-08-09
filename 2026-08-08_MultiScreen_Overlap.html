@@ -152,6 +152,17 @@ function switchToDetail(sym){
   document.querySelectorAll('.tab-btn')[1].classList.add('active');
   renderDetail(sym);
 }
+function stageCell(ty,st){
+  const A={"Cup With Handle":"CwH","Cup Without Handle":"Cup","Double Bottom":"DB",
+           "Flat Base":"Flat","Consolidation":"Consol","Ascending Base":"Asc",
+           "IPO Base":"IPO","Saucer With Handle":"SauH","Saucer Without Handle":"Sau"};
+  const a=A[String(ty||'').trim()]||String(ty||'').trim().slice(0,6);
+  const s=String(st||'').trim();
+  if(!a&&!s) return '<span style="color:#6e7781">&mdash;</span>';
+  const n=parseInt(s,10)||0;
+  const c=(n&&n<=2)?'#1a7f37':(n===3?'#9a6700':(n>=4?'#cf222e':'#6e7781'));
+  return '<span title="Base '+ty+', stage '+s+'" style="color:'+c+';font-weight:700;white-space:nowrap;font-size:11px">'+(a+' '+s).trim()+'</span>';
+}
 function grpColor(g){
   if(!g) return '#484F58';
   if(g<=20) return '#3FB950'; if(g<=40) return '#58A6FF';
@@ -173,7 +184,9 @@ function buildTable(){
       <td style="font-weight:700;color:#D29922">${s.eps!=null?s.eps:'—'}</td>
       <td style="color:var(--dim)">${s.ad}</td>
       <td style="color:${grpColor(s.grp)}">${s.grp!=null?s.grp:'—'}</td>
+      <td>${stageCell(s.btype,s.bstage)}</td>
       <td>${pivotCell(s.ptp,s.abovePivot,s.fromPivot)}</td>
+      <td style="font-weight:700;color:${s.turn==null?'#6e7781':(s.turn>=5?'#1a7f37':'#9a6700')}">${s.turn!=null?s.turn.toFixed(1):'—'}</td>
       <td>${earnHtml(s.earnDate,s.earnDays)}</td>
       <td style="color:var(--dim)">${s.price!=null?'₹'+s.price.toFixed(1):'—'}</td>
     </tr>`;
