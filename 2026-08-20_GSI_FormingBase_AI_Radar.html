@@ -1,0 +1,499 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-08-20 GSI · Forming Base · AI Conviction Radar</title>
+<style>
+:root {
+  --bg:#0D1117; --surf:#161B22; --surf2:#21262D; --border:#30363D;
+  --text:#E6EDF3; --muted:#8B949E; --dim:#484F58;
+  --green:#00E676; --amber:#FFD600; --red:#FF4444; --blue:#58A6FF; --teal:#39D0D8;
+  /* deep-research compat */
+  --surface:#161B22; --border2:#30363D; --fg:#E6EDF3; --dim2:#484F58;
+  --yellow:#D29922; --purple:#A371F7; --red2:#F85149;
+}
+.tabs{display:flex;gap:4px;margin-bottom:16px}
+.tab-btn{padding:5px 16px;border-radius:20px;border:1px solid var(--border);cursor:pointer;
+         font-size:11px;color:var(--muted);background:transparent;transition:all .15s}
+.tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+table{width:100%;border-collapse:collapse}
+th{padding:5px 8px 8px;font-size:10px;color:#FFFFFF;text-transform:uppercase;background:#161B22;
+   border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--surf2);vertical-align:middle}
+tr.clickable{cursor:pointer}tr.clickable:hover td{background:rgba(255,255,255,.025)}
+.bar-wrap{width:80px;height:5px;background:var(--border);border-radius:3px;display:inline-block;vertical-align:middle}
+.bar-fill{height:5px;border-radius:3px;display:block}
+.dr-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;margin-right:3px}
+.dr-card{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px}
+.dr-metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;background:#0D1117;border-radius:6px;padding:10px;margin-bottom:10px}
+.dr-metric-box{text-align:center}
+.dr-metric-box .mlabel{font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:2px}
+.dr-metric-box .mval{font-size:16px;font-weight:800}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;line-height:1.5;padding:20px;max-width:1040px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:22px}
+.header-title{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.header-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.badge{background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:11px;color:var(--muted);text-align:right}
+.badge strong{color:var(--amber);display:block;font-size:13px}
+.stat-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px}
+.stat-card{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);margin-bottom:5px}
+.stat-val{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat-note{font-size:11px;color:var(--muted);margin-top:2px}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.section-badge{background:var(--surf2);border-radius:10px;padding:2px 10px;font-size:11px;color:var(--dim)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;margin-bottom:28px}
+.card{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start}
+.card-left{display:flex;gap:10px;align-items:center}
+.card-right{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.sym{font-size:16px;font-weight:800;color:var(--blue);font-family:monospace}
+.coname{font-size:11px;color:var(--muted)}
+.card-ig{font-size:11px;color:var(--dim)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.metric{background:var(--surf2);border-radius:6px;padding:7px 8px}
+.mlabel{font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:var(--dim);margin-bottom:2px}
+.mval{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.card-bottom{display:flex;gap:10px;align-items:flex-start}
+.sparkwrap{flex-shrink:0}
+.trigger-box{flex:1;background:var(--surf2);border-radius:6px;padding:7px 9px}
+.trigger-text{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4}
+.gsi-info{flex-shrink:0;text-align:right}
+.gsi-date{font-size:12px;font-weight:600;color:var(--amber)}
+.score-ring{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;border:2px solid;flex-shrink:0}
+.score-elite{border-color:var(--green);color:var(--green)}
+.score-high{border-color:var(--amber);color:var(--amber)}
+.score-mid{border-color:var(--dim);color:var(--muted)}
+.pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+.pill-high{background:#052A10;color:var(--green);border:1px solid #1a5c2a}
+.pill-med{background:#1A1500;color:var(--amber);border:1px solid #4a3c00}
+.pill-low{background:#1A0A00;color:#FF9800;border:1px solid #4a2800}
+.pill-prob{background:var(--surf2);color:var(--muted);border:1px solid var(--border)}
+.pill-forming{background:#0D1B35;color:var(--blue);border:1px solid #1e3a6e}
+.pill-buy{background:#0D2020;color:var(--teal);border:1px solid #1a4040}
+.green{color:var(--green)} .amber{color:var(--amber)} .red{color:var(--red)} .muted{color:var(--muted)}
+.azad-box{background:var(--surf);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:22px;font-size:12px}
+.azad-box strong{color:var(--text)} .azad-box p{color:var(--muted);margin-top:3px;line-height:1.5}
+.empty{color:var(--dim);font-size:12px;padding:20px;text-align:center;background:var(--surf);border:1px solid var(--border);border-radius:8px}
+.footer{text-align:center;color:var(--dim);font-size:11px;padding-top:14px;border-top:1px solid var(--border);margin-top:8px}
+.backtested-section{margin-top:36px;border-top:1px solid var(--border);padding-top:22px}
+.backtested-header{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.backtested-sub{font-size:11px;color:var(--dim);margin-bottom:16px}
+.bt-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:18px}
+.bt-card{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative}
+.bt-card.winner{border-color:#1a5c2a}
+.bt-badge{position:absolute;top:12px;right:12px;background:#052A10;color:var(--green);border:1px solid #1a5c2a;border-radius:10px;padding:2px 10px;font-size:11px;font-weight:700}
+.bt-symbol{font-size:18px;font-weight:800;color:var(--text);letter-spacing:.5px;margin-bottom:2px}
+.bt-date{font-size:11px;color:var(--dim);margin-bottom:10px}
+.bt-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--border2)}
+.bt-label{font-size:11px;color:var(--muted)} .bt-val{font-size:11px;font-weight:600;color:var(--text)}
+.bt-val.forming{color:var(--blue)} .bt-val.buyz{color:var(--teal)}
+.bt-timeline{margin:10px 0 8px;display:flex;flex-direction:column;gap:4px}
+.bt-tl-item{display:flex;align-items:center;gap:8px;font-size:11px}
+.bt-tl-day{width:36px;color:var(--dim);flex-shrink:0} .bt-tl-ret{width:52px;font-weight:700;flex-shrink:0}
+.bt-tl-ret.win{color:var(--green)} .bt-tl-ret.win.big{color:#00ff88} .bt-tl-ret.loss{color:var(--red)}
+.bt-tl-note{color:var(--muted);font-size:10px}
+.bt-lesson{margin-top:10px;font-size:11px;color:var(--muted);background:var(--surf2);border-radius:6px;padding:8px 10px;line-height:1.5}
+.legend-section{margin-top:36px;border-top:1px solid var(--border);padding-top:22px}
+.legend-header{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.legend-sub{font-size:11px;color:var(--dim);margin-bottom:16px}
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.legend-item{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:11px 14px;display:flex;flex-direction:column;gap:4px}
+.legend-name{font-size:12px;font-weight:700;color:var(--blue)}
+.legend-gate{font-size:10px;color:var(--amber);font-weight:600;margin-bottom:1px}
+.legend-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.legend-tip{font-size:10px;color:var(--dim);margin-top:3px;font-style:italic}
+/* Light theme pinned on: this was @media(prefers-color-scheme:light), which
+   made pages follow the OS and flip dark at night. `@media all` always
+   matches, so these overrides win in both OS modes. */
+@media all{
+  /* mirrors the override in ms_screens_watchlist.py — structural colours only,
+     so accent colours stay identical to the other pages. --amber is the one
+     exception: #FFD600 is unreadable on white. */
+  :root{color-scheme:light;--bg:#f6f8fa;--surf:#fff;--surf2:#eaeef2;--border:#d0d7de;
+        --text:#24292f;--muted:#57606a;--dim:#6e7781;
+        --surface:#fff;--border2:#d0d7de;--fg:#24292f;--dim2:#6e7781;
+        --amber:#9a6700;--green:#1a7f37;--red:#cf222e;--blue:#0969da;--teal:#137775}
+  tr.clickable:hover td{background:rgba(0,0,0,.03)}
+  .dr-metric-grid{background:#f6f8fa}
+  .dr-metric-box .mlabel{color:#57606a}
+  /* pills were built for the dark canvas — retint to translucent on white */
+  .pill-high{background:rgba(26,127,55,.12);border-color:rgba(26,127,55,.4)}
+  .pill-med{background:rgba(154,103,0,.12);border-color:rgba(154,103,0,.4)}
+  .pill-low{background:rgba(191,90,0,.12);color:#bc4c00;border-color:rgba(191,90,0,.4)}
+  .pill-forming{background:rgba(9,105,218,.12);border-color:rgba(9,105,218,.4)}
+  .pill-buy{background:rgba(19,119,117,.12);border-color:rgba(19,119,117,.4)}
+  .bt-badge{background:rgba(26,127,55,.12);border-color:rgba(26,127,55,.4)}
+}
+</style>
+</head>
+<body>
+
+<div style="padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:20px">
+  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">MarketSmith GSI · 2026-08-20</div>
+  <div style="font-size:24px;font-weight:800">📡 GSI Forming Base Radar</div>
+  <div style="font-size:12px;color:var(--muted);margin-top:4px">
+    24 stocks · AZAD-style pre-breakout scan · Forming Base + Buy Zone · RS rising · shallow base
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('tab-table',this)">📋 Table</button>
+  <button class="tab-btn" onclick="switchTab('tab-detail',this)">🔍 Detail</button>
+  <button class="tab-btn" onclick="switchTab('tab-method',this)">📖 Method</button>
+</div>
+
+<div id="tab-table" class="tab-pane active">
+
+
+<table>
+  <thead><tr><th>#</th><th>Symbol</th><th>Name</th><th>Score</th><th>Status</th><th>Base / Stage</th><th>AI / Prob</th><th>RS</th><th>RS 2W</th><th>vs 52H</th><th>vs Pivot</th><th>₹Cr/day</th><th>A/D</th><th>Days</th><th>MSI Lists</th><th>Earnings</th></tr></thead>
+  <tbody><tr class="clickable" onclick="switchToDetail('PRECWIRE')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">1  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:100%;background:var(--green)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/precwire/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">PRECWIRE ↗</a> <span title="Caution: crossed the buy point 4 sessions ago and has since fallen 2.0% back below it." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Precision Wires India</td><td style="font-size:15px;font-weight:800;color:var(--green)">97</td><td><span class="pill pill-forming">Forming Base</span></td><td><span title="Base type Cup Without Handle, stage 3" style="color:#9a6700;font-weight:700;white-space:nowrap;font-size:11px">Cup 3</span></td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:var(--green);font-weight:600">94</td><td style="font-weight:600"><span style="color:var(--green)">+4</span></td><td style="font-weight:600"><span style="color:var(--green)">-3.5%</span></td><td style="font-weight:600"><span title="Crossed the buy point 4 trading days ago and has pulled back 2.0% below it." style="color:#9a6700;font-weight:600;white-space:nowrap">&#94;-2.0% &middot; 4d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">22.8</span></td><td><span style="color:#3FB950;font-weight:700">B+</span></td><td style="font-weight:600"><span style="color:var(--amber)">6d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('POWERINDIA')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">2  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:99%;background:var(--green)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/powerindia/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">POWERINDIA ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Hitachi Energy India</td><td style="font-size:15px;font-weight:800;color:var(--green)">96</td><td><span class="pill pill-forming">Forming Base</span></td><td><span title="Base type Consolidation, stage 2" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Consol 2</span></td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">88%</span></td><td style="color:var(--green);font-weight:600">89</td><td style="font-weight:600"><span style="color:var(--green)">+3</span></td><td style="font-weight:600"><span style="color:var(--green)">-9.1%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 9.0% below the buy point." style="color:#6e7781;font-weight:600">-9.0%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">540.9</span></td><td><span style="color:#3FB950;font-weight:700">B</span></td><td style="font-weight:600"><span style="color:var(--amber)">7d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('QPOWER')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">3  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:91%;background:var(--green)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/qpower/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">QPOWER ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Quality Power Electric</td><td style="font-size:15px;font-weight:800;color:var(--green)">89</td><td><span class="pill pill-forming">Forming Base</span></td><td><span title="Base type Consolidation, stage 2" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Consol 2</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:var(--green);font-weight:600">91</td><td style="font-weight:600"><span style="color:var(--green)">+10</span></td><td style="font-weight:600"><span style="color:var(--green)">-8.0%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 8.0% below the buy point." style="color:#6e7781;font-weight:600">-8.0%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">22.2</span></td><td><span style="color:#00E676;font-weight:700">A</span></td><td style="font-weight:600"><span style="color:var(--muted)">51d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('RAMRAT')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">4  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:85%;background:var(--green)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/ramrat/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">RAMRAT ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Ram Ratna Wires</td><td style="font-size:15px;font-weight:800;color:var(--green)">83</td><td><span class="pill pill-forming">Forming Base</span></td><td><span title="Base type Cup Without Handle, stage 4" style="color:#cf222e;font-weight:700;white-space:nowrap;font-size:11px">Cup 4</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:var(--green);font-weight:600">86</td><td style="font-weight:600"><span style="color:var(--green)">+5</span></td><td style="font-weight:600"><span style="color:var(--green)">-9.1%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 9.1% below the buy point." style="color:#6e7781;font-weight:600">-9.1%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">10.5</span></td><td><span style="color:#00E676;font-weight:700">A-</span></td><td style="font-weight:600"><span style="color:var(--muted)">42d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('NATIONALUM')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">5  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:80%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/nationalum/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">NATIONALUM ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">National Aluminium (Ns</td><td style="font-size:15px;font-weight:800;color:var(--amber)">77</td><td><span class="pill pill-forming">Forming Base</span></td><td><span title="Base type Consolidation, stage 1" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Consol 1</span></td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:var(--green);font-weight:600">86</td><td style="font-weight:600"><span style="color:var(--muted)">0</span></td><td style="font-weight:600"><span style="color:var(--muted)">-12.8%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 12.8% below the buy point." style="color:#6e7781;font-weight:600">-12.8%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">392.3</span></td><td><span style="color:#3FB950;font-weight:700">B</span></td><td style="font-weight:600"><span style="color:var(--amber)">15d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('MCX')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">6  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:73%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/mcx/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">MCX ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Multi Cmod.Ex.Of India</td><td style="font-size:15px;font-weight:800;color:var(--amber)">71</td><td><span class="pill pill-forming">Forming Base</span></td><td><span title="Base type Consolidation, stage 5" style="color:#cf222e;font-weight:700;white-space:nowrap;font-size:11px">Consol 5</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:var(--green);font-weight:600">85</td><td style="font-weight:600"><span style="color:var(--green)">+3</span></td><td style="font-weight:600"><span style="color:var(--muted)">-12.6%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 12.6% below the buy point." style="color:#6e7781;font-weight:600">-12.6%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">829.0</span></td><td><span style="color:#3FB950;font-weight:700">B</span></td><td style="font-weight:600"><span style="color:var(--muted)">48d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('ETERNAL')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">7  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:70%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/eternal/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">ETERNAL ↗</a> <span title="Caution: crossed the buy point 9 sessions ago and has since fallen 0.1% back below it." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Eternal Limited</td><td style="font-size:15px;font-weight:800;color:var(--amber)">67</td><td><span class="pill pill-forming">Forming Base</span></td><td><span title="Base type Cup With Handle, stage 2" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">CwH 2</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">65%</span></td><td style="color:var(--green);font-weight:600">75</td><td style="font-weight:600"><span style="color:var(--red)">-1 ⚠</span></td><td style="font-weight:600"><span style="color:var(--muted)">-14.3%</span></td><td style="font-weight:600"><span title="Crossed the buy point 9 trading days ago and has pulled back 0.1% below it." style="color:#9a6700;font-weight:600;white-space:nowrap">&#94;-0.1% &middot; 9d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">1,007.6</span></td><td><span style="color:#00E676;font-weight:700">A+</span></td><td style="font-weight:600"><span style="color:var(--muted)">21d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('TIIL')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">8  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:90%;background:var(--green)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/tiil/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">TIIL ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Technocraft Industries</td><td style="font-size:15px;font-weight:800;color:var(--green)">87</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Cup Without Handle, stage 1" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Cup 1</span></td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:var(--green);font-weight:600">84</td><td style="font-weight:600"><span style="color:var(--green)">+20</span></td><td style="font-weight:600"><span style="color:var(--green)">-2.4%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 3.0% below the buy point." style="color:#9a6700;font-weight:600">-3.0%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">11.4</span></td><td><span style="color:#00E676;font-weight:700">A</span></td><td style="font-weight:600"><span style="color:var(--green)">1d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('APARINDS')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">9  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:88%;background:var(--green)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/aparinds/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">APARINDS ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Apar Industries (Nse)</td><td style="font-size:15px;font-weight:800;color:var(--green)">86</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Cup Without Handle, stage 2" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Cup 2</span></td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:var(--green);font-weight:600">94</td><td style="font-weight:600"><span style="color:var(--green)">+2</span></td><td style="font-weight:600"><span style="color:var(--green)">-6.8%</span></td><td style="font-weight:600"><span title="Crossed the buy point 5 trading days ago and is 0.3% above it." style="color:#6e7781;font-weight:600;white-space:nowrap">&#94;+0.3% &middot; 5d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">310.0</span></td><td><span style="color:#00E676;font-weight:700">A+</span></td><td style="font-weight:600"><span style="color:var(--amber)">9d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('FCL')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">10  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:86%;background:var(--green)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/fcl/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">FCL ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Fineotex Chemical</td><td style="font-size:15px;font-weight:800;color:var(--green)">83</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Cup With Handle, stage 2" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">CwH 2</span></td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:var(--green);font-weight:600">93</td><td style="font-weight:600"><span style="color:var(--muted)">0</span></td><td style="font-weight:600"><span style="color:var(--green)">-7.1%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 2.5% below the buy point." style="color:#9a6700;font-weight:600">-2.5%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">55.3</span></td><td><span style="color:#00E676;font-weight:700">A-</span></td><td style="font-weight:600"><span style="color:var(--green)">0d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('ELGIEQUIP')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">11  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:82%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/elgiequip/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">ELGIEQUIP ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Elgi Equipments (Nse)</td><td style="font-size:15px;font-weight:800;color:var(--amber)">80</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Flat Base, stage 1b" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Flat 1b</span></td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:var(--green);font-weight:600">78</td><td style="font-weight:600"><span style="color:var(--green)">+2</span></td><td style="font-weight:600"><span style="color:var(--green)">-3.1%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 3.1% below the buy point." style="color:#9a6700;font-weight:600">-3.1%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">28.4</span></td><td><span style="color:#00E676;font-weight:700">A-</span></td><td style="font-weight:600"><span style="color:var(--green)">2d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('ARVSMART')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">12  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:81%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/arvsmart/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">ARVSMART ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Arvind Smartspaces</td><td style="font-size:15px;font-weight:800;color:var(--amber)">79</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Consolidation, stage 1" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Consol 1</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:var(--green);font-weight:600">75</td><td style="font-weight:600"><span style="color:var(--green)">+20</span></td><td style="font-weight:600"><span style="color:var(--green)">-4.1%</span></td><td style="font-weight:600"><span title="Crossed the buy point 8 trading days ago and is 1.0% above it." style="color:#6e7781;font-weight:600;white-space:nowrap">&#94;+1.0% &middot; 8d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">18.8</span></td><td><span style="color:#3FB950;font-weight:700">B+</span></td><td style="font-weight:600"><span style="color:var(--amber)">6d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('SYRMA')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">13  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:80%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/syrma/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">SYRMA ↗</a> <span title="Caution: crossed the buy point 7 sessions ago and has since fallen 1.2% back below it." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Syrma Sgs Technology</td><td style="font-size:15px;font-weight:800;color:var(--amber)">77</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Consolidation, stage 2" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Consol 2</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">65%</span></td><td style="color:var(--green);font-weight:600">94</td><td style="font-weight:600"><span style="color:var(--muted)">0</span></td><td style="font-weight:600"><span style="color:var(--green)">-2.8%</span></td><td style="font-weight:600"><span title="Crossed the buy point 7 trading days ago and has pulled back 1.2% below it." style="color:#9a6700;font-weight:600;white-space:nowrap">&#94;-1.2% &middot; 7d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">216.1</span></td><td><span style="color:#00E676;font-weight:700">A+</span></td><td style="font-weight:600"><span style="color:var(--amber)">9d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('SHRIRAMFIN')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">14  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:79%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/shriramfin/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">SHRIRAMFIN ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Shriram Finance</td><td style="font-size:15px;font-weight:800;color:var(--amber)">77</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Consolidation, stage 2" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Consol 2</span></td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:var(--green);font-weight:600">85</td><td style="font-weight:600"><span style="color:var(--red)">-1 ⚠</span></td><td style="font-weight:600"><span style="color:var(--green)">-3.9%</span></td><td style="font-weight:600"><span title="Crossed the buy point 10 trading days ago and is 0.0% above it." style="color:#6e7781;font-weight:600;white-space:nowrap">&#94;+0.0% &middot; 10d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">608.7</span></td><td><span style="color:#00E676;font-weight:700">A-</span></td><td style="font-weight:600"><span style="color:var(--muted)">51d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('LTF')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">15  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:72%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/ltf/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">LTF ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">L&T Finance Ltd</td><td style="font-size:15px;font-weight:800;color:var(--amber)">70</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Flat Base, stage 2b" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Flat 2b</span></td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">80%</span></td><td style="color:var(--green);font-weight:600">80</td><td style="font-weight:600"><span style="color:var(--red)">-1 ⚠</span></td><td style="font-weight:600"><span style="color:var(--green)">-4.0%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 4.0% below the buy point." style="color:#9a6700;font-weight:600">-4.0%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">202.3</span></td><td><span style="color:#00E676;font-weight:700">A-</span></td><td style="font-weight:600"><span style="color:var(--green)">1d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('GOLDIAM')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">16  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:71%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/goldiam/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">GOLDIAM ↗</a> <span title="Caution: crossed the buy point 8 sessions ago and has since fallen 8.1% back below it." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Goldiam International</td><td style="font-size:15px;font-weight:800;color:var(--amber)">69</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Ascending Base, stage 1b" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Asc 1b</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:var(--green);font-weight:600">84</td><td style="font-weight:600"><span style="color:var(--red)">-1 ⚠</span></td><td style="font-weight:600"><span style="color:var(--green)">-9.2%</span></td><td style="font-weight:600"><span title="Crossed the buy point 8 trading days ago and has pulled back 8.1% below it." style="color:#9a6700;font-weight:600;white-space:nowrap">&#94;-8.1% &middot; 8d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">61.5</span></td><td><span style="color:#00E676;font-weight:700">A</span></td><td style="font-weight:600"><span style="color:var(--muted)">49d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('SHAILY')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">17  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:71%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/shaily/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">SHAILY ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Shaily Engineering Pla</td><td style="font-size:15px;font-weight:800;color:var(--amber)">69</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Cup Without Handle, stage 1b" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Cup 1b</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">65%</span></td><td style="color:var(--green);font-weight:600">90</td><td style="font-weight:600"><span style="color:var(--muted)">0</span></td><td style="font-weight:600"><span style="color:var(--green)">-6.7%</span></td><td style="font-weight:600"><span title="Crossed the buy point 9 trading days ago and is 4.3% above it." style="color:#6e7781;font-weight:600;white-space:nowrap">&#94;+4.3% &middot; 9d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">96.6</span></td><td><span style="color:#00E676;font-weight:700">A-</span></td><td style="font-weight:600"><span style="color:var(--muted)">42d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('PTCIL')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">18  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:71%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/ptcil/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">PTCIL ↗</a> <span title="Caution: crossed the buy point 2 sessions ago and has since fallen 0.3% back below it." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Ptc Industries</td><td style="font-size:15px;font-weight:800;color:var(--amber)">68</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Cup Without Handle, stage 1c" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Cup 1c</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">65%</span></td><td style="color:var(--green);font-weight:600">81</td><td style="font-weight:600"><span style="color:var(--green)">+8</span></td><td style="font-weight:600"><span style="color:var(--green)">-4.6%</span></td><td style="font-weight:600"><span title="Crossed the buy point 2 trading days ago and has pulled back 0.3% below it." style="color:#9a6700;font-weight:600;white-space:nowrap">&#94;-0.3% &middot; 2d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">45.3</span></td><td><span style="color:#3FB950;font-weight:700">B</span></td><td style="font-weight:600"><span style="color:var(--amber)">9d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('GUFICBIO')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">19  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:70%;background:var(--amber)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/guficbio/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">GUFICBIO ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Gufic Biosciences</td><td style="font-size:15px;font-weight:800;color:var(--amber)">68</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Cup With Handle, stage 1b" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">CwH 1b</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:var(--green);font-weight:600">87</td><td style="font-weight:600"><span style="color:var(--green)">+3</span></td><td style="font-weight:600"><span style="color:var(--green)">-5.9%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 4.7% below the buy point." style="color:#9a6700;font-weight:600">-4.7%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">12.0</span></td><td><span style="color:#3FB950;font-weight:700">B</span></td><td style="font-weight:600"><span style="color:var(--muted)">47d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('OBEROIRLTY')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">20  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:64%;background:var(--dim)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/oberoirlty/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">OBEROIRLTY ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Oberoi Realty</td><td style="font-size:15px;font-weight:800;color:var(--dim)">62</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Consolidation, stage 1" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Consol 1</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:var(--green);font-weight:600">75</td><td style="font-weight:600"><span style="color:var(--green)">+5</span></td><td style="font-weight:600"><span style="color:var(--green)">-6.5%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 7.3% below the buy point." style="color:#9a6700;font-weight:600">-7.3%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">107.1</span></td><td><span style="color:#00E676;font-weight:700">A-</span></td><td style="font-weight:600"><span style="color:var(--green)">2d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('IIFL')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">21  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:62%;background:var(--dim)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/iifl/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">IIFL ↗</a> <span title="Caution: crossed the buy point 7 sessions ago and has since fallen 0.1% back below it." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Iifl Finance</td><td style="font-size:15px;font-weight:800;color:var(--dim)">60</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Cup With Handle, stage 1" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">CwH 1</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:var(--green);font-weight:600">83</td><td style="font-weight:600"><span style="color:var(--red)">-3 ⚠</span></td><td style="font-weight:600"><span style="color:var(--green)">-7.8%</span></td><td style="font-weight:600"><span title="Crossed the buy point 7 trading days ago and has pulled back 0.1% below it." style="color:#9a6700;font-weight:600;white-space:nowrap">&#94;-0.1% &middot; 7d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">126.9</span></td><td><span style="color:#00E676;font-weight:700">A-</span></td><td style="font-weight:600"><span style="color:var(--green)">1d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('ANANTRAJ')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">22  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:61%;background:var(--dim)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/anantraj/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">ANANTRAJ ↗</a> <span title="Caution: crossed the buy point 13 sessions ago and has since fallen 0.1% back below it." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Anant Raj</td><td style="font-size:15px;font-weight:800;color:var(--dim)">60</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Cup With Handle, stage 1" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">CwH 1</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">65%</span></td><td style="color:var(--green);font-weight:600">78</td><td style="font-weight:600"><span style="color:var(--green)">+2</span></td><td style="font-weight:600"><span style="color:var(--muted)">-15.7%</span></td><td style="font-weight:600"><span title="Crossed the buy point 13 trading days ago and has pulled back 0.1% below it." style="color:#9a6700;font-weight:600;white-space:nowrap">&#94;-0.1% &middot; 13d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">148.5</span></td><td><span style="color:#00E676;font-weight:700">A+</span></td><td style="font-weight:600"><span style="color:var(--muted)">23d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('TRAVELFOOD')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">23  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:60%;background:var(--dim)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/travelfood/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">TRAVELFOOD ↗</a> <span title="Caution: crossed the buy point 8 sessions ago and has since fallen 6.8% back below it." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Travel Food Services L</td><td style="font-size:15px;font-weight:800;color:var(--dim)">58</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Consolidation, stage 1" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Consol 1</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:var(--green);font-weight:600">78</td><td style="font-weight:600"><span style="color:var(--green)">+2</span></td><td style="font-weight:600"><span style="color:var(--green)">-8.5%</span></td><td style="font-weight:600"><span title="Crossed the buy point 8 trading days ago and has pulled back 6.8% below it." style="color:#9a6700;font-weight:600;white-space:nowrap">&#94;-6.8% &middot; 8d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">10.2</span></td><td><span style="color:#D29922;font-weight:700">C+</span></td><td style="font-weight:600"><span style="color:var(--green)">5d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr><tr class="clickable" onclick="switchToDetail('USHAMART')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">24  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:57%;background:var(--dim)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/ushamart/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">USHAMART ↗</a></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Usha Martin (Nse)</td><td style="font-size:15px;font-weight:800;color:var(--dim)">56</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Flat Base, stage 2b" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Flat 2b</span></td><td><span class="pill pill-med">MED</span><span class="pill pill-prob">60%</span></td><td style="color:var(--green);font-weight:600">76</td><td style="font-weight:600"><span style="color:var(--red)">-3 ⚠</span></td><td style="font-weight:600"><span style="color:var(--green)">-5.4%</span></td><td style="font-weight:600"><span title="Has not broken out yet — still 5.4% below the buy point." style="color:#9a6700;font-weight:600">-5.4%</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">26.0</span></td><td><span style="color:#3FB950;font-weight:700">B+</span></td><td style="font-weight:600"><span style="color:var(--muted)">51d</span></td><td style="max-width:120px"></td><td style="white-space:nowrap"></td></tr></tbody>
+</table>
+
+</div><!-- end tab-table -->
+
+<div id="tab-detail" class="tab-pane">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <span style="color:var(--muted);font-size:11px">Select stock:</span>
+    <select id="stockSel" onchange="renderDetail(this.value)" style="background:var(--surf);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;font-size:12px"></select>
+  </div>
+  <div id="detailContent"></div>
+</div>
+
+<div id="tab-method" class="tab-pane">
+
+<!-- MSI Badge Legend -->
+<div style="margin:28px 0;background:#161B22;border:1px solid #30363D;border-radius:8px;padding:16px">
+  <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#484F58;margin-bottom:12px">MSI List Badge Reference</div>
+  <table style="width:100%;border-collapse:collapse;font-size:12px">
+    <thead>
+      <tr style="border-bottom:1px solid #30363D">
+        <th style="text-align:left;padding:4px 10px 8px;color:#484F58;font-size:10px;font-weight:600;text-transform:uppercase">Badge</th>
+        <th style="text-align:left;padding:4px 10px 8px;color:#484F58;font-size:10px;font-weight:600;text-transform:uppercase">MSI List</th>
+        <th style="text-align:left;padding:4px 10px 8px;color:#484F58;font-size:10px;font-weight:600;text-transform:uppercase">What it means</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">● Blue Dot</span></td><td style="padding:5px 10px;color:#8B949E">Blue Dot List</td><td style="padding:5px 10px;color:#E6EDF3">Institutional accumulation detected — smart money buying</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Near Pivot</span></td><td style="padding:5px 10px;color:#8B949E">Near Pivot Stocks</td><td style="padding:5px 10px;color:#E6EDF3">Within striking distance of a potential breakout pivot</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #F78166;color:#F78166;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Breaking Out!</span></td><td style="padding:5px 10px;color:#8B949E">Breaking Out Today-Weekly Bases</td><td style="padding:5px 10px;color:#E6EDF3">Breaking out from a weekly base <strong style="color:#F78166">today</strong> — highest urgency</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #E3B341;color:#E3B341;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Minervini 5M</span></td><td style="padding:5px 10px;color:#8B949E">Minervini TT 5 Months</td><td style="padding:5px 10px;color:#E6EDF3">On Minervini Trend Template for 5 months — sustained strength</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #FFA198;color:#FFA198;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Minervini 1M</span></td><td style="padding:5px 10px;color:#8B949E">Minervini TT 1 Month</td><td style="padding:5px 10px;color:#E6EDF3">On Minervini Trend Template for 1 month — recently entering stage 2</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #00E676;color:#00E676;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Growth 50</span></td><td style="padding:5px 10px;color:#8B949E">Growth 50</td><td style="padding:5px 10px;color:#E6EDF3">Top 50 growth stocks by MSI composite ranking</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #D29922;color:#D29922;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Up Vol</span></td><td style="padding:5px 10px;color:#8B949E">Up On Volume</td><td style="padding:5px 10px;color:#E6EDF3">Closed up on above-average volume — demand confirmation</td></tr>
+      <tr style="border-bottom:1px solid #21262D"><td style="padding:5px 10px"><span style="border:1px solid #A371F7;color:#A371F7;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">Hi EPS+RS</span></td><td style="padding:5px 10px;color:#8B949E">Highest EPS &amp; Relative Strength</td><td style="padding:5px 10px;color:#E6EDF3">Top-ranked by both earnings growth and price momentum</td></tr>
+      <tr><td style="padding:5px 10px"><span style="border:1px solid #58A6FF;color:#58A6FF;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">↑ Masterscore</span></td><td style="padding:5px 10px;color:#8B949E">Greatest Improvement In Masterscore</td><td style="padding:5px 10px;color:#E6EDF3">Biggest week-over-week jump in MSI composite score — accelerating</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="backtested-section">
+  <div class="backtested-header">📚 Backtested Anchors — Why We Trust Forming Base</div>
+  <div class="backtested-sub">Real entries from this system. Each stock teaches a lesson. Study these before entering any new pick.</div>
+  <div class="bt-cards">
+
+    <div class="bt-card winner">
+      <div class="bt-badge">+22.7% · 10 days</div>
+      <div class="bt-symbol">AZAD</div>
+      <div class="bt-date">Entry: Jun 29, 2026 · ₹2,020</div>
+      <div class="bt-row"><span class="bt-label">GSI Status</span><span class="bt-val forming">Forming Base</span></div>
+      <div class="bt-row"><span class="bt-label">RS</span><span class="bt-val">85 → 92 (rising)</span></div>
+      <div class="bt-row"><span class="bt-label">Composite</span><span class="bt-val">93</span></div>
+      <div class="bt-row"><span class="bt-label">EPS</span><span class="bt-val">89</span></div>
+      <div class="bt-row"><span class="bt-label">Group Rank</span><span class="bt-val">#59 · Leader</span></div>
+      <div class="bt-row"><span class="bt-label">GSI Prob / AI</span><span class="bt-val">65% · Medium</span></div>
+      <div class="bt-row"><span class="bt-label">Blue Dots / vs52H</span><span class="bt-val">3 dots · −14%</span></div>
+      <div class="bt-timeline">
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 1</span><span class="bt-tl-ret loss">−1.8%</span><span class="bt-tl-note">Shakeout — not a warning</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 5</span><span class="bt-tl-ret win">+6.4%</span><span class="bt-tl-note">Base holding</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 7</span><span class="bt-tl-ret win">+14.6%</span><span class="bt-tl-note">Forming → Complete (breakout)</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 10</span><span class="bt-tl-ret win big">+22.7%</span><span class="bt-tl-note">Peak return</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 27</span><span class="bt-tl-ret win">+17.5%</span><span class="bt-tl-note">Still holding Aug 5</span></div>
+      </div>
+      <div class="bt-lesson">💡 First-day dip on low volume into Forming Base = entry opportunity, not exit. RS rising 85→92 alongside price confirms institutional accumulation before the move is visible.</div>
+    </div>
+
+    <div class="bt-card winner">
+      <div class="bt-badge">+19.7% · 10 days</div>
+      <div class="bt-symbol">SPECTRUM</div>
+      <div class="bt-date">Entry: Jul 22, 2026</div>
+      <div class="bt-row"><span class="bt-label">GSI Status</span><span class="bt-val forming">Forming Base</span></div>
+      <div class="bt-row"><span class="bt-label">RS</span><span class="bt-val">97</span></div>
+      <div class="bt-row"><span class="bt-label">Composite</span><span class="bt-val">99</span></div>
+      <div class="bt-row"><span class="bt-label">Group Rank</span><span class="bt-val">#28 · Elec-Power · Leader</span></div>
+      <div class="bt-row"><span class="bt-label">AI Verdict</span><span class="bt-val">High</span></div>
+      <div class="bt-timeline">
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 5</span><span class="bt-tl-ret win">+11.1%</span><span class="bt-tl-note">Strong momentum</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 10</span><span class="bt-tl-ret win big">+19.7%</span><span class="bt-tl-note">Peak return</span></div>
+      </div>
+      <div class="bt-lesson">💡 Sector tailwind (Group #28 rising fast) amplifies Forming Base gains. When one stock in a rising group breaks out, rotate the whole group watchlist — INDOTECH/RRKABEL followed in same theme.</div>
+    </div>
+
+    <div class="bt-card winner">
+      <div class="bt-badge">+12.6% · 10 days</div>
+      <div class="bt-symbol">INDOTECH</div>
+      <div class="bt-date">Entry: Jun 29, 2026</div>
+      <div class="bt-row"><span class="bt-label">GSI Status</span><span class="bt-val buyz">Buy Zone</span></div>
+      <div class="bt-row"><span class="bt-label">RS</span><span class="bt-val">96</span></div>
+      <div class="bt-row"><span class="bt-label">Composite</span><span class="bt-val">99</span></div>
+      <div class="bt-row"><span class="bt-label">EPS</span><span class="bt-val">88</span></div>
+      <div class="bt-row"><span class="bt-label">Group Rank</span><span class="bt-val">#28 · Elec-Power · Leader</span></div>
+      <div class="bt-row"><span class="bt-label">AI Verdict</span><span class="bt-val">High</span></div>
+      <div class="bt-timeline">
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 1</span><span class="bt-tl-ret win">+5.0%</span><span class="bt-tl-note">Immediate strength</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 2</span><span class="bt-tl-ret win">+12.4%</span><span class="bt-tl-note">Gap continuation</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 10</span><span class="bt-tl-ret win big">+12.6%</span><span class="bt-tl-note">Held gains</span></div>
+        <div class="bt-tl-item"><span class="bt-tl-day">Day 20</span><span class="bt-tl-ret win">+16.4%</span><span class="bt-tl-note">Extended further</span></div>
+      </div>
+      <div class="bt-lesson">💡 Buy Zone still works when RS=96, Composite=99, AI=High, Group #28 rising. Elite combo (RS 95+ + prob≥75% + AI=High) averaged +10% in 10 days across all entries.</div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="legend-section">
+  <div class="legend-header">📖 Column Guide — What Each Metric Means</div>
+  <div class="legend-sub">Every metric shown on the stock cards, explained. Gates marked in amber are hard filters — stock must pass to appear here.</div>
+  <div class="legend-grid">
+
+    <div class="legend-item">
+      <div class="legend-name">GSI Status (pill: Forming Base / Buy Zone)</div>
+      <div class="legend-gate">Hard gate: must be Forming Base or Buy Zone in BOTH GSI and today's timeseries</div>
+      <div class="legend-desc">MarketSmith's assessment of where the stock is in its base cycle. <strong>Forming Base</strong> = stock is still building the base — the optimal low-risk entry window. <strong>Buy Zone</strong> = base is complete, stock is in the buyable range just above the pivot. <strong>Complete</strong> = base done but stock has moved, risk is higher — excluded from this report.</div>
+      <div class="legend-tip">Forming Base is priority. AZAD was Forming Base on Jun 29 — returned +22.7% in 10 days.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">AI (pill: High / Med / Low)</div>
+      <div class="legend-gate">Display only — no hard gate</div>
+      <div class="legend-desc">MarketSmith AI conviction verdict on this GSI entry. <strong>High</strong> = strong institutional conviction signal, multiple confirming factors. <strong>Med</strong> = moderate conviction, valid setup but fewer confirmations. <strong>Low</strong> = weak conviction — treat with extra caution.</div>
+      <div class="legend-tip">Elite combo: AI=High + prob≥75% + RS 95+ → mean +10% in 10 days (backtested).</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Prob % (pill: e.g. 65%)</div>
+      <div class="legend-gate">Hard gate: ≥ 60%</div>
+      <div class="legend-desc">GSI's probability score for this entry being a successful breakout. Higher = more confident. Scores of 75%+ combined with AI=High have historically produced the best outcomes.</div>
+      <div class="legend-tip">AZAD had 65% prob — mid-tier. NATIONALUM and LUMAXTECH have 85% — top tier.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">RS (Relative Strength Rating)</div>
+      <div class="legend-gate">Hard gate: 75 – 94</div>
+      <div class="legend-desc">How the stock has performed vs all other stocks over the last 12 months, on a 1–99 scale. 99 = top 1%. We cap at 94 because RS 95+ stocks are often already extended — the pre-breakout sweet spot is 75–94 with RS rising.</div>
+      <div class="legend-tip">AZAD was RS 85 on entry. RS rose to 92 as price moved — confirms institutional buying.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">RS 2W (2-week RS delta)</div>
+      <div class="legend-gate">Hard gate: ≥ −3 (RS must be stable or rising)</div>
+      <div class="legend-desc">How much the RS Rating has changed in the last 2 weeks (e.g. +12 means RS rose 12 points). A rising RS while price is still in the base = institutions are accumulating quietly before the breakout. A falling RS = distribution — avoid.</div>
+      <div class="legend-tip">Green sparkline = RS rising. Flat or rising RS inside a base is the strongest pre-breakout signal.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">EPS (Earnings Per Share Rating)</div>
+      <div class="legend-gate">Hard gate: ≥ 75</div>
+      <div class="legend-desc">Composite score of recent EPS growth (last 2 quarters) + annual EPS trend on a 1–99 scale. Ensures the stock has real fundamental earnings momentum behind the price move.</div>
+      <div class="legend-tip">EPS 75+ = earnings are accelerating or strong. Below 75 = stock may be running on hype.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Comp (Composite Strength)</div>
+      <div class="legend-gate">Hard gate: ≥ 82</div>
+      <div class="legend-desc">MarketSmith's overall fundamental score combining EPS growth, sales growth, profit margins, and ROE on a 1–99 scale. A high Composite means the business itself is in excellent shape — not just the stock price.</div>
+      <div class="legend-tip">Composite 90+ = elite fundamentals. QPOWER, POLYCAB, LUMAXTECH are all 96–99.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Group # (Industry Group Rank)</div>
+      <div class="legend-gate">Hard gate: ≤ 100 (top half of ~197 groups)</div>
+      <div class="legend-desc">Where this stock's industry group ranks among all MarketSmith industry groups by recent price performance. Group #1 = strongest group. Stocks in rising groups get a sector tailwind — a rising tide lifts all boats. Stocks in groups #100+ face a structural headwind.</div>
+      <div class="legend-tip">QPOWER, POLYCAB are in Group #28 (Electrical-Power) — one of the hottest groups right now.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Blue Dots</div>
+      <div class="legend-gate">Display only — removed as hard gate (was too restrictive)</div>
+      <div class="legend-desc">Count of "blue dot" accumulation days — days where the stock closed up on significantly above-average volume, a sign of institutional buying. More dots = more institutional demand. Zero dots doesn't mean no accumulation — it may just not have had a big-volume up day yet.</div>
+      <div class="legend-tip">PICCADIL has 8 blue dots = heavy accumulation. QPOWER has 0 but Composite=99 — institutions are still in it.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">vs 52H (% from 52-Week High)</div>
+      <div class="legend-gate">Hard gate: −35% to −2%</div>
+      <div class="legend-desc">How far below the 52-week high the stock is currently trading. −14% = stock is 14% below its 52W high, still in base territory. −2% = near breakout point. −35% = deeper base, more work needed. We exclude stocks at 0% (at highs = extended) or beyond −35% (too deep, broken structure).</div>
+      <div class="legend-tip">AZAD was at −14% on entry. The shallower the base (−5% to −15%), the closer to breakout.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Price</div>
+      <div class="legend-gate">Display only</div>
+      <div class="legend-desc">Current market price of the stock in INR (₹). Useful for position sizing — higher-priced stocks require larger capital per share for the same position value.</div>
+      <div class="legend-tip">No gate on price — focus on MCap for size filter instead.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">MCap (Market Capitalisation)</div>
+      <div class="legend-gate">Hard gate: ≥ 300 Cr</div>
+      <div class="legend-desc">Total market value of the company in Crores (₹). We require at least ₹300 Cr to avoid illiquid micro-caps where institutions cannot take meaningful positions. Shown as kCr (thousands of crores) for large-caps.</div>
+      <div class="legend-tip">₹300 Cr minimum ensures enough liquidity for institutional participation — a prerequisite for sustained moves.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">RS 6W Sparkline</div>
+      <div class="legend-gate">Display only</div>
+      <div class="legend-desc">Mini chart showing how the RS Rating has trended over the last 6 weeks (weekly snapshots). <strong>Green rising line</strong> = RS accelerating upward while stock is still in base = best signal. <strong>Red falling line</strong> = RS deteriorating = caution.</div>
+      <div class="legend-tip">A rising RS sparkline inside a Forming Base = the best pre-breakout setup we look for.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">AZAD Score (ring number)</div>
+      <div class="legend-gate">Display only — ranks stocks within the filtered list</div>
+      <div class="legend-desc">Our composite similarity score to the AZAD entry profile (the backtest template). Combines RS (25%), Composite (20%), EPS (15%), Group rank (15%), RS momentum (12%), probability (8%), AI verdict (5%), base shallowness bonus. Higher = more AZAD-like. ≥85 = elite, 70–84 = high, &lt;70 = moderate.</div>
+      <div class="legend-tip">Green ring = elite (≥85), amber ring = high (70–84), grey ring = moderate (&lt;70).</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">GSI Entered (days ago)</div>
+      <div class="legend-gate">Display only</div>
+      <div class="legend-desc">How many trading days ago this stock first appeared in the GSI watchlist. Earlier entries (fewer days ago) are fresher signals. Stocks that entered 30+ days ago and are still in Forming Base may be taking longer to set up — check if the base is still healthy.</div>
+      <div class="legend-tip">Fresh entries (&lt;10 days) are generally higher priority — the signal is more current.</div>
+    </div>
+
+    <div class="legend-item">
+      <div class="legend-name">Entry Trigger</div>
+      <div class="legend-gate">Display only — actionable guidance</div>
+      <div class="legend-desc">Suggested entry condition based on the base type. <strong>Forming Base:</strong> watch for volume dry-up (3–4 consecutive low-volume days) followed by a bounce, or a range expansion day on 2× average volume. <strong>Buy Zone:</strong> enter on a pullback to the 21EMA or 10EMA, or on next volume expansion above the pivot.</div>
+      <div class="legend-tip">Never chase — wait for the trigger. AZAD's day-1 dip was the entry, not the high.</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  Hard gates: Leader · GSI Forming Base or Buy Zone · RS 75–94 · RS 2W delta ≥-3 · Group ≤100 · EPS ≥75 · Comp ≥82 · vs52H -35% to -2% · MCap ≥300Cr · Turnover ≥₹2Cr/day
+</div>
+
+</div><!-- end tab-method -->
+
+<div style="margin-top:26px;padding-top:14px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">
+  Generated 2026-08-20 · MarketSmith GSI Forming Base × AZAD profile · Not investment advice
+</div>
+
+<script>
+const DATA = [{"sym": "PRECWIRE", "name": "Precision Wires India", "rs": 94, "rsDelta": 4, "eps": 91, "comp": 96, "grp": 40, "price": 458.2, "vs52": -3.52, "bd": 1, "ad": "B+", "score": 97, "ai": "High", "ca": "Forming Base", "prob": 85, "priority": 1, "group": "Electrical-Power/Equipmt", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "POWERINDIA", "name": "Hitachi Energy India", "rs": 89, "rsDelta": 3, "eps": 96, "comp": 99, "grp": 40, "price": 35275.0, "vs52": -9.05, "bd": 0, "ad": "B", "score": 0, "ai": "High", "ca": "Forming Base", "prob": 88, "priority": 1, "group": "Electrical-Power/Equipmt", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "QPOWER", "name": "Quality Power Electrical Equip", "rs": 91, "rsDelta": 10, "eps": 97, "comp": 99, "grp": 40, "price": 1325.1, "vs52": -8.04, "bd": 0, "ad": "A", "score": 0, "ai": "Medium", "ca": "Forming Base", "prob": 60, "priority": 1, "group": "Electrical-Power/Equipmt", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "RAMRAT", "name": "Ram Ratna Wires", "rs": 86, "rsDelta": 5, "eps": 92, "comp": 98, "grp": 40, "price": 472.65, "vs52": -9.11, "bd": 1, "ad": "A-", "score": 83, "ai": "Medium", "ca": "Forming Base", "prob": 60, "priority": 1, "group": "Electrical-Power/Equipmt", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "NATIONALUM", "name": "National Aluminium (Nse)", "rs": 86, "rsDelta": 0, "eps": 78, "comp": 90, "grp": 97, "price": 388.0, "vs52": -12.84, "bd": 0, "ad": "B", "score": 0, "ai": "High", "ca": "Forming Base", "prob": 85, "priority": 1, "group": "Metal Proc & Fabrication", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "MCX", "name": "Multi Cmod.Ex.Of India", "rs": 85, "rsDelta": 3, "eps": 96, "comp": 95, "grp": 89, "price": 3040.0, "vs52": -12.64, "bd": 0, "ad": "B", "score": 0, "ai": "Medium", "ca": "Forming Base", "prob": 60, "priority": 1, "group": "Financial Svcs-Specialty", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "ETERNAL", "name": "Eternal Limited", "rs": 75, "rsDelta": -1, "eps": 79, "comp": 89, "grp": 63, "price": 315.9, "vs52": -14.26, "bd": 0, "ad": "A+", "score": 0, "ai": "Medium", "ca": "Forming Base", "prob": 65, "priority": 1, "group": "Retail-Internet         ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "TIIL", "name": "Technocraft Industries", "rs": 84, "rsDelta": 20, "eps": 77, "comp": 89, "grp": 93, "price": 3280.2, "vs52": -2.37, "bd": 4, "ad": "A", "score": 87, "ai": "High", "ca": "Buy Zone", "prob": 85, "priority": 2, "group": "Bldg-Constr Prds/Misc   ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "APARINDS", "name": "Apar Industries (Nse)", "rs": 94, "rsDelta": 2, "eps": 91, "comp": 98, "grp": 40, "price": 17214.0, "vs52": -6.77, "bd": 2, "ad": "A+", "score": 86, "ai": "High", "ca": "Buy Zone", "prob": 85, "priority": 2, "group": "Electrical-Power/Equipmt", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "FCL", "name": "Fineotex Chemical", "rs": 93, "rsDelta": 0, "eps": 90, "comp": 99, "grp": 39, "price": 43.81, "vs52": -7.14, "bd": 0, "ad": "A-", "score": 0, "ai": "High", "ca": "Buy Zone", "prob": 85, "priority": 2, "group": "Chemicals-Specialty     ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "ELGIEQUIP", "name": "Elgi Equipments (Nse)", "rs": 78, "rsDelta": 2, "eps": 80, "comp": 91, "grp": 28, "price": 614.2, "vs52": -3.1, "bd": 0, "ad": "A-", "score": 0, "ai": "High", "ca": "Buy Zone", "prob": 85, "priority": 2, "group": "Machinery-Gen Industrial", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "ARVSMART", "name": "Arvind Smartspaces", "rs": 75, "rsDelta": 20, "eps": 98, "comp": 94, "grp": 78, "price": 665.55, "vs52": -4.07, "bd": 6, "ad": "B+", "score": 79, "ai": "Medium", "ca": "Buy Zone", "prob": 60, "priority": 2, "group": "Real Estate Dvlpmt/Ops  ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "SYRMA", "name": "Syrma Sgs Technology", "rs": 94, "rsDelta": 0, "eps": 91, "comp": 99, "grp": 9, "price": 1500.1, "vs52": -2.78, "bd": 2, "ad": "A+", "score": 77, "ai": "Medium", "ca": "Buy Zone", "prob": 65, "priority": 2, "group": "Elec-Misc Products      ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "SHRIRAMFIN", "name": "Shriram Finance", "rs": 85, "rsDelta": -1, "eps": 87, "comp": 91, "grp": 87, "price": 1108.4, "vs52": -3.93, "bd": 9, "ad": "A-", "score": 77, "ai": "High", "ca": "Buy Zone", "prob": 85, "priority": 2, "group": "Finance-Consumer Loans  ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "LTF", "name": "L&T Finance Ltd", "rs": 80, "rsDelta": -1, "eps": 86, "comp": 91, "grp": 87, "price": 325.1, "vs52": -3.99, "bd": 0, "ad": "A-", "score": 0, "ai": "High", "ca": "Buy Zone", "prob": 80, "priority": 2, "group": "Finance-Consumer Loans  ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "GOLDIAM", "name": "Goldiam International", "rs": 84, "rsDelta": -1, "eps": 87, "comp": 99, "grp": 34, "price": 361.75, "vs52": -9.15, "bd": 2, "ad": "A", "score": 69, "ai": "Medium", "ca": "Buy Zone", "prob": 60, "priority": 2, "group": "Retail/Whlsle-Jewelry   ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "SHAILY", "name": "Shaily Engineering Plastics", "rs": 90, "rsDelta": 0, "eps": 87, "comp": 96, "grp": 58, "price": 3373.7, "vs52": -6.68, "bd": 5, "ad": "A-", "score": 69, "ai": "Medium", "ca": "Buy Zone", "prob": 65, "priority": 2, "group": "Chemicals-Plastics      ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "PTCIL", "name": "Ptc Industries", "rs": 81, "rsDelta": 8, "eps": 99, "comp": 97, "grp": 90, "price": 19791.0, "vs52": -4.62, "bd": 1, "ad": "B", "score": 68, "ai": "Medium", "ca": "Buy Zone", "prob": 65, "priority": 2, "group": "Steel-Producers         ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "GUFICBIO", "name": "Gufic Biosciences", "rs": 87, "rsDelta": 3, "eps": 79, "comp": 87, "grp": 51, "price": 421.4, "vs52": -5.94, "bd": 6, "ad": "B", "score": 68, "ai": "Medium", "ca": "Buy Zone", "prob": 60, "priority": 2, "group": "Medical-Generic Drugs   ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "OBEROIRLTY", "name": "Oberoi Realty", "rs": 75, "rsDelta": 5, "eps": 87, "comp": 90, "grp": 78, "price": 1858.0, "vs52": -6.45, "bd": 1, "ad": "A-", "score": 62, "ai": "Medium", "ca": "Buy Zone", "prob": 60, "priority": 2, "group": "Real Estate Dvlpmt/Ops  ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "IIFL", "name": "Iifl Finance", "rs": 83, "rsDelta": -3, "eps": 75, "comp": 90, "grp": 87, "price": 622.35, "vs52": -7.8, "bd": 7, "ad": "A-", "score": 60, "ai": "Medium", "ca": "Buy Zone", "prob": 60, "priority": 2, "group": "Finance-Consumer Loans  ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "ANANTRAJ", "name": "Anant Raj", "rs": 78, "rsDelta": 2, "eps": 90, "comp": 91, "grp": 78, "price": 627.05, "vs52": -15.68, "bd": 0, "ad": "A+", "score": 0, "ai": "Medium", "ca": "Buy Zone", "prob": 65, "priority": 2, "group": "Real Estate Dvlpmt/Ops  ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "TRAVELFOOD", "name": "Travel Food Services Ltd", "rs": 78, "rsDelta": 2, "eps": 87, "comp": 86, "grp": 91, "price": 1346.4, "vs52": -8.46, "bd": 2, "ad": "C+", "score": 58, "ai": "Medium", "ca": "Buy Zone", "prob": 60, "priority": 2, "group": "Leisure-Services        ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "USHAMART", "name": "Usha Martin (Nse)", "rs": 76, "rsDelta": -3, "eps": 84, "comp": 90, "grp": 90, "price": 498.8, "vs52": -5.44, "bd": 0, "ad": "B+", "score": 0, "ai": "Medium", "ca": "Buy Zone", "prob": 60, "priority": 2, "group": "Steel-Producers         ", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": [], "earnDate": null, "earnDays": null}];
+
+function earnHtml(d,days){
+  if(!d||days==null) return '<span style="color:var(--dim)">—</span>';
+  const mm=d.slice(5).replace('-','‑');
+  if(days<=3)  return `<span style="color:#F85149;font-weight:600">⚡ ${mm} <small>(${days}d)</small></span>`;
+  if(days<=7)  return `<span style="color:#D29922;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  if(days<=14) return `<span style="color:#58A6FF;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  return '<span style="color:var(--dim)">—</span>';
+}
+function msiPills(lists){
+  const M={
+    "Greatest Improvement In Masterscore":["↑ MS","#58A6FF"],
+    "Highest EPS & Relative Strength":["Hi EPS+RS","#A371F7"],
+    "Up On Volume":["Up Vol","#D29922"],
+    "Breaking Out Today-Weekly Bases":["Breaking Out!","#F78166"],
+    "Growth 50":["Growth 50","#00E676"],
+    "Near Pivot Stocks":["Near Pivot","#79C0FF"],
+    "Minervini TT 5 Months":["Minervini 5M","#E3B341"],
+    "Minervini TT 1 Month":["Minervini 1M","#FFA198"],
+    "Blue Dot List":["● Blue Dot","#FFD600"],
+  };
+  return lists.map(l=>{
+    const[ab,col]=M[l]||[l.slice(0,10),'#8B949E'];
+    return `<span class="dr-badge" style="border:1px solid ${col};color:${col};background:transparent">${ab}</span>`;
+  }).join('');
+}
+function grpColor(g){
+  if(!g) return '#484F58';
+  if(g<=20) return '#3FB950'; if(g<=40) return '#58A6FF';
+  if(g<=60) return '#D29922'; return '#8B949E';
+}
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function switchToDetail(sym){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-detail').classList.add('active');
+  document.querySelectorAll('.tab-btn')[1].classList.add('active');
+  const sel=document.getElementById('stockSel');
+  if(sel) sel.value=sym;
+  renderDetail(sym);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderDetail(sym){
+  const s=DATA.find(x=>x.sym===sym);
+  if(!s) return;
+  const scoreCol=s.score>=85?'#00E676':s.score>=70?'#FFD600':'#484F58';
+  const aiStr=s.ai==='High'?'<span style="background:rgba(0,230,118,.15);color:#00E676;border:1px solid rgba(0,230,118,.4);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">HIGH</span>':s.ai==='Medium'?'<span style="background:rgba(255,214,0,.12);color:#FFD600;border:1px solid rgba(255,214,0,.3);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">MED</span>':'';
+  const pType=s.priority===1?'<span style="background:#0D1B35;color:#58A6FF;border:1px solid #1e3a6e;border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700">Forming Base</span>':'<span style="background:#0D2020;color:#39D0D8;border:1px solid #1a4040;border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700">Buy Zone</span>';
+  document.getElementById('detailContent').innerHTML=`
+  <div class="dr-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;font-weight:700;font-size:15px;border:2px solid ${scoreCol};color:${scoreCol}">${s.score}</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-size:20px;font-weight:800;color:#58A6FF;font-family:monospace;text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>
+            ${aiStr} ${pType}
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">${s.name}</div>
+          <div style="font-size:10px;color:var(--dim)">${s.group} · Grp #${s.grp||'—'}</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:18px;font-weight:700">₹${s.price.toLocaleString('en-IN',{minimumFractionDigits:1})}</div>
+        <div style="font-size:10px;color:${(s.vs52||0)>=-15?'#00E676':'#D29922'}">${s.vs52!=null?s.vs52.toFixed(1)+'%':'—'} vs 52W high</div>
+        <div style="margin-top:4px">${earnHtml(s.earnDate,s.earnDays)}</div>
+      </div>
+    </div>
+
+    <div class="dr-metric-grid">
+      <div class="dr-metric-box"><div class="mlabel">RS</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:#00E676">${s.rs!=null?s.rs:'—'}</div></div>
+      <div class="dr-metric-box"><div class="mlabel">RS 2W</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:${s.rsDelta>=0?'#3FB950':'#F85149'}">${s.rsDelta>=0?'+':''}${s.rsDelta}</div></div>
+      <div class="dr-metric-box"><div class="mlabel">EPS</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:#D29922">${s.eps!=null?s.eps:'—'}</div></div>
+      <div class="dr-metric-box"><div class="mlabel">Comp</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:#A371F7">${s.comp!=null?s.comp:'—'}</div></div>
+      <div class="dr-metric-box"><div class="mlabel">Grp#</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:${grpColor(s.grp)}">${s.grp!=null?s.grp:'—'}</div></div>
+      <div class="dr-metric-box"><div class="mlabel">Blue Dots</div><div class="dr-mval" style="font-size:16px;font-weight:800;color:${s.bd>=3?'#FFD600':'#484F58'}">${s.bd||'—'}</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div style="background:#0D1117;border:1px solid var(--border2);border-radius:5px;padding:10px">
+        <div style="font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:3px">AI Prob %</div>
+        <div style="font-size:14px;font-weight:700;color:${s.prob>=75?'#00E676':s.prob>=60?'#FFD600':'#484F58'}">${s.prob}%</div>
+      </div>
+      <div style="background:#0D1117;border:1px solid var(--border2);border-radius:5px;padding:10px">
+        <div style="font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:3px">Chart Action</div>
+        <div style="font-size:12px;font-weight:600;color:var(--muted)">${s.ca}</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:6px">${msiPills(s.ms_lists)}</div>
+  </div>`;
+}
+
+const sel=document.getElementById('stockSel');
+DATA.forEach(s=>{
+  const o=document.createElement('option');
+  o.value=s.sym; o.text=s.sym+' — '+s.name+(s.priority===1?' [FB]':' [BZ]');
+  sel.appendChild(o);
+});
+if(DATA.length) renderDetail(DATA[0].sym);
+</script>
+</body>
+</html>
