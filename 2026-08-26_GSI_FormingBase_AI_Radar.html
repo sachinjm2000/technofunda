@@ -137,7 +137,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">MarketSmith GSI · 2026-08-26</div>
   <div style="font-size:24px;font-weight:800">📡 GSI Forming Base Radar</div>
   <div style="font-size:12px;color:var(--muted);margin-top:4px">
-    1 stocks · AZAD-style pre-breakout scan · Forming Base + Buy Zone · RS rising · shallow base
+    0 stocks · AZAD-style pre-breakout scan · Forming Base + Buy Zone · RS rising · shallow base
   </div>
 </div>
 
@@ -150,10 +150,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <div id="tab-table" class="tab-pane active">
 
 
-<table>
-  <thead><tr><th>#</th><th>Symbol</th><th>Name</th><th>Score</th><th>Status</th><th>Base / Stage</th><th>AI / Prob</th><th>RS</th><th>RS 2W</th><th>vs 52H</th><th>vs Pivot</th><th>₹Cr/day</th><th>A/D</th><th>Days</th><th>MSI Lists</th><th>Earnings</th></tr></thead>
-  <tbody><tr class="clickable" onclick="switchToDetail('APARINDS')"><td style="color:var(--dim);font-size:11px;white-space:nowrap">1  <span class="bar-wrap" style="margin-left:4px">    <span class="bar-fill" style="width:100%;background:var(--green)"></span></span></td><td style="font-family:monospace;font-weight:800;white-space:nowrap"><a href="https://marketsmithindia.com/mstool/eval/aparinds/evaluation.jsp#/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);text-decoration:none;font-size:13px" title="Open on MarketSmith">APARINDS ↗</a> <span title="Caution: crossed the buy point 9 sessions ago and has since fallen 2.6% back below it." style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span></td><td style="color:var(--muted);font-size:11px;white-space:nowrap">Apar Industries (Nse)</td><td style="font-size:15px;font-weight:800;color:var(--green)">81</td><td><span class="pill pill-buy">Buy Zone</span></td><td><span title="Base type Cup Without Handle, stage 2" style="color:#1a7f37;font-weight:700;white-space:nowrap;font-size:11px">Cup 2</span></td><td><span class="pill pill-high">HIGH</span><span class="pill pill-prob">85%</span></td><td style="color:var(--green);font-weight:600">93</td><td style="font-weight:600"><span style="color:var(--red)">-1 ⚠</span></td><td style="font-weight:600"><span style="color:var(--green)">-9.5%</span></td><td style="font-weight:600"><span title="Crossed the buy point 9 trading days ago and has pulled back 2.6% below it." style="color:#9a6700;font-weight:600;white-space:nowrap">&#94;-2.6% &middot; 9d</span></td><td style="font-weight:600"><span style="color:#1a7f37;font-weight:600">283.3</span></td><td><span style="color:#00E676;font-weight:700">A+</span></td><td style="font-weight:600"><span style="color:var(--amber)">15d</span></td><td style="max-width:120px"><div style="display:flex;gap:3px;flex-wrap:wrap"><span title="Recent Breakouts" style="border:1px solid #F78166;color:#F78166;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Recent BO</span><span title="Growth 50" style="border:1px solid #00E676;color:#00E676;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Growth 50</span><span title="Minervini TT 5 Months" style="border:1px solid #E3B341;color:#E3B341;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap;cursor:default">Minervini 5M</span><span title="1 more — see Detail" style="color:var(--dim);font-size:10px;font-weight:700;padding:2px 2px">+1</span></div></td><td style="white-space:nowrap"></td></tr></tbody>
-</table>
 
 </div><!-- end tab-table -->
 
@@ -388,7 +384,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </div>
 
 <script>
-const DATA = [{"sym": "APARINDS", "name": "Apar Industries (Nse)", "rs": 93, "rsDelta": -1, "eps": 91, "comp": 97, "grp": 56, "price": 16705.0, "vs52": -9.53, "bd": 2, "ad": "A+", "score": 81, "ai": "High", "ca": "Buy Zone", "prob": 85, "priority": 2, "group": "Electrical-Power/Equipmt", "ptp": null, "fromPivot": null, "abovePivot": false, "ms_lists": ["Recent Breakouts", "Growth 50", "Minervini TT 5 Months", "Blue Dot List"], "earnDate": null, "earnDays": null}];
+const DATA = [];
 
 function earnHtml(d,days){
   if(!d||days==null) return '<span style="color:var(--dim)">—</span>';
