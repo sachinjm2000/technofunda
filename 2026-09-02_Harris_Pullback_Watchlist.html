@@ -1,0 +1,170 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Harris Pullback Watchlist — 2026-09-02</title><style>
+:root{color-scheme:light;--bg:#0D1117;--surface:#161B22;--border:#21262D;--border2:#30363D;
+      --fg:#E6EDF3;--dim:#8B949E;--bd:#30363D;--blue:#58A6FF;--amber:#D29922;
+      --green:#3FB950;--red:#F85149;--purple:#A371F7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     font-size:13px;line-height:1.5;padding:20px;max-width:1240px;margin:0 auto}
+h1{font-size:22px;margin-bottom:4px}
+h2{font-size:15px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border2)}
+h3{font-size:13.5px;margin:16px 0 6px}
+p{margin-bottom:8px} p.sub{color:var(--dim);margin-bottom:14px}
+ul{margin:0 0 10px 18px} li{margin-bottom:4px}
+a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+table{width:100%;border-collapse:collapse;margin-bottom:8px}
+th{padding:5px 7px 8px;font-size:10px;color:#fff;text-transform:uppercase;background:#161B22;
+   border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap}
+td{padding:6px 7px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+.num{font-variant-numeric:tabular-nums} .muted{color:var(--dim)}
+.nm{font-size:10.5px;font-weight:400}
+td.cond,th.cond{text-align:center;padding:6px 3px;font-size:12px}
+th.cond{cursor:help}
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:8px;
+      padding:14px 16px;margin-bottom:14px}
+.card.warn{border-left:3px solid var(--amber)}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700}
+.b-live{background:rgba(248,81,73,.16);color:var(--red)}
+.b-pullback_no_signal{background:rgba(210,153,34,.18);color:var(--amber)}
+.b-shallow{background:rgba(139,148,158,.16);color:var(--dim)}
+.b-trend_broken{background:rgba(88,166,255,.12);color:var(--dim)}
+.sig{background:rgba(63,185,80,.10);border-left:3px solid var(--green);padding:6px 10px;
+     border-radius:4px;margin-bottom:10px;font-size:12px}
+.sech{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);
+      margin:12px 0 5px}
+.kvs{display:flex;flex-wrap:wrap;gap:6px}
+/* MSI screener-list membership pills. Blue Dot is FILLED so it reads at a glance
+   in a row of outlined badges — the user ranks it above the other lists. */
+.lps{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.lp{border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:10px;
+    font-weight:700;white-space:nowrap;line-height:1.5}
+.lp.bd{background:#FFD600;border-color:#FFD600;color:#1a1a1a;
+       box-shadow:0 0 0 2px rgba(255,214,0,.22)}
+.kv{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-size:11px}
+.kv span{color:var(--dim);margin-right:6px}
+table.ct td{white-space:normal}
+svg{width:100%;height:auto;border:1px solid var(--border2);border-radius:6px;
+     margin:6px 0;background:#fff}
+.funnel{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
+.fz{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-size:11px}
+.ar{color:var(--dim);font-size:12px}
+nav{display:flex;gap:8px;margin:14px 0 18px}
+nav button{background:var(--surface);border:1px solid var(--border2);color:var(--dim);
+  padding:7px 16px;border-radius:20px;font-size:12.5px;font-weight:600;cursor:pointer}
+nav button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+section{display:none} section.on{display:block}
+details{margin:14px 0}
+summary{cursor:pointer;color:var(--dim);font-size:12.5px;padding:7px 0}
+</style></head><body>
+
+<h1>🎣 Harris Pullback Watchlist</h1>
+<p class="sub">2026-09-02 · six mandatory conditions per candle</p>
+
+<div class="card"><b>Universe — how these stocks were selected</b>
+<div class="funnel">
+<span class="fz">5,819 MSI stocks</span><span class="ar">→</span>
+<span class="fz">gate on <b>today's</b> ratings: Composite ≥ <b>80</b> ·
+group rank ≤ <b>60</b> · RS ≥ <b>70</b> · SMR ≥ <b>70</b> ·
+A/D ≥ <b>B-</b></span><span class="ar">→</span>
+<span class="fz"><b>175</b> pass (every MarketSmith stock passing the gate)</span><span class="ar">→</span>
+<span class="fz"><b>129</b> with ≥200 sessions of price history</span><span class="ar">→</span>
+<span class="fz">close above the 200DMA</span><span class="ar">→</span>
+<span class="fz">the three candle conditions</span>
+</div>
+<div class="muted" style="margin-top:8px;font-size:11.5px">RS ≥ 90 is a screener
+<i>conviction tag</i>, not a gate. ⚠️ The gate is re-applied to <b>today's</b> ratings, so names
+whose Composite or group rank has decayed since they were logged are dropped — Harris's
+precondition is a <i>proven</i> leader, and a decayed name is no longer one. ⚠️ Conversely, a
+stock that never cleared Composite ≥ 80 on a snapshot day is invisible here even if it
+is a textbook setup.</div></div>
+
+<div class="card warn"><b>Market: Uptrend Under Pressure</b>
+(since 2026-05-13, Nifty +2.74%). Harris's first precondition is a
+confirmed, forgiving uptrend — treat this as a watch-list while that isn't true.</div>
+
+<nav>
+  <button class="on" data-t="tab-table">📋 Table</button>
+  <button data-t="tab-detail">🔎 Detail</button>
+  <button data-t="tab-method">📖 Method</button>
+</nav>
+
+<section id="tab-table" class="on">
+  <p class="muted"><b>🔴 Live signal</b> = all three conditions met within 3 sessions.
+  <b>🟡 No signal yet</b> = in trend, still waiting on the candle. Columns <b>1–3</b> are the
+  mandatory conditions on the latest candle — hover any cell for the actual numbers.
+  Tuned for <b>recall</b>: validated at <b>48/48</b> on Harris's own marked candles, which
+  costs false positives by design — roughly a quarter of all days produce a signal, so treat
+  this as a shortlist to read, not a buy list.</p>
+  <h2>🔴 Live signal</h2><p class='muted'>none</p><h2>🟡 No signal yet</h2><p class='muted'>none</p>
+</section>
+
+<section id="tab-detail">
+  <p class="muted">MarketSmith-style plot — OHLC bars, blue = up day / magenta = down day, with
+  the matching volume panel beneath. Moving averages: 10DMA orange · 21EMA red · 50DMA green ·
+  200DMA magenta. A qualifying upside reversal is ringed in green and labelled with its stop.</p>
+  
+</section>
+
+<section id="tab-method">
+<h2>The six mandatory conditions</h2>
+<p class="muted">Exactly as encoded in <code>upside_reversal.check_conditions()</code>. All six
+must pass — the candle is rejected the moment any one fails. Conditions 1–5 compare the candle
+against the <b>previous</b> candle; condition 6 measures it against <b>itself</b>.</p>
+<table class="ct"><tr><td class='num'>1</td><td><b>Rejected at support: low pierces a level, close recovers above it</b></td></tr><tr><td class='num'>2</td><td><b>Closes at/above prior close</b></td></tr><tr><td class='num'>3</td><td><b>Closes in the upper half of its own range</b></td></tr></table>
+
+<h3>Why each one</h3>
+<ul>
+<li><b>1 · Prior day is a DOWN candle</b> — the decline must actually be in progress. Holds on
+5/5 of Harris's own labeled candles.</li>
+<li><b>2 · Opens below prior close</b> — it opens weak. Observed −0.64% to −1.65% on his five.</li>
+<li><b>3 · Low undercuts prior low</b> — <i>the shakeout</i>. Without it there is nothing to
+reverse. Observed −0.04% to −2.07%.</li>
+<li><b>4 · Closes at or above prior close</b> — <code>&gt;=</code>, not <code>&gt;</code>:
+LULU 2020-05-04 closed at exactly the prior close (218.69 vs 218.69) and Harris labeled it.</li>
+<li><b>5 · Volume ≥ prior day</b> — equal passes. ⚠️ A user rule, not settled by the evidence:
+it holds on only 3/5 of his labeled candles (LULU 5/4 and 5/14 had volume 35–39% <i>below</i>
+the prior day and he labeled them anyway).</li>
+<li><b>6 · Closes ≥80% up its own range</b> — buyers took control into the close. Observed
+0.82–1.00, <b>median 0.98</b>.</li>
+</ul>
+
+<h3>Which level the reversal fires at</h3>
+<p class="muted">The candle must undercut-and-recover a level, but it does <b>not matter which</b>:
+<b>10DMA</b>, <b>21EMA</b>, <b>50DMA</b> or the <b>top of a prior consolidation</b> all qualify
+equally. Where several are listed, the moving averages had converged and one candle cleared the
+whole stack — the strongest version of the setup. Harris's own ranking: 21EMA is the "primary add
+zone", the 50DMA "the classic" (first touch = highest conviction), the 10DMA more a
+<i>stay-in</i> tool than an add zone. He never buys at the 200DMA.</p>
+
+<h3>Pullback depth — reported, NOT a filter</h3>
+<p class="muted">⚠️ The old <b>≥10% off the 52-week high</b> gate was <b>removed</b> on 2026-08-22.
+Tested against Harris's own marked candles it rejected <b>5 of 8</b>, including the TDOC candle he
+personally circles on the video — that one is only <b>4.2%</b> off its 52-week high. Depth is also
+not a constant: it scales with <i>which</i> average is being tested (10EMA ~5–7%, 21EMA ~6–14%,
+50SMA ~12–15% off the <b>run-up</b> high) and with the stock's own volatility — NIO runs 12–33%
+for identically-labelled reversals. The WONDA <code>OH</code> figure is still shown as a column,
+and the 16–18% sweet spot is still worth knowing; it just no longer excludes anything.
+There is likewise deliberately <b>no duration rule</b>.</p>
+
+<h3>Stop loss</h3>
+<p class="muted">Entry on the reversal → SL = <b>the low of that reversal candle</b>. Entry on a
+pivot breakout → SL = the low of the <b>most recent</b> upside reversal, not the breakout bar's
+own low.</p>
+
+<h3>Preconditions handled elsewhere</h3>
+<p class="muted"><b>Market regime</b> = MarketSmith's own status (banner at the top).
+<b>Stock quality</b> = the Filtered Watchlist gates that define this universe:
+<b>Composite ≥ 80</b> and <b>industry group rank ≤ 60</b>, applied across all
+dashboard tabs pooled. RS ≥ 90 is a conviction tag, not a gate. Every name's live
+ratings are shown in the table and on its detail card.</p>
+</section>
+
+<p class="muted" style="margin-top:24px">Generated 2026-09-02 · <code>harris_pullback_html.py</code>
+· conditions from <code>upside_reversal.check_conditions()</code></p>
+<script>
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));
+});
+</script></body></html>
