@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-09-04 MS Screens Watchlist</title>
+<style>
+:root{color-scheme:light;--bg:#0D1117;--surface:#161B22;--border:#21262D;--border2:#30363D;
+      --fg:#E6EDF3;--dim:#8B949E;--dim2:#484F58;
+      --green:#3FB950;--blue:#58A6FF;--purple:#A371F7;
+      --yellow:#D29922;--red:#F85149;--teal:#00E676}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     font-size:13px;line-height:1.5;padding:20px;max-width:1040px;margin:0 auto}
+.tabs{display:flex;gap:4px;margin-bottom:16px}
+.tab-btn{padding:5px 16px;border-radius:20px;border:1px solid var(--border2);cursor:pointer;
+         font-size:11px;color:var(--dim);background:transparent;transition:all .15s}
+.tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+table{width:100%;border-collapse:collapse}
+th{padding:5px 8px 8px;font-size:10px;color:#FFFFFF;text-transform:uppercase;background:#161B22;
+   border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr.clickable{cursor:pointer}tr.clickable:hover td{background:rgba(255,255,255,.025)}
+.badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;margin-right:3px}
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:16px;margin-bottom:12px}
+.metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;
+             background:#161B22;border:1px solid var(--border2);border-radius:6px;padding:12px;margin-bottom:10px}
+.metric-box{text-align:center;background:#0D1117;border:1px solid #21262D;border-radius:5px;padding:8px 4px}
+.metric-box .mlabel{font-size:9px;color:#FFFFFF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.metric-box .mval{font-size:17px;font-weight:800;line-height:1.2}
+.bar-wrap{width:60px;height:5px;background:var(--border2);border-radius:3px;display:inline-block;vertical-align:middle}
+.bar-fill{height:5px;border-radius:3px}
+select{background:var(--surface);border:1px solid var(--border2);color:var(--fg);
+       padding:4px 8px;border-radius:4px;font-size:12px}
+/* Light theme pinned on: this was @media(prefers-color-scheme:light), which
+   made pages follow the OS and flip dark at night. `@media all` always
+   matches, so these overrides win in both OS modes. */
+@media all{
+  :root{--bg:#f6f8fa;--surface:#fff;--border:#e1e4e8;--border2:#d0d7de;
+        --fg:#24292f;--dim:#57606a;--dim2:#6e7781}
+}
+</style>
+</head>
+<body>
+
+
+<div style="padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:20px">
+  <div style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">MarketSmith Screens × GSI · 2026-09-04</div>
+  <div style="font-size:24px;font-weight:800">📋 MS Screens Watchlist</div>
+  <div style="font-size:12px;color:var(--dim);margin-top:4px">
+    7 stocks · RS ≥ 75 · EPS ≥ 70 · Screens: New High Best EPS · Largest Qtr EPS · HTF · O'Neil × GSI
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('tab-table',this)">📋 Table</button>
+  <button class="tab-btn" onclick="switchTab('tab-detail',this)">🔍 Detail</button>
+  <button class="tab-btn" onclick="switchTab('tab-method',this)">📖 Method</button>
+</div>
+
+<div id="tab-table" class="tab-pane active">
+<div style="overflow-x:auto">
+<table>
+  <thead><tr>
+    <th>#</th><th>Symbol</th><th>Name</th><th>Score</th>
+    <th>RS</th><th>EPS</th><th>A/D</th><th>Grp#</th>
+    <th>Base / Stage</th><th>Pivot</th><th>₹Cr/day</th><th>Screens</th><th>Earnings</th>
+  </tr></thead>
+  <tbody id="tableBody"></tbody>
+</table>
+</div>
+</div>
+
+<div id="tab-detail" class="tab-pane">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <span style="color:var(--dim);font-size:11px">Select stock:</span>
+    <select id="stockSel" onchange="renderDetail(this.value)"></select>
+  </div>
+  <div id="detailContent"></div>
+</div>
+
+<div id="tab-method" class="tab-pane">
+<div class="card">
+  <div style="font-size:14px;font-weight:700;margin-bottom:10px">Confluence Scoring</div>
+  <p style="color:var(--dim);font-size:12px;line-height:1.7">
+    +2 per High Signal screen (Hi EPS New High, Hi EPS+RS, Big EPS Qtr, HTF Pattern),
+    +1 per Supporting screen, +2 GSI Leader, +1/3 Blue Dots, +1 if within buy zone.<br>
+    Quality gate: RS≥75, EPS≥70, AD≥C+, Price&gt;₹20, Group≤100.<br><br>
+    <b style="color:#FFD700">Score ≥ 8</b> = Gold tier · <b style="color:var(--teal)">Score 5–7</b> = High conviction · <b style="color:var(--blue)">Score 3–4</b> = Watch closely
+  </p>
+</div>
+<div class="card">
+  <div style="font-size:13px;font-weight:700;margin-bottom:12px">All Screens — How Stocks Are Selected</div>
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr>
+      <th>Screen</th>
+      <th>Code Name</th>
+      <th style="text-align:center">Weight</th>
+      <th>Why</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>New High With Best EPS Rank</td><td><code style="color:#A371F7">Hi EPS New High</code></td><td style="text-align:center;color:#3FB950;font-weight:700">+2</td><td style="color:var(--dim)">Near 52W high + highest EPS rating — core momentum</td></tr>
+      <tr><td>Highest EPS &amp; Relative Strength</td><td><code style="color:#A371F7">Hi EPS+RS</code></td><td style="text-align:center;color:#3FB950;font-weight:700">+2</td><td style="color:var(--dim)">Top ranked on both EPS + RS simultaneously</td></tr>
+      <tr><td>Largest Quarterly EPS % Changes</td><td><code style="color:#3FB950">Big EPS Qtr</code></td><td style="text-align:center;color:#3FB950;font-weight:700">+2</td><td style="color:var(--dim)">Strongest earnings acceleration last quarter</td></tr>
+      <tr><td>Potential High Tight Flag</td><td><code style="color:#F78166">HTF Pattern</code></td><td style="text-align:center;color:#3FB950;font-weight:700">+2</td><td style="color:var(--dim)">Most explosive base pattern — historically highest returns</td></tr>
+      <tr style="border-top:1px solid var(--border)"><td>Industry Group Rank Up</td><td><code style="color:#79C0FF">Grp Rank↑</code></td><td style="text-align:center;color:#D29922;font-weight:700">+1</td><td style="color:var(--dim)">Industry group improving rank — early rotation signal</td></tr>
+      <tr><td>Income Stocks</td><td><code style="color:#D29922">Income</code></td><td style="text-align:center;color:#D29922;font-weight:700">+1</td><td style="color:var(--dim)">Dividend/yield quality; boosts stocks with both income + momentum</td></tr>
+      <tr><td>Price Gaps Up</td><td><code style="color:#D29922">Gap Up</code></td><td style="text-align:center;color:#D29922;font-weight:700">+1</td><td style="color:var(--dim)">Volume breakout gap — institutional conviction move</td></tr>
+      <tr><td>New High In RS Line</td><td><code style="color:#3FB950">RS Line High</code></td><td style="text-align:center;color:#D29922;font-weight:700">+1</td><td style="color:var(--dim)">RS line at new high — often precedes price breakout</td></tr>
+      <tr><td>William O'Neil Screen</td><td><code style="color:#FFD600">O'Neil</code></td><td style="text-align:center;color:#D29922;font-weight:700">+1</td><td style="color:var(--dim)">Classic CANSLIM criteria</td></tr>
+      <tr><td>Peter Lynch Screen</td><td><code style="color:#FFD600">P.Lynch</code></td><td style="text-align:center;color:#D29922;font-weight:700">+1</td><td style="color:var(--dim)">Lynch growth-at-reasonable-price criteria</td></tr>
+      <tr><td>Multi-Guru Overlap</td><td><code style="color:#FFD600">Guru×2</code></td><td style="text-align:center;color:#D29922;font-weight:700">+1</td><td style="color:var(--dim)">Appears in multiple guru screens simultaneously</td></tr>
+      <tr style="border-top:1px solid var(--border)"><td>GSI Leader</td><td><code style="color:#F78166">GSI</code></td><td style="text-align:center;color:#3FB950;font-weight:700">+2</td><td style="color:var(--dim)">GSI database: Leader rank with strong base signal</td></tr>
+      <tr><td>Blue Dot (per 3 dots)</td><td><code style="color:#FFD600">● Blue Dot</code></td><td style="text-align:center;color:#D29922;font-weight:700">+1</td><td style="color:var(--dim)">Institutional accumulation signal (max +3)</td></tr>
+      <tr><td>Within Buy Zone (≤5% to pivot)</td><td><code style="color:#79C0FF">Near Pivot</code></td><td style="text-align:center;color:#D29922;font-weight:700">+1</td><td style="color:var(--dim)">Price is actionable — within buying range of breakout</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div style="margin-top:10px;font-size:11px;color:var(--dim)">Quality gates (must pass ALL): RS ≥ 75 · EPS ≥ 70 · AD ≥ C+ · Price &gt; ₹20 · Group Rank ≤ 100</div>
+</div>
+<div class="card">
+  <div style="font-size:13px;font-weight:600;margin-bottom:10px">Today's Screen Breakdown</div>
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr>
+      <th>Screen</th>
+      <th>Name</th>
+      <th style="text-align:center" title="Total stocks in this MarketSmith screen today">MS Total</th>
+      <th style="text-align:center" title="Stocks that passed quality gates and entered today's watchlist">In Watchlist</th>
+      <th style="text-align:center">Hit Rate</th>
+    </tr></thead>
+    <tbody><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #F78166;color:#F78166;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">HTF Pattern</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Potential High Tight Flag</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">89</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">2</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">2%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #00E676;color:#00E676;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">Growth 50</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Growth 50</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">50</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">1</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">2%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #3FB950;color:#3FB950;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">RS Line High</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">New High In RS Line</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">22</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">1</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">4%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #D29922;color:#D29922;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">Income</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Income Stocks</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">21</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">1</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">4%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">O'Neil</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">William O'Neil Screen</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">17</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">2</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">11%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">P.Lynch</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Peter Lynch Screen</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">15</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">1</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">6%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #58A6FF;color:#58A6FF;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">↑ Master</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Greatest Improvement In Masterscore</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">10</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">0</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">0%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #A371F7;color:#A371F7;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">Hi EPS New High</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">New High With Best EPS Rank</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">10</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">0</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">0%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #00E676;color:#00E676;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">Big EPS Qtr</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Largest Quarterly EPS % Changes</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">10</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">1</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">10%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">Grp Rank↑</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Industry Group Rank Up</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">10</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">0</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">0%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #D29922;color:#D29922;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">Gap Up</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Price Gaps Up</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">10</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">0</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">0%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #F78166;color:#F78166;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">Breaking Out!</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Breaking Out Today-Weekly Bases</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">8</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">0</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">0%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">Guru×2</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Multi-Guru Overlap</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">1</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">0</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">0%</td></tr><tr><td style="padding:5px 8px;border-bottom:1px solid var(--border)"><span style="border:1px solid #A371F7;color:#A371F7;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700">Hi EPS+RS</span></td><td style="padding:5px 8px;border-bottom:1px solid var(--border);color:var(--dim);font-size:11px">Highest EPS & Relative Strength</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--fg);font-weight:600">0</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px;color:var(--teal);font-weight:700">0</td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--dim)">—</td></tr></tbody>
+  </table>
+  </div>
+</div>
+</div>
+
+<script>
+const DATA = [{"sym": "NETWEB", "name": "Netweb Technologies India Ltd", "price": 5270.0, "rs": 89, "eps": 99, "ad": "A", "turn": 812.2, "btype": "Cup Without Handle", "bstage": "2b", "grp": 12, "comp": 99, "score": 4, "ptp": null, "fromPivot": 0.495805, "abovePivot": true, "rsDelta": -5, "pivAge": 15.0, "bd": 7, "inGsi": false, "ms_lists": ["Growth 50", "Minervini TT 5 Months", "Blue Dot List", "Top Rated IPOs", "William O'Neil Screen", "All-In-One Screen"], "epsQ": 178.0, "roic": 39.0, "base": "Complete", "group": "Computer Sftwr-Database ", "vs52": -9.34, "earnDate": null, "earnDays": null}, {"sym": "AEROENTER", "name": "Aeroflex Enterprises Ltd", "price": 142.86, "rs": 92, "eps": 93, "ad": "A+", "turn": 11.0, "btype": "Cup Without Handle", "bstage": "2", "grp": 21, "comp": 97, "score": 3, "ptp": 4.47342, "fromPivot": null, "abovePivot": false, "rsDelta": 2, "pivAge": null, "bd": 4, "inGsi": false, "ms_lists": ["Near Pivot Stocks", "Blue Dot List", "Peter Lynch Screen"], "epsQ": 849.0, "roic": 12.0, "base": "Forming", "group": "Elec-Misc Products      ", "vs52": -4.47, "earnDate": null, "earnDays": null}, {"sym": "SOMANYCERA", "name": "Somany Ceramics", "price": 569.5, "rs": 82, "eps": 83, "ad": "A", "turn": 11.3, "btype": "Cup With Handle", "bstage": "1", "grp": 90, "comp": 87, "score": 3, "ptp": null, "fromPivot": 3.086252, "abovePivot": true, "rsDelta": 14, "pivAge": 16.0, "bd": 8, "inGsi": false, "ms_lists": ["Minervini TT 1 Month", "Blue Dot List", "New High In RS Line", "All-In-One Screen"], "epsQ": 242.0, "roic": 13.0, "base": "Complete", "group": "Bldg-Constr Prds/Misc   ", "vs52": -1.27, "earnDate": null, "earnDays": null}, {"sym": "PARAS", "name": "Paras Defence And Space Techno", "price": 1411.5, "rs": 95, "eps": 92, "ad": "A+", "turn": 246.0, "btype": "Consolidation", "bstage": "4", "grp": 98, "comp": 97, "score": 3, "ptp": null, "fromPivot": -2.182952, "abovePivot": false, "rsDelta": -2, "pivAge": 13.0, "bd": 3, "inGsi": false, "ms_lists": ["Recent Breakouts", "Potential High Tight Flag"], "epsQ": 42.0, "roic": 16.0, "base": "Complete", "group": "Aerospace/Defense       ", "vs52": -10.95, "earnDate": null, "earnDays": null}, {"sym": "KALYANKJIL", "name": "Kalyan Jewellers India", "price": 585.3, "rs": 87, "eps": 94, "ad": "A", "turn": 1557.8, "btype": "Flat Base", "bstage": "1", "grp": 40, "comp": 97, "score": 3, "ptp": 9.808152, "fromPivot": null, "abovePivot": false, "rsDelta": -2, "pivAge": null, "bd": 1, "inGsi": false, "ms_lists": ["Blue Dot List", "Potential High Tight Flag", "William O'Neil Screen"], "epsQ": 32.0, "roic": 28.0, "base": "Forming", "group": "Retail/Whlsle-Jewelry   ", "vs52": -9.81, "earnDate": null, "earnDays": null}, {"sym": "M&MFIN", "name": "Maha.& Maha.Finl.Svs.", "price": 376.05, "rs": 80, "eps": 84, "ad": "A+", "turn": 180.9, "btype": "Consolidation", "bstage": "2", "grp": 88, "comp": 89, "score": 2, "ptp": null, "fromPivot": -8.770015, "abovePivot": false, "rsDelta": 0, "pivAge": 19.0, "bd": 4, "inGsi": false, "ms_lists": ["Blue Dot List", "Income Stocks", "Top Indian Investors"], "epsQ": 64.0, "roic": 46.0, "base": "Complete", "group": "Finance-Consumer Loans  ", "vs52": -9.39, "earnDate": null, "earnDays": null}, {"sym": "WABAG", "name": "Va Tech Wabag", "price": 2011.1, "rs": 87, "eps": 81, "ad": "B", "turn": 150.9, "btype": "Cup With Handle", "bstage": "1", "grp": 13, "comp": 96, "score": 2, "ptp": 9.205418, "fromPivot": null, "abovePivot": false, "rsDelta": -3, "pivAge": null, "bd": 0, "inGsi": false, "ms_lists": ["Blue Dot List", "Largest Quarterly EPS % Changes", "Top Indian Investors", "All-In-One Screen"], "epsQ": -8.0, "roic": 18.0, "base": "Forming", "group": "Utility-Water Supply    ", "vs52": -10.76, "earnDate": null, "earnDays": null}];
+
+// Caution flag. Identical meaning on every tab: RS is falling. Kept in sync
+// with screen_common.caution_flag() -- if one changes, change both.
+function cautionFlag(s){
+  // Crossed above the buy point, then fell back below it, base <= 25 sessions.
+  // Same single condition as screen_common.caution_reasons().
+  if(s.fromPivot==null || s.fromPivot>=0) return '';
+  if(s.pivAge==null || s.pivAge>25) return '';
+  const tip=`Caution: crossed the buy point ${Math.round(s.pivAge)} sessions ago and has since fallen ${Math.abs(s.fromPivot).toFixed(1)}% back below it.`;
+  return ` <span title="${tip}" style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span>`;
+}
+
+// Distance to the buy point. One scale across every tab:
+//   -5.8%          has NOT broken out, still 5.8% below the pivot
+//   ^+0.1% . 3d    crossed the pivot 3 trading days ago, 0.1% above it
+// A negative "from pivot" cannot pass the gate, so the red branch is a
+// defensive fallback only -- it must never read as buyable.
+function pivotCell(ptp, abovePivot, fp, age){
+  if(abovePivot && fp!=null && fp>0){
+    const ext=parseFloat(fp);
+    const d=(age!=null)?' &middot; '+Math.round(age)+'d':'';
+    const tip=(age!=null)
+      ? 'Fresh breakout - crossed the buy point '+Math.round(age)+' trading days ago and is '+ext.toFixed(1)+'% above it.'
+      : 'Already broke out - '+ext.toFixed(1)+'% above the buy point.';
+    return `<span style="color:#6e7781;font-weight:600;white-space:nowrap" title="${tip}">&#94;+${ext.toFixed(1)}%${d}</span>`;
+  }
+  if(ptp!=null && ptp>=0){
+    const v=parseFloat(ptp);
+    const col=v<=2?'#1a7f37':v<=8?'#9a6700':'#6e7781';
+    return `<span style="color:${col};font-weight:600;white-space:nowrap" title="Has not broken out yet - still ${v.toFixed(1)}% below the buy point.">-${v.toFixed(1)}%</span>`;
+  }
+  if(fp!=null && fp<0){
+    const und=Math.abs(parseFloat(fp));
+    const d=(age!=null)?' &middot; '+Math.round(age)+'d':'';
+    return `<span style="color:#9a6700;font-weight:600;white-space:nowrap" title="Crossed the buy point${age!=null?' '+Math.round(age)+' trading days ago':''} and has pulled back ${und.toFixed(1)}% below it - a retest, not a stale breakout.">&#94;-${und.toFixed(1)}%${d}</span>`;
+  }
+  return '<span style="color:var(--dim2)">—</span>';
+}
+function earnHtml(d,days){
+  if(!d||days==null) return '<span style="color:var(--dim2)">—</span>';
+  const mm=d.slice(5).replace('-','‑');
+  if(days<=3)  return `<span style="color:#F85149;font-weight:600">⚡ ${mm} <small>(${days}d)</small></span>`;
+  if(days<=7)  return `<span style="color:#D29922;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  if(days<=14) return `<span style="color:#58A6FF;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  return '<span style="color:var(--dim2)">—</span>';
+}
+function screenBadges(screens){
+  // Full screen name → [label, bg, color, border]
+  const SMAP={
+    'New High With Best EPS Rank':         ['Hi EPS NewHigh','rgba(163,113,247,.18)','#A371F7','rgba(163,113,247,.4)'],
+    'Highest EPS & Relative Strength':     ['Hi EPS+RS','rgba(163,113,247,.18)','#A371F7','rgba(163,113,247,.4)'],
+    'Largest Quarterly EPS % Changes':     ['Big EPS Qtr','rgba(63,185,80,.18)','#3FB950','rgba(63,185,80,.4)'],
+    'Potential High Tight Flag':           ['HTF Pattern','rgba(248,81,73,.18)','#F85149','rgba(248,81,73,.4)'],
+    'Industry Group Rank Up':              ['Grp Rank↑','rgba(121,192,255,.15)','#79C0FF','rgba(121,192,255,.4)'],
+    'Price Gaps Up':                       ['Gap Up','rgba(210,153,34,.18)','#D29922','rgba(210,153,34,.4)'],
+    'New High In RS Line':                 ['RS Line High','rgba(63,185,80,.15)','#3FB950','rgba(63,185,80,.4)'],
+    "William O'Neil Screen":               ["O'Neil",'rgba(255,214,0,.12)','#FFD600','rgba(255,214,0,.4)'],
+    'Peter Lynch Screen':                  ['P.Lynch','rgba(255,214,0,.12)','#FFD600','rgba(255,214,0,.4)'],
+    'Multi-Guru Overlap':                  ['Guru×2','rgba(255,214,0,.12)','#FFD600','rgba(255,214,0,.4)'],
+    'Growth 50':                           ['Growth 50','rgba(63,185,80,.15)','#00E676','rgba(63,185,80,.4)'],
+    'Breaking Out Today-Weekly Bases':     ['Breaking Out!','rgba(248,81,73,.18)','#F78166','rgba(248,81,73,.4)'],
+    'Greatest Improvement In Masterscore': ['↑ Masterscore','rgba(88,166,255,.15)','#58A6FF','rgba(88,166,255,.4)'],
+    'Near Pivot Stocks':                   ['Near Pivot','rgba(121,192,255,.15)','#79C0FF','rgba(121,192,255,.4)'],
+    'Minervini TT 5 Months':              ['Minervini 5M','rgba(227,179,65,.15)','#E3B341','rgba(227,179,65,.4)'],
+    'Minervini TT 1 Month':               ['Minervini 1M','rgba(255,161,152,.15)','#FFA198','rgba(255,161,152,.4)'],
+    'Blue Dot List':                       ['● Blue Dot','rgba(255,214,0,.12)','#FFD600','rgba(255,214,0,.4)'],
+    'GSI Leader':                          ['GSI','rgba(247,129,102,.18)','#F78166','rgba(247,129,102,.4)'],
+  };
+  return screens.map(sc=>{
+    const entry=SMAP[sc];
+    const[lab,bg,col,border]=entry||[sc,'rgba(100,100,100,.18)','#8B949E','rgba(100,100,100,.3)'];
+    return `<span class="badge" style="background:${bg};color:${col};border:1px solid ${border}">${lab}</span>`;
+  }).join('');
+}
+function stageCell(ty,st){
+  const A={"Cup With Handle":"CwH","Cup Without Handle":"Cup","Double Bottom":"DB",
+           "Flat Base":"Flat","Consolidation":"Consol","Ascending Base":"Asc",
+           "IPO Base":"IPO","Saucer With Handle":"SauH","Saucer Without Handle":"Sau"};
+  const a=A[String(ty||'').trim()]||String(ty||'').trim().slice(0,6);
+  const s=String(st||'').trim();
+  if(!a&&!s) return '<span style="color:#6e7781">—</span>';
+  const n=parseInt(s,10)||0;
+  const c=(n&&n<=2)?'#1a7f37':(n===3?'#9a6700':(n>=4?'#cf222e':'#6e7781'));
+  return '<span title="Base '+ty+', stage '+s+'" style="color:'+c+';font-weight:700;white-space:nowrap;font-size:11px">'+(a+' '+s).trim()+'</span>';
+}
+function scoreColor(s){
+  if(s>=8) return '#FFD700';
+  if(s>=5) return '#00E676';
+  if(s>=3) return '#58A6FF';
+  return '#8B949E';
+}
+function grpColor(g){
+  if(!g) return '#484F58';
+  if(g<=20) return '#3FB950'; if(g<=40) return '#58A6FF';
+  if(g<=60) return '#D29922'; return '#8B949E';
+}
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function switchToDetail(sym){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-detail').classList.add('active');
+  document.querySelectorAll('.tab-btn')[1].classList.add('active');
+  renderDetail(sym);
+}
+
+function buildTable(){
+  const tbody=document.getElementById('tableBody');
+  DATA.forEach((s,i)=>{
+    const sc=scoreColor(s.score);
+    const barW=Math.round(s.score/12*100);
+    tbody.innerHTML+=`
+    <tr class="clickable" onclick="switchToDetail('${s.sym}')">
+      <td style="color:var(--dim2);font-size:11px">${i+1}
+        <div class="bar-wrap" style="margin-left:4px"><div class="bar-fill" style="width:${barW}%;background:${sc}"></div></div>
+      </td>
+      <td><a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-family:monospace;font-weight:700;font-size:13px;color:var(--blue);text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>${cautionFlag(s)}
+          ${s.inGsi?'<span style="font-size:10px;color:#F78166;font-weight:700;margin-left:4px">GSI</span>':''}
+      </td>
+      <td style="color:var(--dim);font-size:11px">${s.name.slice(0,22)}</td>
+      <td style="font-size:15px;font-weight:800;color:${sc}">${s.score}</td>
+      <td style="font-weight:700;color:${(s.rs||0)>=90?'#3FB950':'#00E676'}">${s.rs!=null?s.rs:'—'}</td>
+      <td style="font-weight:700;color:#D29922">${s.eps!=null?s.eps:'—'}</td>
+      <td style="color:var(--dim)">${s.ad}</td>
+      <td style="color:${grpColor(s.grp)}">${s.grp!=null?s.grp:'—'}</td>
+      <td>${stageCell(s.btype,s.bstage)}</td>
+      <td>${pivotCell(s.ptp,s.abovePivot,s.fromPivot,s.pivAge)}</td>
+      <td style="font-weight:700;color:${s.turn==null?'#6e7781':(s.turn>=5?'#1a7f37':'#9a6700')}">${s.turn!=null?s.turn.toFixed(1):'—'}</td>
+      <td style="max-width:210px"><div style="display:flex;gap:3px;flex-wrap:wrap">${screenBadges(s.ms_lists.slice(0,3))}</div></td>
+      <td>${earnHtml(s.earnDate,s.earnDays)}</td>
+    </tr>`;
+  });
+}
+
+function renderDetail(sym){
+  const s=DATA.find(x=>x.sym===sym);
+  if(!s) return;
+  const sc=scoreColor(s.score);
+  const gsi=s.inGsi?'<span style="background:#F78166;color:#0D1117;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:800">GSI LEADER</span>':'';
+  const bd_html=s.bd>0?'●'.repeat(Math.min(s.bd,8))+' '+s.bd:'—';
+  const bd_c=s.bd>=3?'#FFD600':'#484F58';
+  const earn_warn=s.earnDays!=null&&s.earnDays<=3
+    ?`<div style="padding:5px 10px;background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.3);border-radius:4px;font-size:11px;color:#F85149;font-weight:600;margin:6px 0">⚡ Earnings in ${s.earnDays}d (${s.earnDate}) — binary gap risk</div>`:''
+  document.getElementById('detailContent').innerHTML=`
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="background:#0D1117;border:2px solid ${sc};border-radius:6px;min-width:36px;height:36px;
+                    display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:${sc}">${s.score}</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-size:20px;font-weight:800;color:var(--blue);font-family:monospace;text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>${cautionFlag(s)}
+            ${gsi}
+          </div>
+          <div style="font-size:12px;color:var(--dim);margin-top:1px">${s.name}</div>
+          <div style="font-size:10px;color:var(--dim);margin-top:1px">${s.group} · Grp #${s.grp||'—'}</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:18px;font-weight:700">₹${s.price.toLocaleString('en-IN',{minimumFractionDigits:1})}</div>
+        <div style="margin-top:4px">${earnHtml(s.earnDate,s.earnDays)}</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:8px">${screenBadges(s.ms_lists)}</div>
+    ${earn_warn}
+
+    <div class="metric-grid">
+      <div class="metric-box"><div class="mlabel">RS</div><div class="mval" style="color:${(s.rs||0)>=90?'#3FB950':'#00E676'}">${s.rs!=null?s.rs:'—'}</div></div>
+      <div class="metric-box"><div class="mlabel">EPS</div><div class="mval" style="color:#D29922">${s.eps!=null?s.eps:'—'}</div></div>
+      <div class="metric-box"><div class="mlabel">A/D</div><div class="mval" style="color:var(--dim)">${s.ad}</div></div>
+      <div class="metric-box"><div class="mlabel">Comp</div><div class="mval" style="color:#A371F7">${s.comp}</div></div>
+      <div class="metric-box"><div class="mlabel">Pivot</div><div style="font-size:11px;margin-top:3px">${pivotCell(s.ptp,s.abovePivot,s.fromPivot,s.pivAge)}</div></div>
+      <div class="metric-box"><div class="mlabel">Blue Dots</div><div class="mval" style="color:${bd_c}">${s.bd||'—'}</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div style="background:#0D1117;border:1px solid var(--border2);border-radius:5px;padding:10px">
+        <div style="font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:3px">EPS Qtr%</div>
+        <div style="font-size:14px;font-weight:700;color:${(s.epsQ||0)>=50?'#3FB950':'#D29922'}">${s.epsQ!=null?'+'+s.epsQ.toFixed(0)+'%':'—'}</div>
+      </div>
+      <div style="background:#0D1117;border:1px solid var(--border2);border-radius:5px;padding:10px">
+        <div style="font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:3px">ROIC</div>
+        <div style="font-size:14px;font-weight:700;color:${(s.roic||0)>=25?'#3FB950':'#8B949E'}">${s.roic!=null?s.roic.toFixed(1)+'%':'—'}</div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:var(--dim);margin-top:4px">
+      Base: <span style="color:var(--fg)">${s.base}</span> · ${s.btype} ·
+      vs52W: <span style="color:${(s.vs52||0)>=-10?'#3FB950':'#D29922'}">${s.vs52!=null?s.vs52.toFixed(1)+'%':'—'}</span>
+    </div>
+  </div>`;
+}
+
+buildTable();
+const sel=document.getElementById('stockSel');
+DATA.forEach(s=>{
+  const o=document.createElement('option');
+  o.value=s.sym; o.text=s.sym+' — '+s.name;
+  sel.appendChild(o);
+});
+if(DATA.length) renderDetail(DATA[0].sym);
+</script>
+
+<div style="margin-top:16px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--dim2);text-align:center">
+  Generated 2026-09-04 · MarketSmith India curated screens × GSI · Not investment advice
+</div>
+</body>
+</html>
