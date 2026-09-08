@@ -176,14 +176,14 @@ function cell(l,v,c){
 // MEANS. A bare "Composite 99" tells the reader nothing about what Composite is
 // or that it already contains RS and EPS — so every row says so.
 const GATE_META=[
- ['Composite','comp','≥ 90','MarketSmith's blended 1-99 rank. It ALREADY folds in EPS, RS, SMR, A/D and group strength — so it overlaps every other gate here rather than testing something new.'],
+ ['Composite','comp','≥ 90','MarketSmith&#39;s blended 1-99 rank. It ALREADY folds in EPS, RS, SMR, A/D and group strength — so it overlaps every other gate here rather than testing something new.'],
  ['EPS','eps','≥ 80','1-99 percentile of earnings growth: recent quarterly blended with 3-5 year durability. Bounded, so unlike a raw % change it cannot be inflated by a near-zero base quarter.'],
- ['RS','rs','≥ 80','1-99 percentile of 12-month price change against every other Indian stock — RS 85 beat 85% of the market. O'Neil's published floor is 80; his best performers averaged RS 87 BEFORE their advance.'],
+ ['RS','rs','≥ 80','1-99 percentile of 12-month price change against every other Indian stock — RS 85 beat 85% of the market. O&#39;Neil&#39;s published floor is 80; his best performers averaged RS 87 BEFORE their advance.'],
  ['SMR','smr','≥ 80','Sales growth + profit Margins + Return on equity in one rank. THE BINDING RATING GATE: it demands all three in the top quintile at once, and cuts more names than any other rating here.'],
  ['A/D','ad','A or B','Letter grade for net institutional accumulation vs distribution, read from the volume signature of up-days against down-days. Rarely binds after RS — both key off the same rising price.'],
- ['Group rank','grp','≤ 80','Where the stock's industry group ranks among all Indian groups, 0 = strongest. O'Neil's claim is that roughly HALF a stock's move comes from its group.'],
+ ['Group rank','grp','≤ 80','Where the stock&#39;s industry group ranks among all Indian groups, 0 = strongest. O&#39;Neil&#39;s claim is that roughly HALF a stock&#39;s move comes from its group.'],
  ['Dist to pivot','piv','-15% … +5%','Positive = ABOVE the pivot, negative = still below it. THE GATE THAT MAKES THIS ACTIONABLE rather than a quality list — on 2026-09-08 it cut the ratings survivors from 46 to 9, because 40 of those 46 were already a median +23% past their buy point and unbuyable. Forming bases carry “% to pivot”, completed bases “% from pivot”; the two are mutually exclusive and unified here.'],
- ['Liquidity','turn','≥ ₹2 Cr/day','A stock can pass every quality gate and still be untradeable. Turnover is average daily volume × price. Where download_flags.py has run, MarketSmith's own Low Liquidity red flag is applied on top — that flag is authoritative, turnover is the always-available proxy. A missing flag file counts as UNKNOWN, never as liquid.'],
+ ['Liquidity','turn','≥ ₹2 Cr/day','A stock can pass every quality gate and still be untradeable. Turnover is average daily volume × price. Where download_flags.py has run, MarketSmith&#39;s own Low Liquidity red flag is applied on top — that flag is authoritative, turnover is the always-available proxy. A missing flag file counts as UNKNOWN, never as liquid.'],
 ];
 function gateRows(s){
   return GATE_META.map(function(m){
