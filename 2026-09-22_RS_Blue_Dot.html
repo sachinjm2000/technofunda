@@ -1,0 +1,458 @@
+<meta charset="utf-8"><title>RS Line Blue Dot — 2026-09-22</title><style>
+:root{color-scheme:dark;--bg:#0D1117;--surface:#161B22;--border:#21262D;
+ --border2:#30363D;--fg:#E6EDF3;--dim:#8B949E;--green:#3FB950;--red:#F85149;
+ --blue:#58A6FF;--yellow:#D29922}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font:13px/1.5 -apple-system,
+ BlinkMacSystemFont,'Segoe UI',sans-serif;padding:20px}
+h1{font-size:19px}.sub{color:var(--dim);font-size:12px;margin:4px 0 10px}
+.warn{background:#1c1710;border:1px solid #3a2d16;border-radius:6px;padding:10px 12px;
+ margin:12px 0;color:#d9b26a;font-size:12px;line-height:1.6}
+.crit{background:#1a1113;border-color:#3d1f24;color:#e08d92}
+.wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}
+th{background:#12171d;color:var(--dim);text-align:right;padding:7px 9px;position:sticky;
+ top:0;border-bottom:1px solid var(--border2);cursor:pointer}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#12171d}
+td:first-child{background:var(--surface)}
+th.l,td.l{text-align:left}
+td{padding:6px 9px;text-align:right;border-bottom:1px solid #1b2027}
+tr:hover td{background:#1b2129}
+.sym{font-weight:700}.sym a{color:var(--blue);text-decoration:none}
+.s-BREAKOUT{color:var(--green);font-weight:600}
+.s-SETUP{color:var(--blue);font-weight:600}
+.s-EXT{color:var(--red)}
+.s-BUY{color:var(--green)}.s-RET{color:var(--yellow);font-weight:600}
+.fl-clean{color:var(--green)}.fl-veto{color:var(--red);font-weight:600}
+.fl-warn{color:var(--yellow)}
+.b-yes{color:var(--green);font-weight:600}.b-no{color:var(--red)}
+.lps{display:flex;flex-wrap:wrap;gap:3px;max-width:300px}
+.lp{display:inline-block;border-radius:9px;padding:1px 7px;font-size:10.5px;
+ border:1px solid var(--border2);background:#12171d;color:var(--dim);white-space:nowrap}
+.lp.bd{background:#173a25;color:#7ee2a8;border-color:#1f5133}
+td.l:has(.lps){white-space:normal}
+.flt td{padding:3px 4px;background:#12171d;border-bottom:1px solid var(--border2)}
+.flt input{width:100%;min-width:56px;background:#0D1117;color:var(--fg);border:1px solid var(--border2);
+ border-radius:4px;padding:2px 5px;font:11px -apple-system,sans-serif}
+.flt input.on{border-color:var(--blue);background:#0d1b2e}
+.fbar{color:var(--dim);font-size:11.5px;margin:8px 0;line-height:1.7}
+.fbar code{background:#12171d;border:1px solid var(--border2);border-radius:3px;padding:0 4px;color:var(--fg)}
+.fbar button{background:transparent;border:1px solid var(--border2);color:var(--fg);border-radius:5px;
+ padding:1px 9px;cursor:pointer;font:11px -apple-system,sans-serif;margin-left:6px}
+.fbar #fltCount{margin-left:8px;color:var(--blue)}
+#chartModal{display:none;position:fixed;inset:0;background:rgba(1,4,9,.78);z-index:1000;padding:2vh 2vw}
+#chartModal.on{display:flex;align-items:flex-start;justify-content:center}
+#chartModal .cm-box{background:var(--bg);border:1px solid var(--border2);border-radius:10px;width:min(1400px,96vw);
+ max-height:96vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+#chartModal .cm-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border)}
+#chartModal .cm-bar button{background:transparent;border:1px solid var(--border2);color:var(--fg);border-radius:6px;
+ padding:3px 11px;cursor:pointer;font:13px -apple-system,sans-serif}
+#chartModal .cm-bar .cm-x{margin-left:auto}
+#chartModal #cmPos{color:var(--dim);font-size:12px}
+#chartModal #cmBody{overflow:auto;padding:10px 12px}
+#chartModal .dpanel{display:flex;flex-direction:column}
+/* in the pop-up the chart comes first: header · price/entry/stop · chart · EPS · tiles · surveillance */
+#chartModal .dpanel>.dhead:first-child{order:0}
+#chartModal .dpanel>.dhead:not(:first-child){order:1;margin-top:4px}
+#chartModal .dpanel>.chartbox{order:2}
+#chartModal .dpanel>.funda{order:3}
+#chartModal .dpanel>.tiles{order:4}
+#chartModal .dpanel>.sech{order:5}
+#chartModal .dpanel>.surv{order:6}
+#chartModal .dpanel>.muted{order:7}
+
+.mvp{display:block;background:#0D1117;border-radius:6px}
+.mvp .pl{fill:#8B949E;font:10.5px -apple-system,sans-serif}
+.mvp .pv{fill:#E6EDF3;font:11px -apple-system,sans-serif;font-weight:700}
+.mvp .pvs{fill:#E6EDF3;font:9.5px -apple-system,sans-serif;font-weight:700}
+.mvp .ax{fill:#6E7681;font:9px -apple-system,sans-serif;text-anchor:end}
+.mvp .lvt{fill:#FFFFFF;font:8.5px -apple-system,sans-serif;font-weight:700}
+.mvp .lvd{fill:#C9D1D9;font:8.5px -apple-system,sans-serif;text-anchor:middle}
+.mvp .lvb{fill:#8B949E;font:8.5px -apple-system,sans-serif}
+.mvp .sgt{font:7.5px -apple-system,sans-serif;font-weight:700}
+.tabs{display:flex;gap:4px;margin:14px 0 16px}
+.tab-btn{padding:5px 16px;border-radius:20px;border:1px solid var(--border2);
+ cursor:pointer;font-size:11px;color:var(--dim);background:transparent;
+ transition:all .15s;font-family:inherit}
+.tab-btn:hover{color:var(--fg)}
+.tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+tr.clickable{cursor:pointer}
+.selbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.selbar select{background:var(--surface);color:var(--fg);border:1px solid var(--border2);
+ border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit}
+.selbar .nav{border:1px solid var(--border2);background:transparent;color:var(--dim);
+ border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;font-family:inherit}
+.selbar .nav:hover{color:var(--fg)}
+.dpanel{display:none}.dpanel.active{display:block}
+.dhead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.dhead .dsym{font-weight:700;font-size:15px;color:var(--blue);text-decoration:none}
+.dhead a.dsym:hover{text-decoration:underline}
+.mslink{border:1px solid var(--border2);border-radius:9px;padding:2px 9px;font-size:10.5px;
+ background:#12171d;color:var(--blue);text-decoration:none;white-space:nowrap}
+.mslink:hover{border-color:var(--blue);background:#152233}
+.dhead .dco{color:var(--dim)}
+.pill{border-radius:9px;padding:2px 8px;font-size:10.5px;border:1px solid var(--border2);
+ background:#12171d;color:var(--dim);white-space:nowrap}
+.pill b{color:var(--fg)}
+.pill.g{border-color:#1f5133;background:#173a25;color:#7ee2a8}
+.pill.y{border-color:#3a2d16;background:#1c1710;color:#d9b26a}
+.pill.r{border-color:#3d1f24;background:#1a1113;color:#e08d92}
+.chartbox{border:1px solid var(--border);border-radius:8px;background:var(--surface);
+ padding:8px}
+.legend{color:var(--dim);font-size:10.5px;margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
+.tiles{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.tile{border:1px solid var(--border2);border-radius:6px;background:#12171d;
+ padding:4px 10px;min-width:74px}
+.tile .tl{color:var(--dim);font-size:9.5px;text-transform:uppercase;letter-spacing:.04em}
+.tile .tv{color:var(--fg);font-size:13px;font-weight:700}
+.tile.g{border-color:#1f5133;background:#132b1d}.tile.g .tv{color:#7ee2a8}
+.tile.y{border-color:#3a2d16;background:#1c1710}.tile.y .tv{color:#d9b26a}
+.tile.r{border-color:#3d1f24;background:#1a1113}.tile.r .tv{color:#e08d92}
+.funda{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.fq{border:1px solid var(--border);border-radius:6px;background:#12171d;padding:4px 10px}
+.fq .tl{color:var(--dim);font-size:9.5px;text-transform:uppercase;letter-spacing:.04em}
+.fq .tv{font-size:13px;font-weight:700}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px}
+</style>
+<h1>RS Line Blue Dot · 2026-09-22</h1>
+<div class="warn"><b>RS Line Blue Dot</b> — the Minervini SEPA list (every SEPA condition) narrowed to stocks on MarketSmith's <b>Blue Dot List</b> (bluedot.jsp): their RS line made a new 52-week high in the last ~90 days, most while the price lagged — O'Neil's early-leader signal. <b>Sorted by Blue_dot_date, most recent first</b> (the day the RS line last made a new high; <b>Blue_dot_count</b> = number of dots) · <b>RS_NH_list</b> <code>true</code> = on MSI's "New High In RS Line" list today (RS line at a new high now) · <b>RS_line_off_high</b> <code>&gt;=-5</code> = RS line within 5% of its 52-week high. Every column sorts and filters; click a row for the chart. 0 of 0 SEPA stocks today.</div>
+<div class="sub">Trend Template 9/9 (Minervini's Stage 2 test) · MarketSmith RS ≥70 · EPS Q ≥25% · Sales Q ≥25% · base stage all · <b>0 actionable</b> + 0 to watch (retest / extended / below the pivot) · prices to 2026-09-21</div>
+<div class="sub">Not listed: more than 5% past the pivot and 5% above the 52-week high 0
+ — EXTENDED means more than 5% past the pivot, which the method says not to buy.</div>
+<div class="warn crit"><b>Market: Rally Attempt</b> — 🔵  RALLY ATTEMPT  (since 2026-09-19, Nifty +0.29%)  ⚠️  Defensive stance — new buys not recommended<br><b>Minervini does not buy breakouts into a market that is not in a confirmed uptrend.</b> Under SEPA this list is a watchlist today, not a buy list — and stops tighten to 5–6% in a weak tape.</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('tab-table',this)">📋 Table</button>
+  <button class="tab-btn" onclick="switchTab('tab-detail',this)">🔍 Detail</button>
+  <button class="tab-btn" onclick="switchTab('tab-method',this)">📖 Method</button>
+  
+</div>
+
+<div id="tab-table" class="tab-pane active">
+<div class="sub">Click a header to sort · click a row to open that stock's chart in a pop-up ·
+<b>Entry_flag</b> = the latest flag of the last 10 sessions (✗ = not a buy)</div>
+<div class="entry-flags-help" style="border:1px solid rgba(128,128,128,.35);background:rgba(128,128,128,.07);border-radius:6px;padding:9px 12px;margin:10px 0;font-size:12px;line-height:1.5"><div style="font-weight:700;margin-bottom:4px">Entry flags under the candles — what each one means</div><div style="margin:3px 0"><b style="color:#BC8CFF">▲P</b> <b>Pocket pivot</b> — an early buy inside a base, or off the 10-day in an uptrend, before the obvious breakout (Morales &amp; Kacher). An up day (close above the prior close) whose volume is at least the largest down-day volume of the prior 10 sessions, closing above the 50-day average, with the day's low right at or just below the 10-day average (at most 1% above it) and the close back above the 10-day.</div><div style="margin:3px 0"><b style="color:#F0883E">▲G</b> <b>Gap-up buy point</b> — opens above the prior day's high; the gap from the prior close is at least 0.75× the average true range of the previous 40 sessions; volume is at least 1.5× its 50-day average; and the day's range comes within 5% of the base high. Stop = the gap day's low.</div><div style="margin:3px 0"><b style="color:#39C5CF">▲B</b> <b>Breakout</b> — the first close above the base high (the highest high of the prior 6 months, set at least 3 weeks earlier) on volume at least 1.5× its 50-day average — the book's 50%-above-average breakout rule.</div><div style="margin:3px 0"><b style="color:#8B949E">△</b> <b>Not a buy</b> — a pocket pivot or gap that breaks one of the book's rules — extended (low more than 1% above the 10-day), closed below the 10-day, below the 50-day, a downtrend (50-day falling, under the 200-day), the lower third of the base, wedging up on lighter volume, a V-shaped drop to the 20-day that never touched the 50-day, a wide and loose base (deeper than 50% or weekly swings of 10%+), or a gap extended more than 5% above the base high or still inside the base. Shown for the last 60 sessions only.</div><div style="opacity:.75;margin-top:4px">The flags are judged on SIMPLE moving averages, as in the book's charts: the 10-day (location, extended) and 50-day (above it), plus the 20-day (V-shape) and 200-day (downtrend). Every chart shows the 10- and 50-day lines — dotted where the page's own lines are EMAs.</div><div style="opacity:.75;margin-top:4px">Hover a marker to see its numbers, whether the day closed in the upper half of its range (the book calls a mid-range close weak) and whether trading was quiet before it. The thresholds freeze a discretionary book (<i>Trade Like an O'Neil Disciple</i>, ch. 5) into rules: reading aids, not tested signals. On NSE only the breakout-day versions are measured — gap-ups helped (42.3% vs 34.5% reached +20% in 60 days); pocket-pivot volume barely did, because 77% of breakouts have it.</div></div><div class="warn"><b>PP_* columns — RichRoad's pocket-pivot workflow, shown not applied.</b>
+For the latest pocket pivot in the last 5 sessions (up day, volume above the biggest down-volume day of the prior
+10): <b>PP_recent</b> = where it sat (a bounce off the 10-day EMA, off the 50-day EMA, or extended) and how long
+ago · <b>PP_vol_x</b> = its volume ÷ that biggest down day · <b>PP_close_pct</b> = close position in the day's
+range · <b>PP_notes</b> = EMA stack 10&gt;20&gt;50&gt;200, a volume-dry-up day (≤50% of the 50-day average) in the
+prior 5, and whether the stock spent ≥80% of the last ~5 months below its 200-day (his "no long downtrends" rule) ·
+<b>PP_zone</b> = the PP candle's low to its midpoint — where he buys the <i>pullback</i> rather than the PP day ·
+<b>PP_stop</b> = the candle low −1% · <b>PP_state</b> = today's price against that zone.<br>
+⚠️ <b>Backtested 2026-09-21 (983 liquid NSE names, 2011-26): the pocket-pivot volume day adds nothing measurable
+over the same gates without it</b> (20-session mean +2.8% vs +2.5% over all years; +1.4% vs +1.6% in the 2025+ holdout).
+The gates themselves (RS ≥ 80, above the 200-DMA, on the 10/50 average, EMA stack) are what carried the return.
+A tight PP-low stop was hit far more often than it saved money (only ~1 in 3 trades finished up at 20 sessions).
+Round 2 (2026-09-22) tested the second source's rules — above the 11-week EMA, tight 5-week range with
+contracted volume, a candle touching the 10 EMA, near a 52-week high, SMA vs EMA — and none lifted returns
+(the weekly-quality combination was <i>worse</i>: +2.2% vs +2.7%). Exit rules with only an 8% hard stop: 10→50 EMA
++5.2% all years but −1.0% in the 2025+ holdout; 10→20 EMA +2.2% / +0.4%; median trade negative in all of them
+(wins are few and large). <b>Averages:</b> PP_* columns use 10/20/50 <i>EMAs</i>; the ▲P flag and Entry_flag use
+the book's 10/50 <i>simple</i> averages — the backtest found no difference between them.
+So these columns describe the setup and its risk; they are not a signal. EPS and A/D could not be tested (no
+historical fundamentals). See <code>data/pp_backtest_results.md</code>.</div>
+<div class="fbar"><b>Filter</b> — type in the boxes under the headers; every box you fill must match (AND).
+Numbers: <code>&gt;=80</code> · <code>&lt;5</code> · <code>80-90</code> · <code>99</code>. Text: part of the word
+(<code>pharma</code>, <code>setup</code>) · <code>=A</code> exact (not A−) · <code>!retest</code> excludes · commas = OR
+(<code>=A,=A+</code>). Sorting still works on the filtered rows. <button type="button" onclick="clearFilters(this)">Clear
+filters</button> <span class="fltCount"></span></div>
+<div class="wrap"><table><thead><tr><th class="l">Symbol</th><th class="l">Company</th><th class="l" title="Date of the stock&#x27;s latest blue dot on MarketSmith&#x27;s Blue Dot List — the day its RS line last made a new 52-week high. Blank = not on the list. Sorts by date; filter e.g. &#x27;2026-09&#x27; (this month) or &#x27;&gt;=20260905&#x27; (since 5 Sep). The RS Line Blue Dot page and tab list the most recent first.">Blue_dot_date ⓘ</th><th class="l" title="Number of blue dots (RS-line new highs) MarketSmith counts for the stock in its list window — more dots = more persistent RS leadership.">Blue_dot_count ⓘ</th><th class="l">Industry_Group</th><th>Price</th><th>Price_Chg</th><th>Price_Pct_Chg</th><th>Pct_off_High</th><th>Vol_Pct_vs_50D</th><th>Avg_Vol_50D</th><th>Avg_Turnover_Cr</th><th>MCap_Cr</th><th>Comp_Rating</th><th>Master_Score</th><th>EPS_Rating</th><th>RS_Rating</th><th class="l">RS_80plus</th><th class="l" title="True = on MarketSmith&#x27;s &#x27;New High In RS Line&#x27; list today — the RS line is at a new high NOW (most are also at or near a price high). Type &#x27;true&#x27; to keep only these.">RS_NH_list ⓘ</th><th class="l" title="How far the RS line (close ÷ Nifty 50, our prices) is below its own 52-week high, in %. 0 = at a new high. Type &#x27;&gt;=-5&#x27; to keep RS lines within 5% of a new high, or any other number.">RS_line_off_high ⓘ</th><th class="l">AD_Rating</th><th>SMR_Rating</th><th>Grp_rank</th><th class="l">Trend</th><th class="l">State</th><th>Template</th><th>EPS_Q</th><th>Sales_Q</th><th class="l">Accelerating</th><th class="l" title="Last four quarters&#x27; EPS % change vs the same quarter a year earlier, oldest first (MarketSmith evaluation page). Hover a cell for this stock&#x27;s reading. How to read EPS (Minervini ch. 7 &#x27;Code 33&#x27;: the big winners show earnings ACCELERATING for several quarters, with sales and margins improving). Each value = that quarter&#x27;s EPS vs the same quarter a year earlier. Accelerating (each bigger) = the best sign. High but slowing = still strong, watch the next quarter. Re-accelerating = slowing stopped, constructive. Sharp slowdown after strong quarters = warning, often near a top even while the chart looks fine. Turnaround (losses, then gains) = needs 2-3 strong quarters, one is not proof. Base effect (&gt;±999%) = tiny year-ago EPS, ignore the %, check actual EPS. Sales must confirm: EPS up with flat sales = cost cuts / one-offs, lower quality. Checklist: latest ≥ 25%? higher than the prior quarter? sales confirm? 2-3 strong quarters in a row? any base effect? Past results only — check the next EPS due date; the market gate still rules.">EPS_Qs ⓘ</th><th>Entry</th><th>Stop</th><th>Target_2R</th><th class="l">vs_Pivot</th><th>RVOL</th><th class="l">Dry_up</th><th>Proximity</th><th class="l">VCP_footprint</th><th class="l" title="Chart annotations (Detail tab), Minervini ch. 10. VCP ✓/✗ = contractions shallower each time, volume lower in the last, last ≤ 10%. Shakeout = a dip below the prior contraction low that closes back above it within 3 sessions. 3C = CHEAT (cup completion cheat): a tight, quiet pause about halfway up a cup-shaped base; a move above its high is the EARLIEST buy point, before the cup&#x27;s top or handle — lower entry and tighter stop, but riskier because the base is not finished. Power play = +100% in ≤ 8 weeks, then a tight 3–6-week pause. Dry-up = the quietest volume day(s) of the base in the last 10 sessions.">Patterns ⓘ</th><th>FinalT_vol</th><th class="l">Entry_flag</th><th class="l">PP_recent</th><th class="l">PP_state</th><th>PP_vol_x</th><th>PP_close_pct</th><th>PP_chg_pct</th><th class="l">PP_notes</th><th class="l">PP_zone</th><th>PP_stop</th><th>PP_risk_pct</th><th class="l">Wk_base</th><th class="l">EMA_guide</th><th class="l">Base_Type_Daily</th><th class="l">Base_Stage_Daily</th><th class="l">Red_flags</th><th class="l">MSI_lists</th></tr><tr class="flt"><td><input type="text" placeholder="text · =A · !x" title="Filter Symbol: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Company: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Blue_dot_date: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Blue_dot_count: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Industry_Group: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Price: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Price_Chg: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Price_Pct_Chg: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Pct_off_High: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Vol_Pct_vs_50D: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Avg_Vol_50D: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Avg_Turnover_Cr: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter MCap_Cr: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Comp_Rating: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Master_Score: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter EPS_Rating: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter RS_Rating: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter RS_80plus: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter RS_NH_list: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter RS_line_off_high: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter AD_Rating: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter SMR_Rating: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Grp_rank: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Trend: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter State: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Template: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter EPS_Q: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Sales_Q: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Accelerating: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter EPS_Qs: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Entry: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Stop: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Target_2R: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter vs_Pivot: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter RVOL: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Dry_up: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter Proximity: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter VCP_footprint: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Patterns: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter FinalT_vol: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Entry_flag: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter PP_recent: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter PP_state: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter PP_vol_x: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter PP_close_pct: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter PP_chg_pct: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter PP_notes: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter PP_zone: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter PP_stop: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="≥80 · <5 · 80-90" title="Filter PP_risk_pct: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Wk_base: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter EMA_guide: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Base_Type_Daily: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Base_Stage_Daily: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter Red_flags: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td><td><input type="text" placeholder="text · =A · !x" title="Filter MSI_lists: numbers >=80, <5, 80-90 or an exact value; text: part of the word, =A exact, !x excludes; commas = OR (A,B+). All boxes combine."></td></tr></thead><tbody>
+
+</tbody></table></div>
+</div>
+
+<div id="tab-detail" class="tab-pane">
+
+</div>
+
+<div id="tab-method" class="tab-pane">
+
+<div class="warn"><b>What the page applies — Minervini's rules, MarketSmith's numbers.</b>
+<b>Trend Template 9/9</b>: every price condition (above the 50/150/200DMA,
+50 &gt; 150 &gt; 200, 200DMA rising, ≥30% above the 52-week low, within 25% of the
+52-week high). That template <i>is</i> his Stage 2 test; nothing else is stacked on it.
+<b>RS</b> = MarketSmith RS_Rating ≥70 — his Trend Template criterion 8 ("no less than 70,
+preferably in the 80s or 90s"). <b>RS_80plus</b> flags SPEC.md Tier 1 (RS ≥ 80): False = passes his rule but not
+Tier 1 — type <code>true</code> in its filter box to keep only Tier 1 names. <b>How far above</b>: a name stays if it is at most 5% past its
+pivot <i>or</i> at most 5% above its 52-week high; below either, by any amount, is fine (the
+Trend Template bounds that). The State column still says EXTENDED — Minervini does not buy those; filter
+<code>!extended</code> to hide them. <b>CANSLIM view</b>: click the Comp_Rating header to rank by MarketSmith's
+Composite Rating (a triage number combining EPS, RS, group, SMR and A/D — not a buy signal); every column sorts.
+<b>Base stage</b> = MarketSmith's count of bases since the move began —
+shown, not gated (user decision 2026-09-13); 3rd-stage and later bases are late and fail more often, so filter the Base_Stage_Daily column (e.g. <code>1,2</code>) to apply Minervini's preference.
+<b>Group rank</b> is shown, not gated, on this run.</div>
+
+<div class="warn"><b>Trend: two speeds, as in MarketSmith's own Minervini lists.</b>
+<b>Confirmed (5m)</b> = 200DMA higher at each of the last five monthly checkpoints (the
+5-month template, a confirmed Stage 2). <b>Emerging (1–4m)</b> = 200DMA rising for less
+than that (the 1-month template): a stock just turning up out of a base, "not confirmed
+yet". Emerging names are earlier and less proven; the two are grouped, never blended.</div>
+
+<div class="warn"><b>States.</b> <span class="s-BREAKOUT">BREAKOUT</span> = 0–5% past
+MarketSmith's pivot on expansion (RVOL ≥ 1.5).
+<span class="s-BUY">BUY RANGE</span> = 0–5% past the pivot on quieter volume,
+still inside his 5% rule; the volume confirmation came on an earlier bar,
+so check the chart. <span class="s-SETUP">SETUP</span> = base forming, within
+15% below the pivot. <b>Dry_up</b> (today's RVOL &lt; 1) is a
+flag, not a gate: he reads volume drying up across the base's contractions, not from one
+day's bar. <span class="s-RET">RETEST</span> = cleared the pivot and is back below it by
+less than 5%: <b>not a buy until it reclaims the pivot</b>.
+<b>vs Pivot</b> names the measure on each row: "x% to pivot" for a base below it,
+"+x% from pivot" once through it.
+<b>Listed since 2026-09-13</b> (user rule): every state — EXTENDED (more than 5% past the pivot;
+he does not chase — shown only while within 5% of the 52-week high), failed breakout (more than
+5% back below the pivot), deep base (more than 15% below it) and no pivot.
+<b>Not listed</b> (counted in the header): only names more than 5% past the pivot AND more than
+5% above the 52-week high. Use the State filter box to narrow — e.g. <code>setup,buy,breakout</code>.</div>
+
+<div class="warn"><b>Book annotations (Detail chart, sepa_patterns.py — Minervini ch. 10 figures).</b>
+<b>T1 / T2 / T3</b> label each contraction with its depth. <b>VCP ✓ / ✗</b> (top-left of the price pane): ✓ needs
+all three — each contraction at most 85% as deep as the one before, lower volume in the last contraction than
+the first, and a last contraction ≤ 10%; ✗ names what failed. <b style="color:#F0883E">Shakeout ▲</b> — a low that
+undercuts the prior contraction's low by 0.2–10% and closes back above it within 3 sessions (DECK / MGA figures);
+hover it for the level and the volume. <b style="color:#D29922">CHEAT</b> — the 3C / cheat area: a tight pause
+(5–15 sessions, ≤ 7% range, volume below average) in the middle of the base — 33–60% of the way back up, its top
+at least 5% below the base high (the upper third is the handle's); its high is the earliest buy point (CRUS / VCI
+figures). <b style="color:#BC8CFF">Power play</b> — +100% in ≤ 8 weeks on a big-volume day,
+then 12–30 sessions sideways ≤ 25% deep on lower volume (TASR / QSII). <b style="color:#58A6FF">Dry-up</b> — blue
+volume bar: a day in the last 10 sessions at ≤ 40% of the 50-day average that is also one of the 3 quietest days
+of the whole base ("day before breakout, lowest volume").
+<b>EPS boxes</b> along the top of the price pane — one per reported quarter, placed at the quarter's end:
+"EPS +66% · Sales +91%" vs the same quarter a year earlier, from MarketSmith's evaluation page (Quarterly
+Earnings table); green = EPS ≥ 25% and at least as fast as the quarter before (accelerating), yellow = ≥ 25% but
+slowing, red = below 25%. <b>EPS_Qs</b> (table) = the last four quarters' EPS % change, oldest first.
+All are descriptions to read the chart by — not scores, not filters, not validated on NSE.</div>
+<div class="warn"><b>The base and its contractions (Detail chart).</b> The shaded band is the
+current base: it starts at the peak of the latest Stage-2 advance, after which the stock
+pulled back to its 50-day average (or corrected 10% or more): Minervini's "Stage 2, then
+consolidation" (<i>Trade Like a Stock Market Wizard</i>, ch. 10). Each blue line starts at one
+contraction's high or low and runs to the right edge, its price tagged in the margin; the green
+dashed line is MarketSmith's pivot. <b>VCP_footprint</b> is his notation: weeks in the base,
+deepest / last contraction %, and the number of contractions, e.g. "8W 19/5 3T".
+<b>FinalT_vol</b> = volume through the last contraction as a multiple of its 50-day average
+(he wants it below 1). Both are descriptions to read the chart by, not filters.<br>
+⚠️ <b>Contradiction:</b> the book treats a very tight last contraction (2–3%) as the ideal pivot;
+our 5-year NSE breakout study found breakouts from a tight final contraction (8% or less) did
+<i>worse</i> (−9.1 points, −8.0 out of sample). Read the footprint; do not rank by it.</div>
+
+<div class="warn"><b>Entry flags under the candles</b> (Morales &amp; Kacher, <i>Trade Like an
+O'Neil Disciple</i>, ch. 5):
+<ul>
+<li><b>▲P</b> pocket pivot: an up day on volume at least as large as every down day of the
+prior 10 sessions, closing above the 50-day, with the day's low right at or just below the
+10-day (at most 1% above it) and the close back above it. None of the book's do-not-buy cases
+may apply: extended, closed below the 10-day, below the 50-day, downtrend, lower third of the
+base, wedging, V-shape, or wide and loose.</li>
+<li><b>▲G</b> gap-up buy point: a gap of at least 0.75× ATR(40) on at least 1.5× volume, within 5%
+of the base high. The stop is the gap day's low.</li>
+<li><b>▲B</b> breakout: the first close above a base high at least 3 weeks old, on at least
+1.5× volume (the book's 50% above average).</li>
+<li><b>Grey outline</b>: a pocket pivot or gap the book says <i>not</i> to buy (last 60 sessions).
+Hover any marker for its reasons.</li>
+</ul>
+<b>Entry_flag</b> = the latest of these in the last 10 sessions (✗ = a do-not-buy one).<br>
+⚠️ The tolerances are frozen choices; the book is discretionary. On NSE only the breakout-day
+versions are measured: gap-ups helped (42.3% vs 34.5% reached +20% in 60 days); pocket-pivot
+volume barely did, because 77% of breakouts have it.</div>
+
+<div class="warn crit"><b>Not validated on our data.</b> Every threshold is
+Minervini's own (per wiki/strategies/Minervini-SEPA-Swing.md), not something
+measured against forward returns here. Entry = MarketSmith's pivot, Stop =
+8% below it, Target = 2R. Structural stops belong below the last
+contraction low — check the chart before sizing.</div>
+
+
+<div class="warn"><b>How to read the four panes.</b><br>
+ <b>RPR — relative price performance (1-99).</b> A weighted blend of 63/126/189/252-day
+ price change (2·P3 + P6 + P9 + P12, /5), percentile-ranked across the whole
+ universe <i>on every bar</i>, so the trajectory is visible and not just today's
+ number. The shaded band is 80+, Minervini's "preferably in the 80s or 90s". The
+ <b style="color:#FFA657">orange line</b> is <b>MarketSmith's own RS_Rating</b>
+ for the same stock, stacked out of our daily snapshots — so it starts only when
+ the archive did (late June 2026) and covers the right-hand part of the pane.
+ The two disagree because they are different measurements: ours ranks OUR cache
+ on a 63/126/189/252 weighting, theirs uses their universe and their maths.
+ <b>A persistent gap between the lines is worth a look, not an error.</b>
+ Blue dots mark the RS line (stock ÷ NIFTY 50) at a new 52-week high, red at a
+ new low — <b>a blue dot while price is still inside the base is the signal</b>:
+ leadership showing up before the breakout does.<br>
+ <b>Trend Template (0-9) — the stand-in for TPR.</b> The 9 published conditions
+ scored per bar: green 9/9, yellow 7-8, red below 7. The line is the score, the
+ band is the verdict. ⚠️ It is <i>not</i> Minervini's TPR: on Markets 360, TPR is
+ the <b>Technical Profile Rank</b>, in his words "a proprietary behavioral
+ analytics model that evaluates a stock's current technical condition against the
+ Leadership Profile of history's greatest winners" — letter-graded and not
+ reproducible from price alone. The Trend Template is the closest published rule
+ to it, so that is what is drawn.<br>
+ <b>Buy Risk — % above the 50DMA.</b> Green 0-15% (the buy zone), yellow 15-25%
+ (caution), red &gt;25% (do not buy — the probability of a pullback is high),
+ grey below the MA where the extension rule does not apply.<br>
+ <b>Pressure.</b> Four states, because "under pressure" covers two different
+ warnings. Green = constructive. <b style="color:#D29922">Amber</b> = the last two
+ completed weeks each undercut the previous week's low, while price is still
+ <i>above</i> its 50DMA — inside a VCP that is often just the handle forming on
+ dry volume, so it is a "read the chart" signal, not an exit. <b style="color:#F85149">Red</b>
+ = the close is below the 50DMA, so the short-term trend is damaged and the
+ buy-zone rule no longer applies. <b>Solid red</b> = below the 50DMA on ≥1.5× average
+ volume — institutions selling into it, the only unambiguous one.</div>
+
+<div class="warn crit"><b>What this is, and what it is not.</b>
+ These reproduce the <i>published rules</i> of the Minervini Markets 360 panes
+ from our own price cache — they are not Minervini's code, and every threshold is
+ his published number rather than one validated against forward returns here.
+ <b>MonAlert Net is proprietary (a 58-signal engine) and is deliberately not
+ reproduced.</b> RPR is OUR percentile over OUR cache and will disagree with
+ MarketSmith's RS_Rating, which uses their universe and methodology — both are
+ shown on every panel so the divergence is visible instead of hidden.</div>
+
+</div>
+
+<script>
+document.querySelectorAll('table').forEach(function(t){
+ t.querySelectorAll('th').forEach(function(th,i){th.addEventListener('click',function(){
+  var tb=t.tBodies[0],rows=Array.from(tb.rows),asc=th.dataset.asc==='1';
+  th.dataset.asc=asc?'0':'1';
+  rows.sort(function(a,b){var x=a.cells[i].dataset.v,y=b.cells[i].dataset.v;
+   if(x===undefined){x=a.cells[i].innerText;y=b.cells[i].innerText;
+     return asc?String(x).localeCompare(y):String(y).localeCompare(x);}
+   x=parseFloat(x);y=parseFloat(y);
+   if(isNaN(x))return 1;if(isNaN(y))return -1;return asc?x-y:y-x;});
+  rows.forEach(function(r){tb.appendChild(r);});});});});
+// ── column filters (2026-09-13): AND across boxes, OR within a box (commas) ──
+function _fparse(s){
+ s=(s||'').trim(); if(!s) return null;
+ var pos=[],neg=[];
+ s.split(',').map(function(x){return x.trim();}).filter(Boolean).forEach(function(p){
+  var isNeg=false; if(p[0]==='!'){isNeg=true;p=p.slice(1).trim();}
+  var f,m;
+  if((m=p.match(/^(-?\d*\.?\d+)\s*(?:to|\.\.|-)\s*(-?\d*\.?\d+)$/))){
+   var a=parseFloat(m[1]),b=parseFloat(m[2]),lo=Math.min(a,b),hi=Math.max(a,b);
+   f=function(v){return !isNaN(v)&&v>=lo&&v<=hi;};
+  } else if((m=p.match(/^(>=|<=|≥|≤|>|<)\s*(-?\d*\.?\d+)$/))){
+   var op=m[1],x=parseFloat(m[2]);
+   f=function(v){if(isNaN(v))return false;
+    return (op==='>='||op==='≥')?v>=x:(op==='<='||op==='≤')?v<=x:op==='>'?v>x:v<x;};
+  } else if(p[0]==='='){
+   var q=p.slice(1).trim().toLowerCase();
+   f=function(v,t){return t===q||(!isNaN(v)&&q!==''&&v===parseFloat(q));};
+  } else {
+   var q2=p.toLowerCase(),isNum=/^-?\d*\.?\d+$/.test(q2);
+   f=function(v,t){return (isNum&&!isNaN(v))?v===parseFloat(q2):t.indexOf(q2)>=0;};
+  }
+  (isNeg?neg:pos).push(f);
+ });
+ return function(v,t){
+  if(pos.length&&!pos.some(function(f){return f(v,t);})) return false;
+  return !neg.some(function(f){return f(v,t);});
+ };
+}
+function applyFilters(t){
+ if(!t) return;
+ var fs=[];
+ t.querySelectorAll('tr.flt input').forEach(function(inp,i){fs[i]=_fparse(inp.value);
+  inp.classList.toggle('on',!!fs[i]);});
+ var n=0,tot=0;
+ Array.from(t.tBodies[0].rows).forEach(function(r){
+  tot++; var ok=true;
+  for(var i=0;i<fs.length&&ok;i++){
+   if(!fs[i]) continue;
+   var c=r.cells[i]; if(!c){ok=false;break;}
+   var txt=c.innerText.trim().toLowerCase();
+   var v=(c.dataset.v!==undefined)?parseFloat(c.dataset.v):parseFloat(txt.replace(/[,%+₹]/g,''));
+   ok=fs[i](v,txt);
+  }
+  r.style.display=ok?'':'none'; if(ok) n++;
+ });
+ var pane=t.closest('.tab-pane')||document;               // one counter per tab
+ var cnt=pane.querySelector('.fltCount');
+ if(cnt) cnt.textContent=(n===tot)?('all '+tot+' rows'):('showing '+n+' of '+tot);
+}
+function clearFilters(btn){                                // clears only its own tab
+ var root=(btn&&btn.closest&&btn.closest('.tab-pane'))||document;
+ root.querySelectorAll('tr.flt input').forEach(function(i){i.value='';});
+ root.querySelectorAll('tr.flt').forEach(function(r){applyFilters(r.closest('table'));});
+}
+document.querySelectorAll('tr.flt input').forEach(function(inp){
+ inp.addEventListener('input',function(){applyFilters(inp.closest('table'));});
+ inp.addEventListener('click',function(e){e.stopPropagation();});
+});
+document.querySelectorAll('tr.flt').forEach(function(r){applyFilters(r.closest('table'));});
+// ── chart pop-up (2026-09-13): borrows the stock's Detail panel, returns it on close ──
+var _cm={el:null,parent:null,next:null,wasActive:false,sym:null};
+function _modal(){
+ var m=document.getElementById('chartModal'); if(m) return m;
+ m=document.createElement('div'); m.id='chartModal';
+ m.innerHTML='<div class="cm-box"><div class="cm-bar"><button type="button" onclick="stepChart(-1)" title="previous row (←)">←</button>'
+  +'<span id="cmPos"></span><button type="button" onclick="stepChart(1)" title="next row (→)">→</button>'
+  +'<button type="button" class="cm-x" onclick="closeChart()" title="close (Esc)">✕</button></div><div id="cmBody"></div></div>';
+ m.addEventListener('click',function(e){if(e.target===m) closeChart();});
+ document.body.appendChild(m); return m;
+}
+function _visibleSyms(){                                   // the ACTIVE tab's filtered rows
+ var t=document.querySelector('.tab-pane.active tr.flt')||document.querySelector('tr.flt');
+ t=t?t.closest('table'):document.querySelector('table');
+ return Array.from(t.tBodies[0].rows).filter(function(r){return r.style.display!=='none';})
+  .map(function(r){return r.dataset.sym;}).filter(Boolean);
+}
+function _putBack(){
+ if(!_cm.el) return;
+ if(_cm.next) _cm.parent.insertBefore(_cm.el,_cm.next); else _cm.parent.appendChild(_cm.el);
+ if(!_cm.wasActive) _cm.el.classList.remove('active');
+ _cm.el=null;
+}
+function openChart(sym){
+ var el=document.getElementById('p-'+sym); if(!el){ if(typeof toDetail==='function') toDetail(sym); return; }
+ var m=_modal(); _putBack();
+ _cm={el:el,parent:el.parentNode,next:el.nextSibling,wasActive:el.classList.contains('active'),sym:sym};
+ el.classList.add('active'); document.getElementById('cmBody').appendChild(el);
+ var v=_visibleSyms(), i=v.indexOf(sym);
+ document.getElementById('cmPos').textContent=(i>=0?(i+1)+' / '+v.length:sym)+' · '+sym;
+ m.classList.add('on'); document.body.style.overflow='hidden';
+ document.getElementById('cmBody').scrollTop=0;
+}
+function closeChart(){
+ var m=document.getElementById('chartModal'); if(!m) return;
+ _putBack(); m.classList.remove('on'); document.body.style.overflow='';
+}
+function stepChart(n){
+ var v=_visibleSyms(); if(!v.length||!_cm.sym) return;
+ var i=v.indexOf(_cm.sym); i=(i<0?0:(i+n+v.length)%v.length); openChart(v[i]);
+}
+document.addEventListener('keydown',function(e){
+ var m=document.getElementById('chartModal'); if(!m||!m.classList.contains('on')) return;
+ if(e.key==='Escape') closeChart();
+ else if(e.key==='ArrowRight'){e.stopImmediatePropagation();stepChart(1);}
+ else if(e.key==='ArrowLeft'){e.stopImmediatePropagation();stepChart(-1);}
+},true);
+
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.tab-btn').forEach(function(t){t.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function showStock(sym){
+  document.querySelectorAll('.dpanel').forEach(function(p){p.classList.remove('active')});
+  var el=document.getElementById('p-'+sym);
+  if(el) el.classList.add('active');
+  var sel=document.getElementById('stockSel'); if(sel) sel.value=sym;
+}
+function toDetail(sym){
+  switchTab('tab-detail', document.querySelectorAll('.tab-btn')[1]);
+  showStock(sym);
+  window.scrollTo(0,0);
+}
+function stepStock(n){
+  var sel=document.getElementById('stockSel'); if(!sel) return;
+  var i=sel.selectedIndex+n;
+  if(i<0) i=sel.options.length-1;
+  if(i>=sel.options.length) i=0;
+  showStock(sel.options[i].value);
+}
+document.addEventListener('keydown',function(e){
+  if(!document.getElementById('tab-detail').classList.contains('active')) return;
+  if(e.key==='ArrowRight') stepStock(1);
+  if(e.key==='ArrowLeft') stepStock(-1);
+});
+</script>
