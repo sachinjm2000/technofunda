@@ -162,7 +162,7 @@ function colFilter(grpId){
   for(var i=0;i<fs.length&&ok;i++){
    if(!fs[i]) continue;
    var c=r.cells[i]; if(!c){ok=false;break;}
-   var txt=c.innerText.trim().toLowerCase();
+   var txt=c.textContent.trim().toLowerCase();
    var v=(c.dataset.v!==undefined)?parseFloat(c.dataset.v):parseFloat(txt.replace(/[,%+₹]/g,''));
    ok=fs[i](v,txt);
   }
@@ -174,9 +174,15 @@ function clearCol(grpId){
  document.querySelectorAll('#'+grpId+' tr.flt input').forEach(function(i){i.value='';});
  colFilter(grpId);
 }
+// Debounced (2026-10-01, same fix as minervini_sepa.py — user: "search is very slow"):
+// innerText->textContent removes the forced-reflow cost; 120ms waits for a typing pause.
+var _fltTimersPP=new WeakMap();
 document.querySelectorAll('.grp').forEach(function(g){
  g.querySelectorAll('tr.flt input').forEach(function(inp){
-  inp.addEventListener('input',function(){colFilter(g.id);});});
+  inp.addEventListener('input',function(){
+   clearTimeout(_fltTimersPP.get(inp));
+   _fltTimersPP.set(inp,setTimeout(function(){colFilter(g.id);},120));
+  });});
 });
 // ── row-click chart pop-up (same #p-SYM panels minervini_panes.py builds for SEPA) ──
 var _cm={el:null,parent:null,next:null,grp:null};
@@ -232,8 +238,8 @@ function sortTable(grpId,i,numeric){
  tb.setAttribute('data-dir-'+i,dir);
  rows.sort(function(a,b){
   var ca=a.cells[i],cb=b.cells[i];
-  var va=numeric?(ca.dataset.v!==undefined?parseFloat(ca.dataset.v):parseFloat(ca.innerText)):ca.innerText.toLowerCase();
-  var vb=numeric?(cb.dataset.v!==undefined?parseFloat(cb.dataset.v):parseFloat(cb.innerText)):cb.innerText.toLowerCase();
+  var va=numeric?(ca.dataset.v!==undefined?parseFloat(ca.dataset.v):parseFloat(ca.textContent)):ca.textContent.toLowerCase();
+  var vb=numeric?(cb.dataset.v!==undefined?parseFloat(cb.dataset.v):parseFloat(cb.textContent)):cb.textContent.toLowerCase();
   if(numeric){va=isNaN(va)?-Infinity:va; vb=isNaN(vb)?-Infinity:vb;}
   if(va<vb) return dir==='asc'?-1:1;
   if(va>vb) return dir==='asc'?1:-1;
