@@ -51,7 +51,8 @@
   <h1>US Disciple Charts</h1>
   <p class="sub">Real TradingView Desktop captures with the full indicator stack — MA Ribbon,
     Jack Corsellis RS Line, TraderLion enhanced volume, Indices Table. Screener:
-    <a href="https://in.tradingview.com/screener/6hwAW8WD/">US W RI &gt; 60</a> · captured 2026-10-02.</p>
+    <a href="https://in.tradingview.com/screener/6hwAW8WD/">US W RI &gt; 60</a> · charts captured 2026-10-02 after the close ·
+    list pulled 2026-10-02 and held for the whole week (re-pulled each Saturday).</p>
 
   <div class="bar">
     <div class="syms" id="syms"></div>
@@ -94,123 +95,68 @@
     <code>us_disciple_charts.py</code> as part of the nightly run.</footer>
 </div>
 <script>
-const SYMS = ["STX", "ALAB", "DOCN", "HOOD", "COHU", "BLSH", "SAIL", "SECZ", "USDE", "TRLV", "CADL"];
+const SYMS = ["KOD", "FROG", "PARR", "DK", "APPN", "CHPT"];
 const DATA = {
- "STX": {
-  "name": "STX",
+ "KOD": {
+  "name": "KOD",
   "tt": "5M TT",
   "note": "",
-  "close": 945.57,
+  "close": 98.46,
   "tfs": [
    "D",
    "M",
    "W"
   ]
  },
- "ALAB": {
-  "name": "ALAB",
+ "FROG": {
+  "name": "FROG",
   "tt": "5M TT",
   "note": "",
-  "close": 356.42,
+  "close": 97.59,
   "tfs": [
    "D",
    "M",
    "W"
   ]
  },
- "DOCN": {
-  "name": "DOCN",
+ "PARR": {
+  "name": "PARR",
   "tt": "5M TT",
   "note": "",
-  "close": 139.8,
+  "close": 86.21,
   "tfs": [
    "D",
    "M",
    "W"
   ]
  },
- "HOOD": {
-  "name": "HOOD",
+ "DK": {
+  "name": "DK",
+  "tt": "5M TT",
+  "note": "",
+  "close": 74.34,
+  "tfs": [
+   "D",
+   "M",
+   "W"
+  ]
+ },
+ "APPN": {
+  "name": "APPN",
   "tt": "None",
   "note": "",
-  "close": 111.15,
+  "close": 37.77,
   "tfs": [
    "D",
    "M",
    "W"
   ]
  },
- "COHU": {
-  "name": "COHU",
-  "tt": "5M TT",
-  "note": "",
-  "close": 70.34,
-  "tfs": [
-   "D",
-   "M",
-   "W"
-  ]
- },
- "BLSH": {
-  "name": "BLSH",
-  "tt": "None",
-  "note": "",
-  "close": 34.79,
-  "tfs": [
-   "D",
-   "M",
-   "W"
-  ]
- },
- "SAIL": {
-  "name": "SAIL",
+ "CHPT": {
+  "name": "CHPT",
   "tt": "1M TT",
   "note": "",
-  "close": 20.58,
-  "tfs": [
-   "D",
-   "M",
-   "W"
-  ]
- },
- "SECZ": {
-  "name": "SECZ",
-  "tt": "None",
-  "note": "",
-  "close": 13.74,
-  "tfs": [
-   "D",
-   "M",
-   "W"
-  ]
- },
- "USDE": {
-  "name": "USDE",
-  "tt": "None",
-  "note": "",
-  "close": 15.51,
-  "tfs": [
-   "D",
-   "M",
-   "W"
-  ]
- },
- "TRLV": {
-  "name": "TRLV",
-  "tt": "5M TT",
-  "note": "",
-  "close": 10.87,
-  "tfs": [
-   "D",
-   "M",
-   "W"
-  ]
- },
- "CADL": {
-  "name": "CADL",
-  "tt": "5M TT",
-  "note": "",
-  "close": 10.16,
+  "close": 10.2,
   "tfs": [
    "D",
    "M",
