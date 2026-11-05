@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-08-25 Deep Research Ranking</title>
+<style>
+:root{color-scheme:light;--bg:#0D1117;--surface:#161B22;--border:#21262D;--border2:#30363D;
+      --fg:#E6EDF3;--dim:#8B949E;--dim2:#484F58;
+      --green:#3FB950;--blue:#58A6FF;--purple:#A371F7;
+      --yellow:#D29922;--red:#F85149;--teal:#00E676}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     font-size:13px;line-height:1.5;padding:20px;max-width:1040px;margin:0 auto}
+.tab-bar{display:flex;gap:4px;margin-bottom:16px}
+.tab{padding:5px 16px;border-radius:20px;border:1px solid var(--border2);cursor:pointer;
+     font-size:11px;color:var(--dim);background:transparent;transition:all .15s}
+.tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.panel{display:none}.panel.active{display:block}
+table{width:100%;border-collapse:collapse}
+th{padding:5px 8px 8px;font-size:10px;color:#FFFFFF;text-transform:uppercase;background:#161B22;
+   border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr.clickable{cursor:pointer}tr.clickable:hover td{background:rgba(255,255,255,.025)}
+.badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;margin-right:3px}
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:8px;
+      padding:16px;margin-bottom:12px}
+.card.top{border-color:var(--green)}
+.metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;
+             background:#161B22;border:1px solid var(--border2);border-radius:6px;padding:12px;margin-bottom:10px}
+.metric-box{text-align:center;background:#0D1117;border:1px solid #21262D;border-radius:5px;padding:8px 4px}
+.metric-box .mlabel{font-size:9px;color:#FFFFFF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.metric-box .mval{font-size:17px;font-weight:800;line-height:1.2}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.inset{background:#0D1117;border:1px solid var(--border2);border-radius:5px;padding:10px}
+.dim-row{display:flex;align-items:center;justify-content:space-between;
+         padding:4px 0;border-bottom:1px solid var(--border)}
+.bar-wrap{width:80px;height:5px;background:var(--border2);border-radius:3px;display:inline-block}
+.bar-fill{height:5px;border-radius:3px}
+.tier-pill{display:inline-block;padding:2px 8px;border-radius:12px;
+           font-size:10px;font-weight:600}
+.earn-warn{padding:5px 10px;background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.3);
+           border-radius:4px;font-size:11px;color:var(--red);font-weight:600;margin:6px 0}
+select{background:var(--surface);border:1px solid var(--border2);color:var(--fg);
+       padding:4px 8px;border-radius:4px;font-size:12px}
+/* Light theme pinned on: this was @media(prefers-color-scheme:light), which
+   made pages follow the OS and flip dark at night. `@media all` always
+   matches, so these overrides win in both OS modes. */
+@media all{
+  :root{--bg:#f6f8fa;--surface:#fff;--border:#e1e4e8;--border2:#d0d7de;
+        --fg:#24292f;--dim:#57606a;--dim2:#6e7781}
+}
+</style>
+</head>
+<body>
+
+<div style="padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:20px">
+  <div style="font-size:11px;color:#FFFFFF;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Deep Research · 25 Aug 2026</div>
+  <div style="font-size:24px;font-weight:800">🔬 Deep Research Ranking</div>
+  <div style="font-size:12px;color:var(--dim);margin-top:4px">
+    All screener stocks · 6-dimension score · RS trend, EPS quality, group leadership, pivot readiness
+  </div>
+</div>
+
+<!-- vs Overlap callout -->
+<div style="background:#21262D;border:1px solid #388BFD;border-left:4px solid #58A6FF;border-radius:6px;padding:14px 18px;margin-bottom:14px">
+  <p style="font-size:12px;color:#E6EDF3;line-height:1.75;margin:0">
+    <b style="color:#58A6FF">How this differs from MultiScreen Overlap:</b>&nbsp;
+    The <b style="color:#A371F7">MultiScreen Overlap</b> shows only stocks appearing in <b style="color:#E6EDF3">2+ screeners</b> — fast consensus signal.
+    This <b style="color:#58A6FF">Deep Research</b> scores <b style="color:#E6EDF3">all 22 screener stocks</b> across 6 dimensions using 4-week time-series data: RS acceleration, EPS quality (base-effect capped), group leadership trend, pivot readiness, screen conviction, base quality.
+    Use Overlap for quick conviction; use Deep Research to rank the full universe.
+  </p>
+</div>
+
+<!-- Legend -->
+<div style="background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;margin-bottom:18px;font-size:11px">
+  <div style="display:flex;gap:18px;flex-wrap:wrap;color:var(--dim)">
+    <span><b style="color:var(--green)">≥85 → A · Buy</b> — top conviction</span>
+    <span><b style="color:var(--blue)">72–84 → B · Watch</b> — strong, minor caveat</span>
+    <span><b style="color:var(--yellow)">58–71 → C · Wait</b> — needs improvement</span>
+    <span><b style="color:var(--dim)">&#60;58 → Skip</b></span>
+    <span style="color:var(--dim)">Score /100 = 6 dims × 20pts each · RS trend = 4-week acceleration</span>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('table',this)">📊 Ranked Table</button>
+  <button class="tab" onclick="switchTab('detail',this)">📋 Stock Detail</button>
+  <button class="tab" onclick="switchTab('method',this)">🔍 Method</button>
+</div>
+
+<!-- RANKED TABLE -->
+<div id="panel-table" class="panel active">
+<div style="overflow-x:auto">
+<table>
+  <thead><tr>
+    <th>#</th><th>Symbol</th><th>Tier</th><th style="text-align:center">Score</th>
+    <th>RS Trend (4w→now)</th><th style="text-align:center">EPS</th>
+    <th style="text-align:center">Grp#</th>
+    <th title="Pivot — shows % To Pivot (must rise to break out) or From Pivot (distance from buy point). Negative from-pivot = still below; positive = extended above.">Pivot</th>
+    <th>Screeners</th><th>Earnings</th>
+  </tr></thead>
+  <tbody id="rankBody"></tbody>
+</table>
+</div>
+</div>
+
+<!-- STOCK DETAIL -->
+<div id="panel-detail" class="panel">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <span style="color:var(--dim);font-size:11px">Select stock:</span>
+    <select id="stockSel" onchange="renderDetail(this.value)"></select>
+  </div>
+  <div id="detailContent"></div>
+</div>
+
+<!-- METHOD -->
+<div id="panel-method" class="panel">
+<div class="card">
+  <div style="font-size:14px;font-weight:700;margin-bottom:10px">6-Dimension Scoring (each /20, total scaled to 100)</div>
+  <table style="font-size:11px">
+    <thead><tr style="border-bottom:1px solid var(--border2)">
+      <th>Dimension</th><th>What we measure</th><th style="text-align:center">Max</th>
+    </tr></thead>
+    <tbody>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 8px;color:var(--blue)">1. RS Quality</td><td style="padding:5px 8px;color:var(--dim)">RS rating + 4-week acceleration (strong = institutions accumulating)</td><td style="text-align:center;padding:5px 8px">20</td></tr>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 8px;color:var(--green)">2. EPS Fundamentals</td><td style="padding:5px 8px;color:var(--dim)">EPS rating + quarterly growth + ROIC; base-effect spikes capped at 300%</td><td style="text-align:center;padding:5px 8px">20</td></tr>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 8px;color:var(--purple)">3. Group Leadership</td><td style="padding:5px 8px;color:var(--dim)">Industry group rank (1=best) + 4-week trend (improving groups get tailwind)</td><td style="text-align:center;padding:5px 8px">20</td></tr>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 8px;color:var(--yellow)">4. Pivot Readiness</td><td style="padding:5px 8px;color:var(--dim)">Distance to buy point — ≤2% scores 20, ≥12% scores 0</td><td style="text-align:center;padding:5px 8px">20</td></tr>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 8px;color:#FB8F44">5. Screen Conviction</td><td style="padding:5px 8px;color:var(--dim)">Independent screeners (3–4 = 20pts, 2 = 14pts, 1 = 8pts, 0 = 0pts)</td><td style="text-align:center;padding:5px 8px">20</td></tr>
+      <tr><td style="padding:5px 8px;color:#79C0FF">6. Base Quality</td><td style="padding:5px 8px;color:var(--dim)">Base type (CwH=18, Cup=16, Flat=14, DB=12, Consol=8) + Master Score bonus</td><td style="text-align:center;padding:5px 8px">20</td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:12px;font-size:11px;color:var(--dim);line-height:1.7">
+    <b style="color:var(--fg)">% To Pivot ↑</b> = how far the stock needs to rise to reach its buy point (breakout level).
+    ✅ ≤2% is buyable now · 🟢 ≤5% near pivot · 🟡 ≤8% watch · ⏳ &gt;8% still forming.<br><br>
+    <b style="color:var(--fg)">From Pivot</b> = MSI's raw distance from the pivot point.
+    <span style="color:#3FB950">Negative = below pivot</span> (stock hasn't broken out yet — same info as % To Pivot but with sign).
+    <span style="color:#F85149">Positive = above pivot</span> (already broke out, now extended — buying here is chasing).
+    Most forming stocks show only % To Pivot; stocks with completed bases show From Pivot instead.<br><br>
+    <b style="color:var(--fg)">Why time-series RS matters:</b> A stock with RS 84 today that was 56 four weeks ago (like LUMAXTECH)
+    signals active institutional accumulation — far more actionable than a stock stuck at 93 for months.
+    The trend scores up to +4 bonus points on top of the base RS score.<br><br>
+    <b style="color:var(--fg)">EPS base-effect cap:</b> When quarterly EPS grows >300%, it's usually because the prior-year quarter
+    was near zero (a one-time loss or write-off). We cap the qtr-growth input at 300% to prevent stocks like
+    STLTECH (+1915%) or GOCLCORP (+868%) from scoring artificially high on fundamentals.
+  </div>
+</div>
+</div>
+
+<script>
+const DATA = [{"sym": "SYRMA", "name": "Syrma Sgs Technology", "group": "Elec-Misc Products      ", "price": 1459.9, "rs": 93, "rs2w": 95, "rs4w": 94, "rsDelta": -1, "eps": 91, "grp": 12, "grp2w": 5, "grp4w": 7, "ptp": 3.808394, "fromPivot": -3.808394, "abovePivot": false, "base": "Consolidation", "ms": 84, "comp": 99.0, "roic": 15.0, "epsQ": 86.0, "epsY": 77.0, "ad": "A", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 12, "sEps": 11, "sGrp": 18, "sPiv": 17, "sScreens": 8, "sBase": 10, "total": 76}, {"sym": "ETERNAL", "name": "Eternal Limited", "group": "Retail-Internet         ", "price": 327.15, "rs": 78, "rs2w": 75, "rs4w": 68, "rsDelta": 10, "eps": 79, "grp": 35, "grp2w": 88, "grp4w": 95, "ptp": null, "fromPivot": 3.413876, "abovePivot": true, "base": "Cup With Handle", "ms": 82, "comp": 95.0, "roic": 3.0, "epsQ": 233.0, "epsY": -33.0, "ad": "A+", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 8, "sEps": 8, "sGrp": 16, "sPiv": 15, "sScreens": 8, "sBase": 20, "total": 75}, {"sym": "CARTRADE", "name": "Cartrade Tech", "group": "Retail-Internet         ", "price": 3138.6, "rs": 90, "rs2w": 84, "rs4w": 91, "rsDelta": -1, "eps": 90, "grp": 35, "grp2w": 88, "grp4w": 95, "ptp": null, "fromPivot": 1.852994, "abovePivot": true, "base": "Flat Base", "ms": 72, "comp": 99.0, "roic": 11.0, "epsQ": 18.0, "epsY": 64.0, "ad": "A", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 11, "sEps": 9, "sGrp": 16, "sPiv": 15, "sScreens": 8, "sBase": 14, "total": 73}, {"sym": "APARINDS", "name": "Apar Industries (Nse)", "group": "Electrical-Power/Equipmt", "price": 16705.0, "rs": 93, "rs2w": 94, "rs4w": 92, "rsDelta": 1, "eps": 91, "grp": 56, "grp2w": 32, "grp4w": 26, "ptp": 2.634493, "fromPivot": -2.634493, "abovePivot": false, "base": "Cup Without Handle", "ms": 79, "comp": 97.0, "roic": 30.0, "epsQ": 78.0, "epsY": 19.0, "ad": "A+", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 12, "sEps": 13, "sGrp": 4, "sPiv": 17, "sScreens": 8, "sBase": 17, "total": 71}, {"sym": "RAMRAT", "name": "Ram Ratna Wires", "group": "Electrical-Power/Equipmt", "price": 485.85, "rs": 86, "rs2w": 84, "rs4w": 81, "rsDelta": 5, "eps": 92, "grp": 56, "grp2w": 32, "grp4w": 26, "ptp": 6.567288, "fromPivot": null, "abovePivot": false, "base": "Cup Without Handle", "ms": 80, "comp": 97.0, "roic": 27.0, "epsQ": 127.0, "epsY": 52.0, "ad": "A", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 11, "sEps": 14, "sGrp": 4, "sPiv": 13, "sScreens": 8, "sBase": 17, "total": 66}, {"sym": "MCX", "name": "Multi Cmod.Ex.Of India", "group": "Financial Svcs-Specialty", "price": 3268.0, "rs": 88, "rs2w": 81, "rs4w": 85, "rsDelta": 3, "eps": 96, "grp": 89, "grp2w": 80, "grp4w": 81, "ptp": 6.091954, "fromPivot": null, "abovePivot": false, "base": "Cup Without Handle", "ms": 82, "comp": 97.0, "roic": 39.0, "epsQ": 103.0, "epsY": 138.0, "ad": "B+", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 10, "sEps": 15, "sGrp": 0, "sPiv": 13, "sScreens": 8, "sBase": 18, "total": 63}, {"sym": "SHAILY", "name": "Shaily Engineering Plastics", "group": "Chemicals-Plastics      ", "price": 3268.8, "rs": 87, "rs2w": 91, "rs4w": 91, "rsDelta": -4, "eps": 87, "grp": 53, "grp2w": 49, "grp4w": 45, "ptp": null, "fromPivot": 1.079192, "abovePivot": true, "base": "Cup Without Handle", "ms": 69, "comp": 96.0, "roic": 30.0, "epsQ": 17.0, "epsY": 82.0, "ad": "A-", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 7, "sEps": 10, "sGrp": 4, "sPiv": 15, "sScreens": 8, "sBase": 16, "total": 60}, {"sym": "PRECWIRE", "name": "Precision Wires India", "group": "Electrical-Power/Equipmt", "price": 429.05, "rs": 91, "rs2w": 94, "rs4w": 91, "rsDelta": 0, "eps": 90, "grp": 56, "grp2w": 32, "grp4w": 26, "ptp": 8.224599, "fromPivot": -8.224599, "abovePivot": false, "base": "Cup Without Handle", "ms": 80, "comp": 93.0, "roic": 30.0, "epsQ": 67.0, "epsY": 70.0, "ad": "B", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 11, "sEps": 12, "sGrp": 4, "sPiv": 6, "sScreens": 8, "sBase": 17, "total": 59}, {"sym": "ANANTRAJ", "name": "Anant Raj", "group": "Real Estate Dvlpmt/Ops  ", "price": 614.6, "rs": 75, "rs2w": 70, "rs4w": 77, "rsDelta": -2, "eps": 90, "grp": 70, "grp2w": 76, "grp4w": 53, "ptp": 2.094767, "fromPivot": -2.094767, "abovePivot": false, "base": "Cup With Handle", "ms": 62, "comp": 92.0, "roic": 10.0, "epsQ": 13.0, "epsY": 27.0, "ad": "A+", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 3, "sEps": 9, "sGrp": 4, "sPiv": 17, "sScreens": 8, "sBase": 18, "total": 59}, {"sym": "OBEROIRLTY", "name": "Oberoi Realty", "group": "Real Estate Dvlpmt/Ops  ", "price": 1870.0, "rs": 74, "rs2w": 71, "rs4w": 74, "rsDelta": 0, "eps": 87, "grp": 70, "grp2w": 76, "grp4w": 53, "ptp": 4.625899, "fromPivot": null, "abovePivot": false, "base": "Cup With Handle", "ms": 62, "comp": 92.0, "roic": 17.0, "epsQ": 29.0, "epsY": 13.0, "ad": "A-", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 2, "sEps": 9, "sGrp": 4, "sPiv": 17, "sScreens": 8, "sBase": 18, "total": 58}, {"sym": "ENGINERSIN", "name": "Engineers India (Nse)", "group": "Comml Svcs-Outsourcing  ", "price": 254.83, "rs": 79, "rs2w": 78, "rs4w": 68, "rsDelta": 11, "eps": 88, "grp": 71, "grp2w": 96, "grp4w": 139, "ptp": 4.558052, "fromPivot": null, "abovePivot": false, "base": "Consolidation", "ms": 71, "comp": 89.0, "roic": 27.0, "epsQ": 142.0, "epsY": 19.0, "ad": "A+", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 9, "sEps": 12, "sGrp": 3, "sPiv": 17, "sScreens": 8, "sBase": 8, "total": 57}, {"sym": "GUFICBIO", "name": "Gufic Biosciences", "group": "Medical-Generic Drugs   ", "price": 418.0, "rs": 83, "rs2w": 88, "rs4w": 80, "rsDelta": 3, "eps": 79, "grp": 55, "grp2w": 40, "grp4w": 39, "ptp": 5.429864, "fromPivot": null, "abovePivot": false, "base": "Cup With Handle", "ms": 73, "comp": 85.0, "roic": 15.0, "epsQ": 71.0, "epsY": -8.0, "ad": "B", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 7, "sEps": 6, "sGrp": 4, "sPiv": 13, "sScreens": 8, "sBase": 18, "total": 57}, {"sym": "QPOWER", "name": "Quality Power Electrical Equipments Ltd", "group": "Electrical-Power/Equipmt", "price": 1313.2, "rs": 90, "rs2w": 82, "rs4w": 80, "rsDelta": 10, "eps": 97, "grp": 56, "grp2w": 32, "grp4w": 26, "ptp": 8.868841, "fromPivot": null, "abovePivot": false, "base": "Consolidation", "ms": 81, "comp": 99.0, "roic": 27.0, "epsQ": 49.0, "epsY": 72.0, "ad": "A", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 15, "sEps": 14, "sGrp": 4, "sPiv": 6, "sScreens": 8, "sBase": 9, "total": 56}, {"sym": "TATACAP", "name": "Tata Capital Ltd", "group": "Finance-Commercial Loans", "price": 364.45, "rs": 73, "rs2w": 75, "rs4w": 65, "rsDelta": 8, "eps": 87, "grp": 94, "grp2w": 79, "grp4w": 88, "ptp": 4.079484, "fromPivot": -4.079484, "abovePivot": false, "base": "Flat Base", "ms": 69, "comp": 90.0, "roic": 47.0, "epsQ": 46.0, "epsY": 26.0, "ad": "A-", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 6, "sEps": 11, "sGrp": 0, "sPiv": 17, "sScreens": 8, "sBase": 14, "total": 55}, {"sym": "INGERRAND", "name": "Ingersoll-Rand (Nse)", "group": "Machinery-Gen Industrial", "price": 4653.3, "rs": 74, "rs2w": 70, "rs4w": 77, "rsDelta": -3, "eps": 74, "grp": 38, "grp2w": 30, "grp4w": 21, "ptp": 2.16345, "fromPivot": -2.16345, "abovePivot": false, "base": "Flat Base", "ms": 64, "comp": 89.0, "roic": 57.0, "epsQ": 19.0, "epsY": -4.0, "ad": "B-", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 0, "sEps": 5, "sGrp": 9, "sPiv": 17, "sScreens": 8, "sBase": 14, "total": 53}, {"sym": "SHRIRAMFIN", "name": "Shriram Finance", "group": "Finance-Consumer Loans  ", "price": 1119.0, "rs": 85, "rs2w": 87, "rs4w": 84, "rsDelta": 1, "eps": 87, "grp": 87, "grp2w": 77, "grp4w": 82, "ptp": null, "fromPivot": 0.99278, "abovePivot": true, "base": "Consolidation", "ms": 67, "comp": 91.0, "roic": 18.0, "epsQ": 29.0, "epsY": 5.0, "ad": "A-", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 8, "sEps": 9, "sGrp": 1, "sPiv": 15, "sScreens": 8, "sBase": 8, "total": 49}, {"sym": "LTF", "name": "L&T Finance Ltd", "group": "Finance-Consumer Loans  ", "price": 315.85, "rs": 76, "rs2w": 78, "rs4w": 80, "rsDelta": -4, "eps": 86, "grp": 87, "grp2w": 77, "grp4w": 82, "ptp": 6.71884, "fromPivot": null, "abovePivot": false, "base": "Flat Base", "ms": 68, "comp": 89.0, "roic": 38.0, "epsQ": 28.0, "epsY": 12.0, "ad": "B", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 1, "sEps": 10, "sGrp": 1, "sPiv": 13, "sScreens": 8, "sBase": 14, "total": 47}, {"sym": "NATIONALUM", "name": "National Aluminium (Nse)", "group": "Metal Proc & Fabrication", "price": 403.3, "rs": 88, "rs2w": 86, "rs4w": 77, "rsDelta": 11, "eps": 78, "grp": 107, "grp2w": 91, "grp4w": 119, "ptp": 9.401305, "fromPivot": null, "abovePivot": false, "base": "Consolidation", "ms": 75, "comp": 91.0, "roic": 34.0, "epsQ": 91.0, "epsY": 10.0, "ad": "B", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 14, "sEps": 8, "sGrp": 3, "sPiv": 6, "sScreens": 8, "sBase": 9, "total": 47}, {"sym": "GOLDIAM", "name": "Goldiam International", "group": "Retail/Whlsle-Jewelry   ", "price": 360.55, "rs": 82, "rs2w": 84, "rs4w": 88, "rsDelta": -6, "eps": 87, "grp": 37, "grp2w": 28, "grp4w": 32, "ptp": 8.408461, "fromPivot": -8.408461, "abovePivot": false, "base": "Ascending Base", "ms": 72, "comp": 99.0, "roic": 20.0, "epsQ": 108.0, "epsY": 38.0, "ad": "A", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 4, "sEps": 11, "sGrp": 10, "sPiv": 6, "sScreens": 8, "sBase": 8, "total": 47}, {"sym": "BAJFINANCE", "name": "Bajaj Finance", "group": "Finance-Consumer Loans  ", "price": 1077.0, "rs": 72, "rs2w": 77, "rs4w": 74, "rsDelta": -2, "eps": 86, "grp": 87, "grp2w": 77, "grp4w": 82, "ptp": 2.312925, "fromPivot": -2.312925, "abovePivot": false, "base": "Consolidation", "ms": 67, "comp": 89.0, "roic": 46.0, "epsQ": 27.0, "epsY": 14.0, "ad": "B", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 1, "sEps": 10, "sGrp": 1, "sPiv": 17, "sScreens": 8, "sBase": 8, "total": 45}, {"sym": "POWERINDIA", "name": "Hitachi Energy India", "group": "Electrical-Power/Equipmt", "price": 33840.0, "rs": 86, "rs2w": 90, "rs4w": 91, "rsDelta": -5, "eps": 96, "grp": 56, "grp2w": 32, "grp4w": 26, "ptp": 12.749774, "fromPivot": null, "abovePivot": false, "base": "Consolidation", "ms": 82, "comp": 99.0, "roic": 26.0, "epsQ": 123.0, "epsY": 145.0, "ad": "B-", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 7, "sEps": 15, "sGrp": 4, "sPiv": 0, "sScreens": 8, "sBase": 10, "total": 43}, {"sym": "PICCADIL", "name": "Piccadily Agro Inds.", "group": "Food-Packaged           ", "price": 684.65, "rs": 74, "rs2w": 82, "rs4w": 80, "rsDelta": -6, "eps": 79, "grp": 67, "grp2w": 75, "grp4w": 86, "ptp": 14.336671, "fromPivot": -14.336671, "abovePivot": false, "base": "Cup With Handle", "ms": 54, "comp": 85.0, "roic": 20.0, "epsQ": 11.0, "epsY": 31.0, "ad": "B-", "screens": ["GSI_FormingBase"], "earnDays": null, "earnDate": null, "sRs": 0, "sEps": 6, "sGrp": 7, "sPiv": 0, "sScreens": 8, "sBase": 18, "total": 39}];
+
+function pctColor(pct){
+  if(pct>=.85) return '#3FB950';
+  if(pct>=.72) return '#58A6FF';
+  if(pct>=.58) return '#D29922';
+  return '#484F58';
+}
+function grpColor(g){
+  if(!g) return '#484F58';
+  if(g<=20) return '#3FB950'; if(g<=40) return '#58A6FF';
+  if(g<=60) return '#D29922'; return '#8B949E';
+}
+function tierInfo(score){
+  if(score>=85) return {label:'A · Buy',  col:'#3FB950',bg:'rgba(63,185,80,.18)',  border:'rgba(63,185,80,.4)'};
+  if(score>=72) return {label:'B · Watch',col:'#58A6FF',bg:'rgba(88,166,255,.15)', border:'rgba(88,166,255,.4)'};
+  if(score>=58) return {label:'C · Wait', col:'#D29922',bg:'rgba(210,153,34,.18)', border:'rgba(210,153,34,.4)'};
+  return              {label:'Skip',     col:'#8B949E',bg:'rgba(139,148,158,.1)', border:'rgba(139,148,158,.3)'};
+}
+function rsTrendColor(delta){
+  if(delta>=5) return '#3FB950'; if(delta<=-3) return '#F85149'; return '#8B949E';
+}
+function ptpHtml(ptp, abovePivot, fromPivot){
+  // MSI: fromPivot > 0 = above pivot (extended); < 0 = below pivot
+  if(abovePivot && fromPivot!=null && fromPivot>0){
+    const ext=fromPivot;
+    const col=ext<=5?'#3FB950':ext<=10?'#D29922':'#F85149';
+    return `<span style="color:${col};font-weight:600" title="Broke out — ${ext.toFixed(1)}% above pivot">🚀 +${ext.toFixed(1)}%</span>`;
+  }
+  // Derive ptp from fromPivot when ptp is missing
+  let v = ptp;
+  if((v==null||v<0) && fromPivot!=null && fromPivot<0) v=Math.abs(fromPivot);
+  if(v==null||v<0) return '<span style="color:#484F58">—</span>';
+  v=parseFloat(v);
+  let col,icon;
+  if(v<=2)      {col='#3FB950';icon='✅'}
+  else if(v<=5) {col='#00E676';icon='🟢'}
+  else if(v<=8) {col='#D29922';icon='🟡'}
+  else          {col='#8B949E';icon='⏳'}
+  return `<span style="color:${col};font-weight:600" title="${v.toFixed(1)}% to reach buy point">${icon} ${v.toFixed(1)}%</span>`;
+}
+function earnHtml(d,days){
+  if(!d||days==null) return '<span style="color:#484F58">—</span>';
+  const mm=d.slice(5).replace('-','‑');
+  if(days<=3)  return `<span style="color:#F85149;font-weight:600">⚡ ${mm} <small>(${days}d)</small></span>`;
+  if(days<=7)  return `<span style="color:#D29922;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  if(days<=14) return `<span style="color:#58A6FF;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  return '<span style="color:#484F58">—</span>';
+}
+function pivotCell(ptp, abovePivot, fp){
+  // Priority: if above pivot (fp > 0), show extended label
+  // Else if ptp available, show "X% (to pivot)"
+  // Else if fp < 0, derive from fp showing "X% (from pivot, below)"
+  if(abovePivot && fp!=null && fp>0){
+    const ext=parseFloat(fp);
+    const col=ext<=5?'#3FB950':ext<=10?'#D29922':'#F85149';
+    return `<span style="color:${col};font-weight:600" title="Already broke out. ${ext.toFixed(1)}% above buy point — buying here is chasing">🚀 +${ext.toFixed(1)}% <small style="color:var(--dim2)">(above pivot)</small></span>`;
+  }
+  // Use ptp if available
+  if(ptp!=null && ptp>=0){
+    const v=parseFloat(ptp);
+    let col,icon;
+    if(v<=2)      {col='#3FB950';icon='✅'}
+    else if(v<=5) {col='#00E676';icon='🟢'}
+    else if(v<=8) {col='#D29922';icon='🟡'}
+    else          {col='#8B949E';icon='⏳'}
+    return `<span style="color:${col};font-weight:600" title="${v.toFixed(1)}% rise needed to reach buy point">${icon} ${v.toFixed(1)}% <small style="color:var(--dim2)">(to pivot)</small></span>`;
+  }
+  // Fallback: derive from fp when fp < 0
+  if(fp!=null && fp<0){
+    const v=Math.abs(parseFloat(fp));
+    const col=v<=3?'#3FB950':v<=6?'#00E676':v<=10?'#D29922':'#8B949E';
+    const icon=v<=2?'✅':v<=5?'🟢':v<=8?'🟡':'⏳';
+    return `<span style="color:${col};font-weight:600" title="${v.toFixed(1)}% rise needed to reach buy point (from MSI from-pivot field)">${icon} ${v.toFixed(1)}% <small style="color:var(--dim2)">(from pivot, below)</small></span>`;
+  }
+  return '<span style="color:var(--dim2)">—</span>';
+}
+
+function screenBadges(screens){
+  const MAP={
+    MS_Screens:    ['MS Screens',  'rgba(163,113,247,.18)','#A371F7','rgba(163,113,247,.4)'],
+    RS_Momentum:   ['RS Momentum', 'rgba(88,166,255,.15)', '#58A6FF','rgba(88,166,255,.4)'],
+    GSI_FormingBase:['GSI Forming','rgba(63,185,80,.15)',  '#3FB950','rgba(63,185,80,.4)'],
+    HC_Pivot:      ['HC Pivot',    'rgba(210,153,34,.18)', '#D29922','rgba(210,153,34,.4)'],
+  };
+  return screens.map(sc=>{
+    const[lab,bg,col,border]=MAP[sc]||[sc,'rgba(100,100,100,.18)','#8B949E','rgba(100,100,100,.3)'];
+    return `<span class="badge" style="background:${bg};color:${col};border:1px solid ${border}">${lab}</span>`;
+  }).join('');
+}
+function scoreBar(val,max,col){
+  const pct=val/max*100;
+  return `<div class="bar-wrap"><div class="bar-fill" style="width:${pct.toFixed(0)}%;background:${col}"></div></div>
+          <span style="font-size:11px;font-weight:600;color:${col};margin-left:5px">${val}/${max}</span>`;
+}
+
+function buildTable(){
+  const tbody=document.getElementById('rankBody');
+  DATA.forEach((s,i)=>{
+    const pct=s.total/120, sc=pctColor(pct), ti=tierInfo(s.total);
+    const rc=rsTrendColor(s.rsDelta);
+    const arrow=s.rsDelta>=4?'↑':s.rsDelta<=-3?'↓':'→';
+    tbody.innerHTML+=`
+    <tr class="clickable" onclick="switchToDetail('${s.sym}')">
+      <td style="color:var(--dim2);font-size:11px">${i+1}</td>
+      <td><a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-family:monospace;font-weight:700;font-size:13px;color:var(--blue);text-decoration:none" title="Open ${s.sym} on MarketSmith">${s.sym} ↗</a></td>
+      <td><span class="tier-pill" style="background:${ti.bg};color:${ti.col};border:1px solid ${ti.border}">${ti.label}</span></td>
+      <td style="text-align:center;font-size:14px;font-weight:800;color:${sc}">${Math.round(pct*100)}</td>
+      <td style="font-family:monospace;font-size:11px;color:${rc}">${s.rs4w}→${s.rs2w}→${s.rs} ${arrow}</td>
+      <td style="text-align:center;font-weight:700;color:${s.eps>=90?'#3FB950':'#D29922'}">${s.eps}</td>
+      <td style="text-align:center;font-weight:700;color:${grpColor(s.grp)}">${s.grp}</td>
+      <td>${pivotCell(s.ptp,s.abovePivot,s.fromPivot)}</td>
+      <td>${screenBadges(s.screens)||'<span style="color:var(--dim2);font-size:10px">—</span>'}</td>
+      <td>${earnHtml(s.earnDate,s.earnDays)}</td>
+    </tr>`;
+  });
+}
+
+function renderDetail(sym){
+  const s=DATA.find(x=>x.sym===sym);
+  if(!s) return;
+  const pct=s.total/120, sc=pctColor(pct), ti=tierInfo(s.total);
+  const rc=rsTrendColor(s.rsDelta);
+  const rsArrow=s.rsDelta>=4?'↑ Accelerating':s.rsDelta<=-3?'↓ Fading':'→ Stable';
+  const earnWarn=s.earnDays!=null&&s.earnDays<=3
+    ?`<div class="earn-warn">⚡ Earnings in ${s.earnDays}d (${s.earnDate}) — binary gap risk, wait for results</div>`:''
+  const realQ=Math.min(s.epsQ||0,300);
+  const baseNote=s.epsQ>300?` <span style="color:var(--yellow);font-size:10px">(base effect — real Qtr ≈ ${realQ}%)</span>`:'';
+
+  const dims=[
+    ['RS Quality',        s.sRs,  20,'#58A6FF'],
+    ['EPS Fundamentals',  s.sEps, 20,'#3FB950'],
+    ['Group Leadership',  s.sGrp, 20,'#A371F7'],
+    ['Pivot Readiness',   s.sPiv, 20,'#D29922'],
+    ['Screen Conviction', s.sScreens,20,'#FB8F44'],
+    ['Base Quality',      s.sBase,20,'#79C0FF'],
+  ];
+  const dimRows=dims.map(([d,v,m,c])=>`
+    <div class="dim-row">
+      <span style="font-size:11px;color:var(--dim);width:140px">${d}</span>
+      ${scoreBar(v,m,c)}
+    </div>`).join('');
+
+  document.getElementById('detailContent').innerHTML=`
+  <div class="card ${pct>=0.72?'top':''}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="background:#0D1117;border:2px solid ${sc};border-radius:6px;min-width:42px;height:42px;
+                    display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:${sc}">
+          ${Math.round(pct*100)}
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-size:19px;font-weight:800;color:var(--blue);font-family:monospace;text-decoration:none" title="Open on MarketSmith India">${s.sym} ↗</a>
+            <span class="tier-pill" style="background:${ti.bg};color:${ti.col};border:1px solid ${ti.border}">${ti.label}</span>
+          </div>
+          <div style="font-size:12px;color:var(--dim);margin-top:1px">${s.name}</div>
+          <div style="font-size:10px;color:var(--dim2);margin-top:1px">${s.group}</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:18px;font-weight:700">₹${s.price.toLocaleString('en-IN',{minimumFractionDigits:1})}</div>
+        <div style="margin-top:4px">${earnHtml(s.earnDate,s.earnDays)}</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:8px">${screenBadges(s.screens)||'<span style="color:var(--dim2);font-size:10px">No screener match</span>'}</div>
+    ${earnWarn}
+
+    <div class="metric-grid">
+      <div class="metric-box"><div class="mlabel">RS</div><div class="mval" style="color:${s.rs>=90?'#3FB950':'#58A6FF'}">${s.rs}</div></div>
+      <div class="metric-box"><div class="mlabel">EPS</div><div class="mval" style="color:${s.eps>=90?'#3FB950':'#D29922'}">${s.eps}</div></div>
+      <div class="metric-box"><div class="mlabel">Grp#</div><div class="mval" style="color:${grpColor(s.grp)}">${s.grp}</div></div>
+      <div class="metric-box">
+        <div class="mlabel" title="Pivot distance — to pivot (forming) or from pivot (extended)">Pivot</div>
+        <div style="font-size:13px;font-weight:700;margin-top:3px">${pivotCell(s.ptp,s.abovePivot,s.fromPivot)}</div>
+      </div>
+      <div class="metric-box"><div class="mlabel">ROIC</div><div class="mval" style="color:${(s.roic||0)>=25?'#3FB950':'#8B949E'}">${s.roic||'—'}%</div></div>
+      <div class="metric-box"><div class="mlabel">Master</div><div class="mval" style="color:${(s.ms||0)>=80?'#A371F7':'#8B949E'}">${s.ms}</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="inset">
+        <div style="font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:4px">RS Trend (4w → 2w → now)</div>
+        <div style="font-size:14px;font-weight:700;color:${rc};font-family:monospace">${s.rs4w} → ${s.rs2w} → ${s.rs}</div>
+        <div style="font-size:10px;color:${rc};margin-top:2px">${rsArrow} (Δ${s.rsDelta>=0?'+':''}${s.rsDelta})</div>
+      </div>
+      <div class="inset">
+        <div style="font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:4px">EPS Growth</div>
+        <div style="font-size:13px;font-weight:700;color:${realQ>=60?'#3FB950':'#D29922'}">+${(s.epsQ||0).toFixed(0)}% last qtr${baseNote}</div>
+        <div style="font-size:10px;color:var(--dim);margin-top:2px">+${(s.epsY||0).toFixed(0)}% yr · Base: ${s.base||'—'} · A/D: ${s.ad||'—'}</div>
+      </div>
+    </div>
+
+    <div style="padding:8px 0">${dimRows}</div>
+  </div>`;
+}
+
+function switchTab(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+function switchToDetail(sym){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-detail').classList.add('active');
+  document.querySelectorAll('.tab')[1].classList.add('active');
+  document.getElementById('stockSel').value=sym;
+  renderDetail(sym);
+}
+
+// Init
+buildTable();
+const sel=document.getElementById('stockSel');
+DATA.forEach(s=>{
+  const o=document.createElement('option');
+  o.value=s.sym; o.text=`${s.sym} — ${s.name}`;
+  sel.appendChild(o);
+});
+renderDetail(DATA[0].sym);
+</script>
+
+<div style="margin-top:16px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--dim2);text-align:center">
+  Generated 2026-08-25 · MarketSmith India × GSI time-series · Not investment advice
+</div>
+</body>
+</html>

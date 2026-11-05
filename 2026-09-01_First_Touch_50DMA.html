@@ -1,0 +1,78 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>First Touch 50DMA — 2026-09-01</title><style>
+:root{color-scheme:light;--bg:#0D1117;--surface:#161B22;--border:#21262D;--border2:#30363D;
+      --fg:#E6EDF3;--dim:#8B949E;--dim2:#484F58;
+      --green:#3FB950;--blue:#58A6FF;--purple:#A371F7;
+      --yellow:#D29922;--red:#F85149;--teal:#00E676}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     font-size:13px;line-height:1.5;padding:20px;max-width:1080px;margin:0 auto}
+h1{font-size:22px;margin-bottom:4px}
+h2{font-size:15px;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border2)}
+p{margin-bottom:8px}
+p.sub{color:var(--dim);margin-bottom:14px}
+table{width:100%;border-collapse:collapse;margin-bottom:6px}
+th{padding:5px 8px 8px;font-size:10px;color:#FFFFFF;text-transform:uppercase;background:#161B22;
+   border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--dim)}
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:14px 16px;margin-bottom:14px}
+.card.warn{border-left:3px solid var(--yellow)}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:800}
+.tier-a{background:rgba(63,185,80,.20);color:var(--green)}
+.tier-b{background:rgba(88,166,255,.18);color:var(--blue)}
+.caution{background:rgba(248,81,73,.16);color:var(--red)}
+details{margin-bottom:14px}
+summary{cursor:pointer;color:var(--dim);font-size:12.5px;padding:6px 0}
+</style></head><body>
+
+<h1>🩳 First Touch 50DMA Watchlist</h1>
+<p class="sub">2026-09-01 · Stage 1 screened 5,819 stocks (MarketSmith snapshot only) &rarr;
+4 candidates &rarr; 1 priced &amp; uptrend-confirmed</p>
+
+<div class="card warn">
+<b>Market status: Uptrend Under Pressure</b> (since 2026-05-13, Nifty
++2.85%). Treat this page as watch-list, not entry signals, while the market
+isn't in a confirmed uptrend.
+</div>
+
+<h2>🥇 Tier A — first touch, tight MA confluence, Group Rank ≤40</h2>
+<p class='muted'>none</p>
+
+<h2>🥈 Tier B — first touch, Group Rank ≤60</h2>
+<p class='muted'>none</p>
+
+<h2>⚠️ Caution — already touched the 50DMA and got rejected</h2>
+<p class="muted">Not a buy list. A prior failed test is a warning sign per Charles Harris:
+"loss after loss after loss is my best indication something is happening."</p>
+<table><thead><tr><th>Symbol</th><th>Group</th><th># rejected</th><th>Rejection date(s)</th><th>Today's touch</th></tr></thead><tbody><tr><td><a href='https://marketsmithindia.com/mstool/eval/spectrum/evaluation.jsp#/' target='_blank' rel='noopener'><b>SPECTRUM</b></a></td><td class='muted'>Electrical-Power/Equipmt</td><td class='num'>4</td><td class='muted'>2025-08-26, 2025-11-07, 2025-11-19, 2026-04-07</td><td>same leg as the rejection</td></tr></tbody></table>
+
+<h2>Method</h2>
+<p><b>Stage 1</b> (MarketSmith snapshot fields only, no price fetch): the 50DMA and 52-week-high
+price levels are back-computed from <code>Pct_Chg_vs_50DMA</code> and <code>Pct_from_52W_High</code>,
+then filtered to stocks touching the 50DMA now, with the 52W-high sitting &ge;20% above
+it (a real prior rally), RS&ge;80, Composite&ge;80, Group Rank&le;60.</p>
+<p><b>Stage 2</b> (actual daily OHLC, survivors only): confirms rising 50DMA + above 200DMA, then
+scans up to 252 prior sessions for touch events — a stock is "first touch" only if no
+earlier touch occurred since its current up-leg began. Any prior touch (this leg or before) that
+closed &le;-5% below the 50DMA within 10 sessions is logged as
+rejected. MA confluence = the spread across 10DMA/21EMA/50DMA as a %% of price, tight when
+&le;4%.</p>
+
+<h2>Caveats</h2>
+<ul>
+<li>Stage 1's 50DMA/52W-high levels are back-computed estimates from MSI's percentage fields, not
+the exact chart values — Stage 2 recomputes both precisely from real OHLC for anything shown here.</li>
+<li>"Touching" uses the session's low/high range, not just the close — a name can show as touching
+even if it closed well above the line.</li>
+<li>In-sample thresholds (touch band, min-gap, confluence-max) are reasoned defaults, not backtested
+for this specific screen — see <a href="#">wiki/strategies/Buying-Pullbacks.md</a> for the related
+backtests that are.</li>
+</ul>
+
+<p class="muted" style="margin-top:20px">Generated 2026-09-01 · <code>first_touch_50dma_watchlist.py</code></p>
+
+</body></html>

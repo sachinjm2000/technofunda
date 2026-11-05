@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-09-02 RS Momentum Radar</title>
+<style>
+:root{color-scheme:light;--bg:#0D1117;--surface:#161B22;--border:#21262D;--border2:#30363D;
+      --fg:#E6EDF3;--dim:#8B949E;--dim2:#484F58;
+      --green:#3FB950;--blue:#58A6FF;--purple:#A371F7;
+      --yellow:#D29922;--red:#F85149;--teal:#00E676}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     font-size:13px;line-height:1.5;padding:20px;max-width:1040px;margin:0 auto}
+.tabs{display:flex;gap:4px;margin-bottom:16px}
+.tab-btn{padding:5px 16px;border-radius:20px;border:1px solid var(--border2);cursor:pointer;
+         font-size:11px;color:var(--dim);background:transparent;transition:all .15s}
+.tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+table{width:100%;border-collapse:collapse}
+th{padding:5px 8px 8px;font-size:10px;color:#FFFFFF;text-transform:uppercase;background:#161B22;
+   border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr.clickable{cursor:pointer}tr.clickable:hover td{background:rgba(255,255,255,.025)}
+.badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;margin-right:3px}
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:16px;margin-bottom:12px}
+.metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;
+             background:#161B22;border:1px solid var(--border2);border-radius:6px;padding:12px;margin-bottom:10px}
+.metric-box{text-align:center;background:#0D1117;border:1px solid #21262D;border-radius:5px;padding:8px 4px}
+.metric-box .mlabel{font-size:9px;color:#FFFFFF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.metric-box .mval{font-size:17px;font-weight:800;line-height:1.2}
+select{background:var(--surface);border:1px solid var(--border2);color:var(--fg);
+       padding:4px 8px;border-radius:4px;font-size:12px}
+/* Light theme pinned on: this was @media(prefers-color-scheme:light), which
+   made pages follow the OS and flip dark at night. `@media all` always
+   matches, so these overrides win in both OS modes. */
+@media all{
+  :root{--bg:#f6f8fa;--surface:#fff;--border:#e1e4e8;--border2:#d0d7de;
+        --fg:#24292f;--dim:#57606a;--dim2:#6e7781}
+}
+</style>
+</head>
+<body>
+
+<div style="padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:20px">
+  <div style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Daily Radar · 2026-09-02</div>
+  <div style="font-size:24px;font-weight:800">📈 RS Momentum Leaders</div>
+  <div style="font-size:12px;color:var(--dim);margin-top:4px">
+    12 stocks · biggest RS improvement · ranked by 1W jump → 2W → 3W · today=2026-09-02 · 1W=2026-08-26 · 2W=2026-08-19 · 3W=2026-08-12
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('tab-table',this)">📋 Table</button>
+  <button class="tab-btn" onclick="switchTab('tab-detail',this)">🔍 Detail</button>
+  <button class="tab-btn" onclick="switchTab('tab-method',this)">📖 Method</button>
+</div>
+
+<div id="tab-table" class="tab-pane active">
+<div style="overflow-x:auto">
+<table>
+  <thead><tr>
+    <th>#</th><th>Symbol</th><th>Name</th>
+    <th>RS</th><th>1W▲</th><th>2W</th><th>3W</th>
+    <th>A/D</th><th>Status</th><th>Base / Stage</th><th>₹Cr/day</th><th>Grp#</th><th>AI</th><th>Pivot</th><th>MSI Lists</th><th>Earnings</th>
+  </tr></thead>
+  <tbody id="tableBody"></tbody>
+</table>
+</div>
+</div>
+
+<div id="tab-detail" class="tab-pane">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <span style="color:var(--dim);font-size:11px">Select stock:</span>
+    <select id="stockSel" onchange="renderDetail(this.value)"></select>
+  </div>
+  <div id="detailContent"></div>
+</div>
+
+<div id="tab-method" class="tab-pane">
+<div class="card">
+  <div style="font-size:14px;font-weight:700;margin-bottom:10px">RS Momentum Selection</div>
+  <p style="color:var(--dim);font-size:12px;line-height:1.7">
+    RS Momentum selects stocks where RS is accelerating fastest over 1W/2W/3W.<br>
+    <b style="color:var(--fg)">Ranking:</b> 1W jump × 3 + 2W × 1 + 3W × 0.5 + Blue Dots × 2.<br>
+    <b style="color:var(--fg)">Filter:</b> RS≥70, 1W jump≥+5, MCap≥₹300Cr, Group≤130, AD≥B−, GSI=Forming Base or Buy Zone, ≤5% from pivot.<br><br>
+    Rising RS while price still in base = institutional buying before breakout is visible to the market.
+  </p>
+</div>
+</div>
+
+<script>
+const DATA = [{"sym": "ELECTCAST", "name": "Electrosteel (Nse) Castings", "rs": 70, "rs1w": 49, "rs2w": 35, "rs3w": 30, "d1w": 21, "d2w": 35, "d3w": 40, "eps": 21, "comp": 45, "grp": 81, "grpMom": 12, "price": 83.83, "vs52": -19.36, "bd": 0, "ad": "A+", "status": "Forming", "btype": "Consolidation", "bstage": "1", "turn": 14.2, "msi": "", "ptp": 12.586027, "fromPivot": null, "abovePivot": false, "rsDelta": 35, "pivAge": null, "ai": "Medium", "ca": "Forming Base", "base": "Forming", "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "FMGOETZE", "name": "Federal-Mul.Gtz. (Nse) (India)", "rs": 89, "rs1w": 80, "rs2w": 50, "rs3w": 61, "d1w": 9, "d2w": 39, "d3w": 28, "eps": 64, "comp": 87, "grp": 42, "grpMom": 10, "price": 624.85, "vs52": -2.53, "bd": 3, "ad": "A-", "status": "Complete", "btype": "Cup Without Handle", "bstage": "2", "turn": 89.4, "msi": "<div style=\"display:flex;gap:4px;flex-wrap:wrap;margin-top:6px\"><span title=\"Up On Volume\" style=\"border:1px solid #D29922;color:#D29922;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Up Vol</span><span title=\"Breaking Out Today-Weekly Bases\" style=\"border:1px solid #F78166;color:#F78166;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Breaking Out!</span><span title=\"Blue Dot List\" style=\"border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">● Blue Dot</span><span title=\"Price Gaps Up\" style=\"border:1px solid #D29922;color:#D29922;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Gap↑</span></div>", "ptp": null, "fromPivot": 0.458215, "abovePivot": true, "rsDelta": 39, "pivAge": 2.0, "ai": "Medium", "ca": "Forming Base", "base": "Complete", "ms_lists": ["Up On Volume", "Breaking Out Today-Weekly Bases", "Blue Dot List", "Price Gaps Up", "All-In-One Screen"], "earnDate": null, "earnDays": null}, {"sym": "JTLIND", "name": "Jtl Industries", "rs": 86, "rs1w": 76, "rs2w": 71, "rs3w": 74, "d1w": 10, "d2w": 15, "d3w": 12, "eps": 73, "comp": 92, "grp": 76, "grpMom": 18, "price": 87.97, "vs52": -4.58, "bd": 3, "ad": "A-", "status": "Complete", "btype": "Cup Without Handle", "bstage": "1b", "turn": 26.5, "msi": "<div style=\"display:flex;gap:4px;flex-wrap:wrap;margin-top:6px\"><span title=\"Recent Breakouts\" style=\"border:1px solid #F78166;color:#F78166;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Recent BO</span><span title=\"Minervini TT 1 Month\" style=\"border:1px solid #FFA198;color:#FFA198;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Minervini 1M</span><span title=\"Blue Dot List\" style=\"border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">● Blue Dot</span></div>", "ptp": null, "fromPivot": 0.883028, "abovePivot": true, "rsDelta": 15, "pivAge": 3.0, "ai": "High", "ca": "Buy Zone", "base": "Complete", "ms_lists": ["Recent Breakouts", "Minervini TT 1 Month", "Blue Dot List", "All-In-One Screen"], "earnDate": null, "earnDays": null}, {"sym": "HARSHA", "name": "Harsha Engineers International", "rs": 76, "rs1w": 68, "rs2w": 70, "rs3w": 57, "d1w": 8, "d2w": 6, "d3w": 19, "eps": 53, "comp": 84, "grp": 36, "grpMom": 0, "price": 453.7, "vs52": -3.26, "bd": 6, "ad": "B+", "status": "Forming", "btype": "Consolidation", "bstage": "1", "turn": 8.3, "msi": "<div style=\"display:flex;gap:4px;flex-wrap:wrap;margin-top:6px\"><span title=\"Near Pivot Stocks\" style=\"border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Near Pivot</span><span title=\"Minervini TT 1 Month\" style=\"border:1px solid #FFA198;color:#FFA198;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Minervini 1M</span><span title=\"Blue Dot List\" style=\"border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">● Blue Dot</span><span title=\"New High In RS Line\" style=\"border:1px solid #3FB950;color:#3FB950;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">RS Line High</span><span title=\"Top Rated IPOs\" style=\"border:1px solid #A371F7;color:#A371F7;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Top IPO</span></div>", "ptp": 3.26226, "fromPivot": null, "abovePivot": false, "rsDelta": 6, "pivAge": null, "ai": "Medium", "ca": "Buy Zone", "base": "Forming", "ms_lists": ["Near Pivot Stocks", "Minervini TT 1 Month", "Blue Dot List", "New High In RS Line", "Top Rated IPOs", "All-In-One Screen"], "earnDate": null, "earnDays": null}, {"sym": "INGERRAND", "name": "Ingersoll-Rand (Nse)", "rs": 82, "rs1w": 73, "rs2w": 78, "rs3w": 72, "d1w": 9, "d2w": 4, "d3w": 10, "eps": 74, "comp": 90, "grp": 36, "grpMom": 0, "price": 4794.0, "vs52": -2.86, "bd": 3, "ad": "B-", "status": "Complete", "btype": "Flat Base", "bstage": "1b", "turn": 12.1, "msi": "<div style=\"display:flex;gap:4px;flex-wrap:wrap;margin-top:6px\"><span title=\"Minervini TT 5 Months\" style=\"border:1px solid #E3B341;color:#E3B341;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Minervini 5M</span><span title=\"Blue Dot List\" style=\"border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">● Blue Dot</span></div>", "ptp": null, "fromPivot": 0.794773, "abovePivot": true, "rsDelta": 4, "pivAge": 13.0, "ai": "Medium", "ca": "Buy Zone", "base": "Complete", "ms_lists": ["Minervini TT 5 Months", "Blue Dot List", "All-In-One Screen"], "earnDate": null, "earnDays": null}, {"sym": "SHYAMMETL", "name": "Shyam Metalics And Energy", "rs": 79, "rs1w": 73, "rs2w": 71, "rs3w": 73, "d1w": 6, "d2w": 8, "d3w": 6, "eps": 51, "comp": 76, "grp": 76, "grpMom": 18, "price": 1078.0, "vs52": -2.97, "bd": 3, "ad": "B+", "status": "Complete", "btype": "Flat Base", "bstage": "1d", "turn": 61.0, "msi": "<div style=\"display:flex;gap:4px;flex-wrap:wrap;margin-top:6px\"><span title=\"Minervini TT 1 Month\" style=\"border:1px solid #FFA198;color:#FFA198;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Minervini 1M</span><span title=\"Blue Dot List\" style=\"border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">● Blue Dot</span></div>", "ptp": null, "fromPivot": -1.100917, "abovePivot": false, "rsDelta": 8, "pivAge": 3.0, "ai": "Medium", "ca": "Buy Zone", "base": "Complete", "ms_lists": ["Minervini TT 1 Month", "Blue Dot List"], "earnDate": null, "earnDays": null}, {"sym": "GARFIBRES", "name": "Garware Technical Fibres Ltd", "rs": 81, "rs1w": 75, "rs2w": 72, "rs3w": 75, "d1w": 6, "d2w": 9, "d3w": 6, "eps": 59, "comp": 84, "grp": 65, "grpMom": 4, "price": 842.7, "vs52": -2.4, "bd": 2, "ad": "A", "status": "Complete", "btype": "Flat Base", "bstage": "1", "turn": 5.9, "msi": "<div style=\"display:flex;gap:4px;flex-wrap:wrap;margin-top:6px\"><span title=\"Blue Dot List\" style=\"border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">● Blue Dot</span></div>", "ptp": null, "fromPivot": 2.937776, "abovePivot": true, "rsDelta": 9, "pivAge": 19.0, "ai": "Medium", "ca": "Buy Zone", "base": "Complete", "ms_lists": ["Blue Dot List", "All-In-One Screen"], "earnDate": null, "earnDays": null}, {"sym": "VRLLOG", "name": "Vrl Logistics", "rs": 76, "rs1w": 70, "rs2w": 74, "rs3w": 72, "d1w": 6, "d2w": 2, "d3w": 4, "eps": 78, "comp": 92, "grp": 80, "grpMom": 8, "price": 299.85, "vs52": -3.34, "bd": 4, "ad": "A", "status": "Forming", "btype": "Consolidation", "bstage": "1", "turn": 13.1, "msi": "<div style=\"display:flex;gap:4px;flex-wrap:wrap;margin-top:6px\"><span title=\"Blue Dot List\" style=\"border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">● Blue Dot</span><span title=\"New High In RS Line\" style=\"border:1px solid #3FB950;color:#3FB950;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">RS Line High</span></div>", "ptp": 7.596271, "fromPivot": null, "abovePivot": false, "rsDelta": 2, "pivAge": null, "ai": "Medium", "ca": "Forming Base", "base": "Forming", "ms_lists": ["Blue Dot List", "New High In RS Line", "All-In-One Screen"], "earnDate": null, "earnDays": null}, {"sym": "GRAPHITE", "name": "Graphite India (Nse)", "rs": 75, "rs1w": 66, "rs2w": 74, "rs3w": 77, "d1w": 9, "d2w": 1, "d3w": -2, "eps": 29, "comp": 70, "grp": 56, "grpMom": 1, "price": 732.9, "vs52": -8.66, "bd": 0, "ad": "A", "status": "Complete", "btype": "Cup With Handle", "bstage": "2b", "turn": 99.7, "msi": "", "ptp": null, "fromPivot": -1.597758, "abovePivot": false, "rsDelta": 1, "pivAge": 14.0, "ai": "Medium", "ca": "Buy Zone", "base": "Complete", "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "FINEORG", "name": "Fine Organic Inds", "rs": 75, "rs1w": 69, "rs2w": 71, "rs3w": 73, "d1w": 6, "d2w": 4, "d3w": 2, "eps": 59, "comp": 84, "grp": 40, "grpMom": -1, "price": 5255.5, "vs52": -2.8, "bd": 0, "ad": "B+", "status": "Complete", "btype": "Cup With Handle", "bstage": "1c", "turn": 14.1, "msi": "<div style=\"display:flex;gap:4px;flex-wrap:wrap;margin-top:6px\"><span title=\"Near Pivot Stocks\" style=\"border:1px solid #79C0FF;color:#79C0FF;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Near Pivot</span><span title=\"Minervini TT 1 Month\" style=\"border:1px solid #FFA198;color:#FFA198;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">Minervini 1M</span><span title=\"Blue Dot List\" style=\"border:1px solid #FFD600;color:#FFD600;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default\">● Blue Dot</span></div>", "ptp": null, "fromPivot": -2.128589, "abovePivot": false, "rsDelta": 4, "pivAge": 9.0, "ai": "High", "ca": "Buy Zone", "base": "Complete", "ms_lists": ["Near Pivot Stocks", "Minervini TT 1 Month", "Blue Dot List", "Top Indian Investors", "All-In-One Screen"], "earnDate": null, "earnDays": null}, {"sym": "POLYMED", "name": "Poly Medicure", "rs": 76, "rs1w": 71, "rs2w": 75, "rs3w": 67, "d1w": 5, "d2w": 1, "d3w": 9, "eps": 54, "comp": 84, "grp": 33, "grpMom": -12, "price": 1756.4, "vs52": -18.11, "bd": 0, "ad": "A-", "status": "Complete", "btype": "Flat Base", "bstage": "1", "turn": 26.4, "msi": "", "ptp": null, "fromPivot": -1.159257, "abovePivot": false, "rsDelta": 1, "pivAge": 17.0, "ai": "Medium", "ca": "Buy Zone", "base": "Complete", "ms_lists": [], "earnDate": null, "earnDays": null}, {"sym": "SMLMAH", "name": "SML Mahindra Ltd", "rs": 91, "rs1w": 86, "rs2w": 90, "rs3w": 90, "d1w": 5, "d2w": 1, "d3w": 1, "eps": 70, "comp": 84, "grp": 122, "grpMom": -7, "price": 5412.5, "vs52": -9.61, "bd": 1, "ad": "A-", "status": "Complete", "btype": "Cup Without Handle", "bstage": "2b", "turn": 94.1, "msi": "<div style=\"display:flex;gap:4px;flex-wrap:wrap;margin-top:6px\"></div>", "ptp": null, "fromPivot": 1.206058, "abovePivot": true, "rsDelta": 1, "pivAge": 24.0, "ai": "High", "ca": "Forming Base", "base": "Complete", "ms_lists": ["Top Indian Investors"], "earnDate": null, "earnDays": null}];
+
+// Caution flag. Identical meaning on every tab: RS is falling. Kept in sync
+// with screen_common.caution_flag() -- if one changes, change both.
+function cautionFlag(s){
+  // Crossed above the buy point, then fell back below it, base <= 25 sessions.
+  // Same single condition as screen_common.caution_reasons().
+  if(s.fromPivot==null || s.fromPivot>=0) return '';
+  if(s.pivAge==null || s.pivAge>25) return '';
+  const tip=`Caution: crossed the buy point ${Math.round(s.pivAge)} sessions ago and has since fallen ${Math.abs(s.fromPivot).toFixed(1)}% back below it.`;
+  return ` <span title="${tip}" style="color:#9a6700;cursor:default;font-size:11px">&#9888;</span>`;
+}
+
+// Distance to the buy point. One scale across every tab:
+//   -5.8%          has NOT broken out, still 5.8% below the pivot
+//   ^+0.1% . 3d    crossed the pivot 3 trading days ago, 0.1% above it
+// A negative "from pivot" cannot pass the gate, so the red branch is a
+// defensive fallback only -- it must never read as buyable.
+function pivotCell(ptp, abovePivot, fp, age){
+  if(abovePivot && fp!=null && fp>0){
+    const ext=parseFloat(fp);
+    const d=(age!=null)?' &middot; '+Math.round(age)+'d':'';
+    const tip=(age!=null)
+      ? 'Fresh breakout - crossed the buy point '+Math.round(age)+' trading days ago and is '+ext.toFixed(1)+'% above it.'
+      : 'Already broke out - '+ext.toFixed(1)+'% above the buy point.';
+    return `<span style="color:#6e7781;font-weight:600;white-space:nowrap" title="${tip}">&#94;+${ext.toFixed(1)}%${d}</span>`;
+  }
+  if(ptp!=null && ptp>=0){
+    const v=parseFloat(ptp);
+    const col=v<=2?'#1a7f37':v<=8?'#9a6700':'#6e7781';
+    return `<span style="color:${col};font-weight:600;white-space:nowrap" title="Has not broken out yet - still ${v.toFixed(1)}% below the buy point.">-${v.toFixed(1)}%</span>`;
+  }
+  if(fp!=null && fp<0){
+    const und=Math.abs(parseFloat(fp));
+    const d=(age!=null)?' &middot; '+Math.round(age)+'d':'';
+    return `<span style="color:#9a6700;font-weight:600;white-space:nowrap" title="Crossed the buy point${age!=null?' '+Math.round(age)+' trading days ago':''} and has pulled back ${und.toFixed(1)}% below it - a retest, not a stale breakout.">&#94;-${und.toFixed(1)}%${d}</span>`;
+  }
+  return '<span style="color:var(--dim2)">—</span>';
+}
+function earnHtml(d,days){
+  if(!d||days==null) return '<span style="color:var(--dim2)">—</span>';
+  const mm=d.slice(5).replace('-','‑');
+  if(days<=3)  return `<span style="color:#F85149;font-weight:600">⚡ ${mm} <small>(${days}d)</small></span>`;
+  if(days<=7)  return `<span style="color:#D29922;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  if(days<=14) return `<span style="color:#58A6FF;font-weight:600">📅 ${mm} <small>(${days}d)</small></span>`;
+  return '<span style="color:var(--dim2)">—</span>';
+}
+function msiPills(lists){
+  const M={
+    "Greatest Improvement In Masterscore":["↑ MS","#58A6FF"],
+    "Highest EPS & Relative Strength":["Hi EPS+RS","#A371F7"],
+    "Up On Volume":["Up Vol","#D29922"],
+    "Breaking Out Today-Weekly Bases":["Breaking Out!","#F78166"],
+    "Growth 50":["Growth 50","#00E676"],
+    "Near Pivot Stocks":["Near Pivot","#79C0FF"],
+    "Minervini TT 5 Months":["Minervini 5M","#E3B341"],
+    "Minervini TT 1 Month":["Minervini 1M","#FFA198"],
+    "Blue Dot List":["● Blue Dot","#FFD600"],
+    "New High With Best EPS Rank":["Hi EPS NH","#C9B8FF"],
+    "Largest Quarterly EPS % Changes":["Big EPS Qtr","#00E676"],
+    "New High In RS Line":["RS Line Hi","#3FB950"],
+    "Potential High Tight Flag":["HTF","#F78166"],
+  };
+  return lists.map(l=>{
+    const[ab,col]=M[l]||[l.slice(0,10),'#8B949E'];
+    return `<span class="badge" style="border:1px solid ${col};color:${col};background:transparent">${ab}</span>`;
+  }).join('');
+}
+function grpColor(g){
+  if(!g) return '#484F58';
+  if(g<=20) return '#3FB950'; if(g<=40) return '#58A6FF';
+  if(g<=60) return '#D29922'; return '#8B949E';
+}
+function deltaColor(d){
+  if(d>=8) return '#3FB950'; if(d>=4) return '#00E676';
+  if(d>0) return '#D29922'; return '#F85149';
+}
+function aiHtml(ai){
+  if(ai==='High')   return '<span style="background:rgba(63,185,80,.15);color:#3FB950;border:1px solid rgba(63,185,80,.4);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">HIGH</span>';
+  if(ai==='Medium') return '<span style="background:rgba(210,153,34,.15);color:#D29922;border:1px solid rgba(210,153,34,.4);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">MED</span>';
+  return '<span style="color:var(--dim2)">—</span>';
+}
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function switchToDetail(sym){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-detail').classList.add('active');
+  document.querySelectorAll('.tab-btn')[1].classList.add('active');
+  renderDetail(sym);
+}
+
+function stageCell(ty,st){
+  const A={"Cup With Handle":"CwH","Cup Without Handle":"Cup","Double Bottom":"DB",
+           "Flat Base":"Flat","Consolidation":"Consol","Ascending Base":"Asc",
+           "IPO Base":"IPO","Saucer With Handle":"SauH","Saucer Without Handle":"Sau"};
+  const a=A[String(ty||'').trim()]||String(ty||'').trim().slice(0,6);
+  const s=String(st||'').trim();
+  if(!a&&!s) return '<span style="color:var(--dim2)">—</span>';
+  const n=parseInt(s,10)||0;
+  const c=(n&&n<=2)?'#1a7f37':(n===3?'#9a6700':(n>=4?'#cf222e':'#6e7781'));
+  return '<span style="color:'+c+';font-weight:700;white-space:nowrap;font-size:11px">'+(a+' '+s).trim()+'</span>';
+}
+function turnCell(v){
+  if(v==null) return '<span style="color:var(--dim)">—</span>';
+  return '<span style="font-weight:600;color:'+(v>=5?'#1a7f37':'#9a6700')+'">'+v.toFixed(1)+'</span>';
+}
+function statusPill(v){
+  const M={Forming:['Forming','#0969da','rgba(9,105,218,.12)'],
+           Complete:['Complete','#1a7f37','rgba(26,127,55,.12)'],
+           MaxOut:['Max Out','#9a6700','rgba(154,103,0,.12)'],
+           Failed:['Failed','#cf222e','rgba(207,34,46,.12)']};
+  const e=M[String(v||'').trim()];
+  if(!e) return '<span style="color:var(--dim2)">—</span>';
+  return '<span style="background:'+e[2]+';color:'+e[1]+';border:1px solid '+e[1]+
+         ';border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap">'+e[0]+'</span>';
+}
+function adColor(ad){
+  // same A/D banding as ms_screens_watchlist.py
+  const S={"E":0,"D-":1,"D":2,"C-":3,"C":4,"C+":5,"B-":6,"B":7,"B+":8,"A-":9,"A":10,"A+":11};
+  const v=S[String(ad).trim()];
+  if(v===undefined) return 'var(--dim2)';
+  if(v>=9) return '#00E676';
+  if(v>=7) return '#3FB950';
+  if(v>=5) return '#D29922';
+  return '#F85149';
+}
+function buildTable(){
+  const tbody=document.getElementById('tableBody');
+  DATA.forEach((s,i)=>{
+    const d1c=deltaColor(s.d1w);
+    const gmS=s.grpMom>0?'+'+s.grpMom:s.grpMom<0?String(s.grpMom):'—';
+    const gmC=s.grpMom>0?'#3FB950':s.grpMom<0?'#F85149':'#484F58';
+    tbody.innerHTML+=`
+    <tr class="clickable" onclick="switchToDetail('${s.sym}')">
+      <td style="color:var(--dim2);font-size:11px">${i+1}</td>
+      <td><a href="https://marketsmithindia.com/mstool/eval/${s.sym.toLowerCase()}/evaluation.jsp#/" target="_blank" style="font-family:monospace;font-weight:700;font-size:13px;color:var(--blue);text-decoration:none" title="Open on MarketSmith">${s.sym} ↗</a>${cautionFlag(s)}</td>
+      <td style="color:var(--dim);font-size:11px">${s.name.slice(0,20)}</td>
+      <td style="font-weight:700;color:#3FB950">${s.rs!=null?s.rs:'—'}</td>
+      <td style="font-weight:700;color:${d1c}">${s.d1w>=0?'+':''}${s.d1w}</td>
+      <td style="color:#58A6FF">${s.d2w>=0?'+':''}${s.d2w}</td>
+      <td style="color:var(--dim)">${s.d3w>=0?'+':''}${s.d3w}</td>
+      <td style="font-weight:700;color:${adColor(s.ad)}">${s.ad||'—'}</td>
+      <td>${statusPill(s.status)}</td>
+      <td>${stageCell(s.btype,s.bstage)}</td>
+      <td>${turnCell(s.turn)}</td>
+      <td style="color:${grpColor(s.grp)}">${s.grp!=null?s.grp:'—'}</td>
+      <td>${aiHtml(s.ai)}</td>
+      <td>${pivotCell(s.ptp,s.abovePivot,s.fromPivot,s.pivAge)}</td>
+      <td style="max-width:160px">${s.msi||''}</td>
+      <td>${earnHtml(s.earnDate,s.earnDays)}</td>
+    </tr>`;
+  });
+}
+
+function renderDetail(sym){
+  const s=DATA.find(x=>x.sym===sym);
+  if(!s) return;
+  const rs2 = s.rs1w!=null ? s.rs1w : (s.rs!=null?s.rs-s.d2w:null);
+  const rs3 = s.rs2w!=null ? s.rs2w : null;
+  const trendStr = rs3!=null
+    ? `${rs3} → ${s.rs1w||'?'} → ${s.rs}`
+    : `${s.rs1w||'?'} → ${s.rs}`;
+  document.getElementById('detailContent').innerHTML=`
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div>
+        <span style="font-size:22px;font-weight:800;color:var(--blue);font-family:monospace">${s.sym}</span>
+        ${aiHtml(s.ai)}
+        <div style="font-size:12px;color:var(--dim);margin-top:2px">${s.name}</div>
+        <div style="font-size:10px;color:var(--dim2)">${s.base} · ${s.btype}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:18px;font-weight:700">₹${s.price.toLocaleString('en-IN',{minimumFractionDigits:1})}</div>
+        <div style="font-size:10px;color:${(s.vs52||0)>=-10?'#3FB950':'#D29922'}">${s.vs52!=null?s.vs52.toFixed(1)+'%':'—'} vs 52W</div>
+        <div style="margin-top:4px">${earnHtml(s.earnDate,s.earnDays)}</div>
+      </div>
+    </div>
+
+    <div style="background:#0D1117;border-radius:6px;padding:10px;margin-bottom:10px">
+      <div style="font-size:9px;color:#FFFFFF;text-transform:uppercase;margin-bottom:6px">RS Trend (3W → 2W → 1W → Now)</div>
+      <div style="font-size:16px;font-weight:800;font-family:monospace;color:#3FB950">${trendStr}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
+        <div style="text-align:center">
+          <div style="font-size:9px;color:var(--dim2);margin-bottom:3px">1W ▲</div>
+          <div style="font-size:16px;font-weight:700;color:${deltaColor(s.d1w)}">${s.d1w>=0?'+':''}${s.d1w}</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:9px;color:var(--dim2);margin-bottom:3px">2W ▲</div>
+          <div style="font-size:16px;font-weight:700;color:#58A6FF">${s.d2w>=0?'+':''}${s.d2w}</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:9px;color:var(--dim2);margin-bottom:3px">3W ▲</div>
+          <div style="font-size:16px;font-weight:700;color:var(--dim)">${s.d3w>=0?'+':''}${s.d3w}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-box"><div class="mlabel">EPS</div><div class="mval" style="color:#D29922">${s.eps!=null?s.eps:'—'}</div></div>
+      <div class="metric-box"><div class="mlabel">Comp</div><div class="mval" style="color:#A371F7">${s.comp!=null?s.comp:'—'}</div></div>
+      <div class="metric-box"><div class="mlabel">Blue Dots</div><div class="mval" style="color:${s.bd>=3?'#FFD600':'var(--dim2)'}">${s.bd||'—'}</div></div>
+      <div class="metric-box"><div class="mlabel">A/D</div><div class="mval" style="color:var(--dim)">${s.ad}</div></div>
+      <div class="metric-box"><div class="mlabel">Grp#</div><div class="mval" style="color:${grpColor(s.grp)}">${s.grp!=null?s.grp:'—'}</div></div>
+      <div class="metric-box"><div class="mlabel">Pivot</div><div style="font-size:11px;margin-top:3px">${pivotCell(s.ptp,s.abovePivot,s.fromPivot,s.pivAge)}</div></div>
+    </div>
+
+    <div style="margin-bottom:8px">${msiPills(s.ms_lists)}</div>
+  </div>`;
+}
+
+buildTable();
+const sel=document.getElementById('stockSel');
+DATA.forEach(s=>{
+  const o=document.createElement('option');
+  o.value=s.sym; o.text=s.sym+' — '+s.name;
+  sel.appendChild(o);
+});
+if(DATA.length) renderDetail(DATA[0].sym);
+</script>
+
+<div style="margin-top:16px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--dim2);text-align:center">
+  Generated 2026-09-02 · Data: MarketSmith Timeseries + GSI · Not investment advice
+</div>
+</body>
+</html>

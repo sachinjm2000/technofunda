@@ -1,0 +1,250 @@
+<meta charset="utf-8"><title>PP Playbook — 2026-10-09</title><style>
+:root{color-scheme:dark;--bg:#0D1117;--surface:#161B22;--border:#21262D;
+ --border2:#30363D;--fg:#E6EDF3;--dim:#8B949E;--green:#3FB950;--red:#F85149;
+ --blue:#58A6FF;--yellow:#D29922}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:13px/1.5 -apple-system,
+ BlinkMacSystemFont,'Segoe UI',sans-serif;padding:20px}
+h1{font-size:19px}.sub{color:var(--dim);font-size:12px;margin:4px 0 10px}
+.warn{background:#1c1710;border:1px solid #3a2d16;border-radius:6px;padding:10px 12px;
+ margin:12px 0;color:#d9b26a;font-size:12px;line-height:1.6}
+.grp{margin:22px 0}
+.grp h2{font-size:15px;margin:0}
+.grp p.desc{color:var(--dim);font-size:12px;margin:4px 0 8px;max-width:900px}
+.gcount{font-size:12px;color:var(--dim);font-weight:400;margin-left:8px}
+.wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}
+th{background:#12171d;color:var(--dim);text-align:right;padding:7px 9px;position:sticky;
+ top:0;border-bottom:1px solid var(--border2);cursor:pointer}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#12171d}
+td:first-child{background:var(--surface)}
+th.l,td.l{text-align:left}
+td{padding:6px 9px;text-align:right;border-bottom:1px solid #1b2027;vertical-align:top}
+tr:hover td{background:#1b2129}
+.sym{font-weight:700}.sym a{color:var(--blue);text-decoration:none}
+.flt td{padding:3px 4px;background:#12171d;border-bottom:1px solid var(--border2)}
+.flt input{width:100%;min-width:62px;background:var(--bg);border:1px solid var(--border2);
+ color:var(--fg);font-size:11px;padding:3px 5px;border-radius:4px}
+.flt input.on{border-color:var(--blue);background:#0d1b2e}
+.fbtn{background:var(--surface);color:var(--fg);border:1px solid var(--border2);border-radius:5px;
+ padding:3px 9px;font-size:12px;cursor:pointer;margin-bottom:6px}
+.fl-clean{color:var(--green)}.fl-veto{color:var(--red);font-weight:600}.fl-warn{color:var(--yellow)}
+.b-yes{color:var(--green);font-weight:600}.b-no{color:var(--red)}
+tr.data{cursor:pointer}
+#chartModal{display:none;position:fixed;inset:0;background:rgba(1,4,9,.78);z-index:1000;padding:2vh 2vw}
+#chartModal.on{display:flex;align-items:flex-start;justify-content:center}
+#chartModal .cm-box{background:var(--bg);border:1px solid var(--border2);border-radius:10px;width:min(1400px,96vw);
+ max-height:96vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+#chartModal .cm-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border)}
+#chartModal .cm-bar button{background:transparent;border:1px solid var(--border2);color:var(--fg);border-radius:6px;
+ padding:3px 11px;cursor:pointer;font:13px -apple-system,sans-serif}
+#chartModal .cm-bar .cm-x{margin-left:auto}
+#chartModal #cmPos{color:var(--dim);font-size:12px}
+#chartModal #cmBody{overflow:auto;padding:10px 12px}
+#chartModal .dpanel>.dhead:first-child{order:0}
+#chartModal .dpanel>.dhead:not(:first-child){order:1;margin-top:4px}
+#chartModal .dpanel>.chartbox{order:2}
+#chartModal .dpanel>.funda{order:3}
+#chartModal .dpanel>.tiles{order:4}
+#chartModal .dpanel>.sech{order:5}
+#chartModal .dpanel>.surv{order:6}
+#chartModal .dpanel>.muted{order:7}
+
+.mvp{display:block;background:#0D1117;border-radius:6px}
+.mvp .pl{fill:#8B949E;font:10.5px -apple-system,sans-serif}
+.mvp .pv{fill:#E6EDF3;font:11px -apple-system,sans-serif;font-weight:700}
+.mvp .pvs{fill:#E6EDF3;font:9.5px -apple-system,sans-serif;font-weight:700}
+.mvp .ax{fill:#6E7681;font:9px -apple-system,sans-serif;text-anchor:end}
+.mvp .lvt{fill:#FFFFFF;font:8.5px -apple-system,sans-serif;font-weight:700}
+.mvp .lvd{fill:#C9D1D9;font:8.5px -apple-system,sans-serif;text-anchor:middle}
+.mvp .lvb{fill:#8B949E;font:8.5px -apple-system,sans-serif}
+.mvp .sgt{font:7.5px -apple-system,sans-serif;font-weight:700}
+.tabs{display:flex;gap:4px;margin:14px 0 16px}
+.tab-btn{padding:5px 16px;border-radius:20px;border:1px solid var(--border2);
+ cursor:pointer;font-size:11px;color:var(--dim);background:transparent;
+ transition:all .15s;font-family:inherit}
+.tab-btn:hover{color:var(--fg)}
+.tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+tr.clickable{cursor:pointer}
+.selbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.selbar select{background:var(--surface);color:var(--fg);border:1px solid var(--border2);
+ border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit}
+.selbar .nav{border:1px solid var(--border2);background:transparent;color:var(--dim);
+ border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;font-family:inherit}
+.selbar .nav:hover{color:var(--fg)}
+.dpanel{display:none}.dpanel.active{display:block}
+.dhead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.dhead .dsym{font-weight:700;font-size:15px;color:var(--blue);text-decoration:none}
+.dhead a.dsym:hover{text-decoration:underline}
+.mslink{border:1px solid var(--border2);border-radius:9px;padding:2px 9px;font-size:10.5px;
+ background:#12171d;color:var(--blue);text-decoration:none;white-space:nowrap}
+.mslink:hover{border-color:var(--blue);background:#152233}
+.dhead .dco{color:var(--dim)}
+.pill{border-radius:9px;padding:2px 8px;font-size:10.5px;border:1px solid var(--border2);
+ background:#12171d;color:var(--dim);white-space:nowrap}
+.pill b{color:var(--fg)}
+.pill.g{border-color:#1f5133;background:#173a25;color:#7ee2a8}
+.pill.y{border-color:#3a2d16;background:#1c1710;color:#d9b26a}
+.pill.r{border-color:#3d1f24;background:#1a1113;color:#e08d92}
+.chartbox{border:1px solid var(--border);border-radius:8px;background:var(--surface);
+ padding:8px}
+.legend{color:var(--dim);font-size:10.5px;margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
+.tiles{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.tile{border:1px solid var(--border2);border-radius:6px;background:#12171d;
+ padding:4px 10px;min-width:74px}
+.tile .tl{color:var(--dim);font-size:9.5px;text-transform:uppercase;letter-spacing:.04em}
+.tile .tv{color:var(--fg);font-size:13px;font-weight:700}
+.tile.g{border-color:#1f5133;background:#132b1d}.tile.g .tv{color:#7ee2a8}
+.tile.y{border-color:#3a2d16;background:#1c1710}.tile.y .tv{color:#d9b26a}
+.tile.r{border-color:#3d1f24;background:#1a1113}.tile.r .tv{color:#e08d92}
+.funda{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.fq{border:1px solid var(--border);border-radius:6px;background:#12171d;padding:4px 10px}
+.fq .tl{color:var(--dim);font-size:9.5px;text-transform:uppercase;letter-spacing:.04em}
+.fq .tv{font-size:13px;font-weight:700}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px}
+</style><h1>Pocket-Pivot Playbook — 2026-10-09</h1><p class="sub">Three buckets by distance from MarketSmith's pivot (Kacher &amp; Morales) — <a href="https://sachinjm2000.github.io/technofunda/2026-10-09_Minervini_SEPA.html" style="color:var(--blue)">Tier 1 gates: Minervini SEPA</a>, as of 2026-10-09. 🔵  RALLY ATTEMPT  (since 2026-10-07, Nifty -1.65%)  ⚠️  Defensive stance — new buys not recommended</p><div class="warn"><b>PP is a timing label here, never a selector.</b> Every row already passed the SAME Tier 1 gates as the Minervini SEPA table (Trend Template 9/9, EPS/Sales Q ≥25%, RS≥70, A/D A-C, group rank top-quartile) — but this page reads a SEPARATE, WIDER pull (PP_Universe.csv, --state all) that is <b>not</b> narrowed by SEPA's own "≤5% past pivot or ≤5% above 52-week high" ceiling, so the Above-Pivot bucket can actually show names at any distance — a stock 20% past its pivot would never appear here if this page read the capped SEPA table instead. The buckets only sort survivors by WHERE the pocket pivot fired against the pivot. <a href="https://sachinjm2000.github.io/technofunda/" style="color:#d9b26a">wiki/analyses/pocket-pivot-backtest-sep2026.md</a> found the PP volume day itself adds no measurable edge over that gate stack. Turnover ₹Cr/day is shown per <a style="color:#d9b26a">Big-Stock-Principle.md</a> as context — its US liquidity floor is explicitly untested on NSE, so it is not a gate here. Click a row to open that stock's chart in a pop-up (←/→ to step through the bucket).</div><div class="entry-flags-help" style="border:1px solid rgba(128,128,128,.35);background:rgba(128,128,128,.07);border-radius:6px;padding:9px 12px;margin:10px 0;font-size:12px;line-height:1.5"><div style="font-weight:700;margin-bottom:4px">Entry flags under the candles — what each one means</div><div style="margin:3px 0"><b style="color:#BC8CFF">▲P</b> <b>Pocket pivot</b> — an early buy inside a base, or off the 10-day in an uptrend, before the obvious breakout (Morales &amp; Kacher). An up day (close above the prior close) whose volume is at least the largest down-day volume of the prior 10 sessions, closing above the 50-day average, with the day's low right at or just below the 10-day average (at most 1% above it) and the close back above the 10-day.</div><div style="margin:3px 0"><b style="color:#F0883E">▲G</b> <b>Gap-up buy point</b> — opens above the prior day's high; the gap from the prior close is at least 0.75× the average true range of the previous 40 sessions; volume is at least 1.5× its 50-day average; and the day's range comes within 5% of the base high. Stop = the gap day's low.</div><div style="margin:3px 0"><b style="color:#39C5CF">▲B</b> <b>Breakout</b> — the first close above the base high (the highest high of the prior 6 months, set at least 3 weeks earlier) on volume at least 1.5× its 50-day average — the book's 50%-above-average breakout rule.</div><div style="margin:3px 0"><b style="color:#8B949E">△</b> <b>Not a buy</b> — a pocket pivot or gap that breaks one of the book's rules — extended (low more than 1% above the 10-day), closed below the 10-day, below the 50-day, a downtrend (50-day falling, under the 200-day), the lower third of the base, wedging up on lighter volume, a V-shaped drop to the 20-day that never touched the 50-day, a wide and loose base (deeper than 50% or weekly swings of 10%+), or a gap extended more than 5% above the base high or still inside the base. Shown for the last 60 sessions only.</div><div style="opacity:.75;margin-top:4px">The flags are judged on SIMPLE moving averages, as in the book's charts: the 10-day (location, extended) and 50-day (above it), plus the 20-day (V-shape) and 200-day (downtrend). Every chart shows the 10- and 50-day lines — dotted where the page's own lines are EMAs.</div><div style="opacity:.75;margin-top:4px">Hover a marker to see its numbers, whether the day closed in the upper half of its range (the book calls a mid-range close weak) and whether trading was quiet before it. The thresholds freeze a discretionary book (<i>Trade Like an O'Neil Disciple</i>, ch. 5) into rules: reading aids, not tested signals. On NSE only the breakout-day versions are measured — gap-ups helped (42.3% vs 34.5% reached +20% in 60 days); pocket-pivot volume barely did, because 77% of breakouts have it.</div></div><div class="warn"><b>PP_* columns — RichRoad's pocket-pivot workflow, shown not applied.</b>
+For the latest pocket pivot in the last 5 sessions (up day, volume above the biggest down-volume day of the prior
+10): <b>PP_recent</b> = where it sat (a bounce off the 10-day EMA, off the 50-day EMA, or extended) and how long
+ago · <b>PP_vol_x</b> = its volume ÷ that biggest down day · <b>PP_close_pct</b> = close position in the day's
+range · <b>PP_notes</b> = EMA stack 10&gt;20&gt;50&gt;200, a volume-dry-up day (≤50% of the 50-day average) in the
+prior 5, and whether the stock spent ≥80% of the last ~5 months below its 200-day (his "no long downtrends" rule) ·
+<b>PP_zone</b> = the PP candle's low to its midpoint — where he buys the <i>pullback</i> rather than the PP day ·
+<b>PP_stop</b> = the candle low −1% · <b>PP_state</b> = today's price against that zone.<br>
+⚠️ <b>Backtested 2026-09-21 (983 liquid NSE names, 2011-26): the pocket-pivot volume day adds nothing measurable
+over the same gates without it</b> (20-session mean +2.8% vs +2.5% over all years; +1.4% vs +1.6% in the 2025+ holdout).
+The gates themselves (RS ≥ 80, above the 200-DMA, on the 10/50 average, EMA stack) are what carried the return.
+A tight PP-low stop was hit far more often than it saved money (only ~1 in 3 trades finished up at 20 sessions).
+Round 2 (2026-09-22) tested the second source's rules — above the 11-week EMA, tight 5-week range with
+contracted volume, a candle touching the 10 EMA, near a 52-week high, SMA vs EMA — and none lifted returns
+(the weekly-quality combination was <i>worse</i>: +2.2% vs +2.7%). Exit rules with only an 8% hard stop: 10→50 EMA
++5.2% all years but −1.0% in the 2025+ holdout; 10→20 EMA +2.2% / +0.4%; median trade negative in all of them
+(wins are few and large). <b>Averages:</b> PP_* columns use 10/20/50 <i>EMAs</i>; the ▲P flag and Entry_flag use
+the book's 10/50 <i>simple</i> averages — the backtest found no difference between them.
+So these columns describe the setup and its risk; they are not a signal. EPS and A/D could not be tested (no
+historical fundamentals). See <code>data/pp_backtest_results.md</code>.</div><div class="grp" id="grp-inbase"><h2>① Below Pivot — in-base, forming<span class="gcount">0 stocks</span></h2><p class="desc">A book-valid pocket pivot (entry_signals.py) while the stock is still in <b>SETUP</b> state — up to 15% below MarketSmith's pivot, deep bases excluded. Pocket-Pivot.md's “In-base” type: institutional buying inside the base, before the obvious breakout.</p><button class="fbtn" onclick="clearCol('grp-inbase')">clear column filters</button><div class="wrap"><table><thead><tr><th onclick="sortTable('grp-inbase',0,false)">Symbol</th><th onclick="sortTable('grp-inbase',1,false)">Company</th><th onclick="sortTable('grp-inbase',2,false)">Industry group</th><th onclick="sortTable('grp-inbase',3,true)">Price</th><th onclick="sortTable('grp-inbase',4,true)">Price chg</th><th onclick="sortTable('grp-inbase',5,true)">Price % chg</th><th onclick="sortTable('grp-inbase',6,true)">% off high</th><th onclick="sortTable('grp-inbase',7,true)">Vol % vs 50D</th><th onclick="sortTable('grp-inbase',8,true)">Avg vol 50D</th><th onclick="sortTable('grp-inbase',9,true)">Turnover ₹Cr/d</th><th onclick="sortTable('grp-inbase',10,true)">MCap ₹Cr</th><th onclick="sortTable('grp-inbase',11,true)">Comp</th><th onclick="sortTable('grp-inbase',12,true)">Master score</th><th onclick="sortTable('grp-inbase',13,true)">EPS</th><th onclick="sortTable('grp-inbase',14,true)">RS</th><th onclick="sortTable('grp-inbase',15,false)">RS 80+</th><th onclick="sortTable('grp-inbase',16,false)">Blue dot date</th><th onclick="sortTable('grp-inbase',17,true)">Blue dot count</th><th onclick="sortTable('grp-inbase',18,false)">RS new high list</th><th onclick="sortTable('grp-inbase',19,true)">RS line % off high</th><th onclick="sortTable('grp-inbase',20,false)">A/D</th><th onclick="sortTable('grp-inbase',21,true)">SMR</th><th onclick="sortTable('grp-inbase',22,true)">Grp</th><th onclick="sortTable('grp-inbase',23,false)">Trend</th><th onclick="sortTable('grp-inbase',24,false)">State</th><th onclick="sortTable('grp-inbase',25,true)">Template</th><th onclick="sortTable('grp-inbase',26,true)">EPS Q%</th><th onclick="sortTable('grp-inbase',27,true)">Sales Q%</th><th onclick="sortTable('grp-inbase',28,false)">Accelerating</th><th onclick="sortTable('grp-inbase',29,false)">EPS Qs</th><th onclick="sortTable('grp-inbase',30,true)">Entry</th><th onclick="sortTable('grp-inbase',31,true)">Stop</th><th onclick="sortTable('grp-inbase',32,true)">Target 2R</th><th onclick="sortTable('grp-inbase',33,false)">vs Pivot</th><th onclick="sortTable('grp-inbase',34,true)">RVOL</th><th onclick="sortTable('grp-inbase',35,false)">Dry up</th><th onclick="sortTable('grp-inbase',36,true)">Proximity</th><th onclick="sortTable('grp-inbase',37,false)">VCP footprint</th><th onclick="sortTable('grp-inbase',38,false)">Patterns</th><th onclick="sortTable('grp-inbase',39,true)">Final-T vol</th><th onclick="sortTable('grp-inbase',40,false)">PP flag</th><th onclick="sortTable('grp-inbase',41,true)">PP sessions ago</th><th onclick="sortTable('grp-inbase',42,false)">PP recent (RichRoad)</th><th onclick="sortTable('grp-inbase',43,true)">PP vol ×</th><th onclick="sortTable('grp-inbase',44,true)">PP close %</th><th onclick="sortTable('grp-inbase',45,true)">PP chg %</th><th onclick="sortTable('grp-inbase',46,false)">PP notes</th><th onclick="sortTable('grp-inbase',47,false)">PP zone</th><th onclick="sortTable('grp-inbase',48,true)">PP stop</th><th onclick="sortTable('grp-inbase',49,true)">PP risk %</th><th onclick="sortTable('grp-inbase',50,false)">PP zone state</th><th onclick="sortTable('grp-inbase',51,false)">Wk base</th><th onclick="sortTable('grp-inbase',52,false)">EMA guide</th><th onclick="sortTable('grp-inbase',53,false)">Base type</th><th onclick="sortTable('grp-inbase',54,false)">Base stage</th><th onclick="sortTable('grp-inbase',55,false)">Red flags</th><th onclick="sortTable('grp-inbase',56,false)">MSI lists</th></tr><tr class="flt"><td><input data-c="Symbol" placeholder="filter…"></td><td><input data-c="Company" placeholder="filter…"></td><td><input data-c="Industry_Group" placeholder="filter…"></td><td><input data-c="Price" placeholder="filter…"></td><td><input data-c="Price_Chg" placeholder="filter…"></td><td><input data-c="Price_Pct_Chg" placeholder="filter…"></td><td><input data-c="Pct_off_High" placeholder="filter…"></td><td><input data-c="Vol_Pct_vs_50D" placeholder="filter…"></td><td><input data-c="Avg_Vol_50D" placeholder="filter…"></td><td><input data-c="Avg_Turnover_Cr" placeholder="filter…"></td><td><input data-c="MCap_Cr" placeholder="filter…"></td><td><input data-c="Comp_Rating" placeholder="filter…"></td><td><input data-c="Master_Score" placeholder="filter…"></td><td><input data-c="EPS_Rating" placeholder="filter…"></td><td><input data-c="RS_Rating" placeholder="filter…"></td><td><input data-c="RS_80plus" placeholder="filter…"></td><td><input data-c="Blue_dot_date" placeholder="filter…"></td><td><input data-c="Blue_dot_count" placeholder="filter…"></td><td><input data-c="RS_NH_list" placeholder="filter…"></td><td><input data-c="RS_line_off_high" placeholder="filter…"></td><td><input data-c="AD_Rating" placeholder="filter…"></td><td><input data-c="SMR_Rating" placeholder="filter…"></td><td><input data-c="Grp_rank" placeholder="filter…"></td><td><input data-c="Trend" placeholder="filter…"></td><td><input data-c="State" placeholder="filter…"></td><td><input data-c="Template" placeholder="filter…"></td><td><input data-c="EPS_Q" placeholder="filter…"></td><td><input data-c="Sales_Q" placeholder="filter…"></td><td><input data-c="Accelerating" placeholder="filter…"></td><td><input data-c="EPS_Qs" placeholder="filter…"></td><td><input data-c="Entry" placeholder="filter…"></td><td><input data-c="Stop" placeholder="filter…"></td><td><input data-c="Target_2R" placeholder="filter…"></td><td><input data-c="vs_Pivot" placeholder="filter…"></td><td><input data-c="RVOL" placeholder="filter…"></td><td><input data-c="Dry_up" placeholder="filter…"></td><td><input data-c="Proximity" placeholder="filter…"></td><td><input data-c="VCP_footprint" placeholder="filter…"></td><td><input data-c="Patterns" placeholder="filter…"></td><td><input data-c="FinalT_vol" placeholder="filter…"></td><td><input data-c="Entry_flag" placeholder="filter…"></td><td><input data-c="PP_sessions_ago" placeholder="filter…"></td><td><input data-c="PP_recent" placeholder="filter…"></td><td><input data-c="PP_vol_x" placeholder="filter…"></td><td><input data-c="PP_close_pct" placeholder="filter…"></td><td><input data-c="PP_chg_pct" placeholder="filter…"></td><td><input data-c="PP_notes" placeholder="filter…"></td><td><input data-c="PP_zone" placeholder="filter…"></td><td><input data-c="PP_stop" placeholder="filter…"></td><td><input data-c="PP_risk_pct" placeholder="filter…"></td><td><input data-c="PP_state" placeholder="filter…"></td><td><input data-c="Wk_base" placeholder="filter…"></td><td><input data-c="EMA_guide" placeholder="filter…"></td><td><input data-c="Base_Type_Daily" placeholder="filter…"></td><td><input data-c="Base_Stage_Daily" placeholder="filter…"></td><td><input data-c="Red_flags" placeholder="filter…"></td><td><input data-c="MSI_lists" placeholder="filter…"></td></tr></thead><tbody></tbody></table></div></div><div class="grp" id="grp-near"><h2>② Near Pivot — at the breakout<span class="gcount">0 stocks</span></h2><p class="desc">State is <b>BREAKOUT</b> or <b>BUY RANGE</b> — MarketSmith's own 0-5%-through-the-pivot band — with a book-valid ▲P. Pocket-Pivot.md's “coinciding with a breakout” type: the PP volume day stands in for the breakout volume.</p><button class="fbtn" onclick="clearCol('grp-near')">clear column filters</button><div class="wrap"><table><thead><tr><th onclick="sortTable('grp-near',0,false)">Symbol</th><th onclick="sortTable('grp-near',1,false)">Company</th><th onclick="sortTable('grp-near',2,false)">Industry group</th><th onclick="sortTable('grp-near',3,true)">Price</th><th onclick="sortTable('grp-near',4,true)">Price chg</th><th onclick="sortTable('grp-near',5,true)">Price % chg</th><th onclick="sortTable('grp-near',6,true)">% off high</th><th onclick="sortTable('grp-near',7,true)">Vol % vs 50D</th><th onclick="sortTable('grp-near',8,true)">Avg vol 50D</th><th onclick="sortTable('grp-near',9,true)">Turnover ₹Cr/d</th><th onclick="sortTable('grp-near',10,true)">MCap ₹Cr</th><th onclick="sortTable('grp-near',11,true)">Comp</th><th onclick="sortTable('grp-near',12,true)">Master score</th><th onclick="sortTable('grp-near',13,true)">EPS</th><th onclick="sortTable('grp-near',14,true)">RS</th><th onclick="sortTable('grp-near',15,false)">RS 80+</th><th onclick="sortTable('grp-near',16,false)">Blue dot date</th><th onclick="sortTable('grp-near',17,true)">Blue dot count</th><th onclick="sortTable('grp-near',18,false)">RS new high list</th><th onclick="sortTable('grp-near',19,true)">RS line % off high</th><th onclick="sortTable('grp-near',20,false)">A/D</th><th onclick="sortTable('grp-near',21,true)">SMR</th><th onclick="sortTable('grp-near',22,true)">Grp</th><th onclick="sortTable('grp-near',23,false)">Trend</th><th onclick="sortTable('grp-near',24,false)">State</th><th onclick="sortTable('grp-near',25,true)">Template</th><th onclick="sortTable('grp-near',26,true)">EPS Q%</th><th onclick="sortTable('grp-near',27,true)">Sales Q%</th><th onclick="sortTable('grp-near',28,false)">Accelerating</th><th onclick="sortTable('grp-near',29,false)">EPS Qs</th><th onclick="sortTable('grp-near',30,true)">Entry</th><th onclick="sortTable('grp-near',31,true)">Stop</th><th onclick="sortTable('grp-near',32,true)">Target 2R</th><th onclick="sortTable('grp-near',33,false)">vs Pivot</th><th onclick="sortTable('grp-near',34,true)">RVOL</th><th onclick="sortTable('grp-near',35,false)">Dry up</th><th onclick="sortTable('grp-near',36,true)">Proximity</th><th onclick="sortTable('grp-near',37,false)">VCP footprint</th><th onclick="sortTable('grp-near',38,false)">Patterns</th><th onclick="sortTable('grp-near',39,true)">Final-T vol</th><th onclick="sortTable('grp-near',40,false)">PP flag</th><th onclick="sortTable('grp-near',41,true)">PP sessions ago</th><th onclick="sortTable('grp-near',42,false)">PP recent (RichRoad)</th><th onclick="sortTable('grp-near',43,true)">PP vol ×</th><th onclick="sortTable('grp-near',44,true)">PP close %</th><th onclick="sortTable('grp-near',45,true)">PP chg %</th><th onclick="sortTable('grp-near',46,false)">PP notes</th><th onclick="sortTable('grp-near',47,false)">PP zone</th><th onclick="sortTable('grp-near',48,true)">PP stop</th><th onclick="sortTable('grp-near',49,true)">PP risk %</th><th onclick="sortTable('grp-near',50,false)">PP zone state</th><th onclick="sortTable('grp-near',51,false)">Wk base</th><th onclick="sortTable('grp-near',52,false)">EMA guide</th><th onclick="sortTable('grp-near',53,false)">Base type</th><th onclick="sortTable('grp-near',54,false)">Base stage</th><th onclick="sortTable('grp-near',55,false)">Red flags</th><th onclick="sortTable('grp-near',56,false)">MSI lists</th></tr><tr class="flt"><td><input data-c="Symbol" placeholder="filter…"></td><td><input data-c="Company" placeholder="filter…"></td><td><input data-c="Industry_Group" placeholder="filter…"></td><td><input data-c="Price" placeholder="filter…"></td><td><input data-c="Price_Chg" placeholder="filter…"></td><td><input data-c="Price_Pct_Chg" placeholder="filter…"></td><td><input data-c="Pct_off_High" placeholder="filter…"></td><td><input data-c="Vol_Pct_vs_50D" placeholder="filter…"></td><td><input data-c="Avg_Vol_50D" placeholder="filter…"></td><td><input data-c="Avg_Turnover_Cr" placeholder="filter…"></td><td><input data-c="MCap_Cr" placeholder="filter…"></td><td><input data-c="Comp_Rating" placeholder="filter…"></td><td><input data-c="Master_Score" placeholder="filter…"></td><td><input data-c="EPS_Rating" placeholder="filter…"></td><td><input data-c="RS_Rating" placeholder="filter…"></td><td><input data-c="RS_80plus" placeholder="filter…"></td><td><input data-c="Blue_dot_date" placeholder="filter…"></td><td><input data-c="Blue_dot_count" placeholder="filter…"></td><td><input data-c="RS_NH_list" placeholder="filter…"></td><td><input data-c="RS_line_off_high" placeholder="filter…"></td><td><input data-c="AD_Rating" placeholder="filter…"></td><td><input data-c="SMR_Rating" placeholder="filter…"></td><td><input data-c="Grp_rank" placeholder="filter…"></td><td><input data-c="Trend" placeholder="filter…"></td><td><input data-c="State" placeholder="filter…"></td><td><input data-c="Template" placeholder="filter…"></td><td><input data-c="EPS_Q" placeholder="filter…"></td><td><input data-c="Sales_Q" placeholder="filter…"></td><td><input data-c="Accelerating" placeholder="filter…"></td><td><input data-c="EPS_Qs" placeholder="filter…"></td><td><input data-c="Entry" placeholder="filter…"></td><td><input data-c="Stop" placeholder="filter…"></td><td><input data-c="Target_2R" placeholder="filter…"></td><td><input data-c="vs_Pivot" placeholder="filter…"></td><td><input data-c="RVOL" placeholder="filter…"></td><td><input data-c="Dry_up" placeholder="filter…"></td><td><input data-c="Proximity" placeholder="filter…"></td><td><input data-c="VCP_footprint" placeholder="filter…"></td><td><input data-c="Patterns" placeholder="filter…"></td><td><input data-c="FinalT_vol" placeholder="filter…"></td><td><input data-c="Entry_flag" placeholder="filter…"></td><td><input data-c="PP_sessions_ago" placeholder="filter…"></td><td><input data-c="PP_recent" placeholder="filter…"></td><td><input data-c="PP_vol_x" placeholder="filter…"></td><td><input data-c="PP_close_pct" placeholder="filter…"></td><td><input data-c="PP_chg_pct" placeholder="filter…"></td><td><input data-c="PP_notes" placeholder="filter…"></td><td><input data-c="PP_zone" placeholder="filter…"></td><td><input data-c="PP_stop" placeholder="filter…"></td><td><input data-c="PP_risk_pct" placeholder="filter…"></td><td><input data-c="PP_state" placeholder="filter…"></td><td><input data-c="Wk_base" placeholder="filter…"></td><td><input data-c="EMA_guide" placeholder="filter…"></td><td><input data-c="Base_Type_Daily" placeholder="filter…"></td><td><input data-c="Base_Stage_Daily" placeholder="filter…"></td><td><input data-c="Red_flags" placeholder="filter…"></td><td><input data-c="MSI_lists" placeholder="filter…"></td></tr></thead><tbody></tbody></table></div></div><div class="grp" id="grp-above"><h2>③ Above Pivot — extended, any distance<span class="gcount">0 stocks</span></h2><p class="desc">State is <b>"EXTENDED — do not buy"</b> — more than 5% past the pivot, <b>uncapped</b> — with a book-valid ▲P. “Do not buy” there describes the stale ORIGINAL breakout, not this fresh PP: Pocket-Pivot.md's continuation type is explicitly “a tool for buying leading stocks as they progress higher... when already extended from a prior base.” PP_sessions_ago shows how fresh.</p><button class="fbtn" onclick="clearCol('grp-above')">clear column filters</button><div class="wrap"><table><thead><tr><th onclick="sortTable('grp-above',0,false)">Symbol</th><th onclick="sortTable('grp-above',1,false)">Company</th><th onclick="sortTable('grp-above',2,false)">Industry group</th><th onclick="sortTable('grp-above',3,true)">Price</th><th onclick="sortTable('grp-above',4,true)">Price chg</th><th onclick="sortTable('grp-above',5,true)">Price % chg</th><th onclick="sortTable('grp-above',6,true)">% off high</th><th onclick="sortTable('grp-above',7,true)">Vol % vs 50D</th><th onclick="sortTable('grp-above',8,true)">Avg vol 50D</th><th onclick="sortTable('grp-above',9,true)">Turnover ₹Cr/d</th><th onclick="sortTable('grp-above',10,true)">MCap ₹Cr</th><th onclick="sortTable('grp-above',11,true)">Comp</th><th onclick="sortTable('grp-above',12,true)">Master score</th><th onclick="sortTable('grp-above',13,true)">EPS</th><th onclick="sortTable('grp-above',14,true)">RS</th><th onclick="sortTable('grp-above',15,false)">RS 80+</th><th onclick="sortTable('grp-above',16,false)">Blue dot date</th><th onclick="sortTable('grp-above',17,true)">Blue dot count</th><th onclick="sortTable('grp-above',18,false)">RS new high list</th><th onclick="sortTable('grp-above',19,true)">RS line % off high</th><th onclick="sortTable('grp-above',20,false)">A/D</th><th onclick="sortTable('grp-above',21,true)">SMR</th><th onclick="sortTable('grp-above',22,true)">Grp</th><th onclick="sortTable('grp-above',23,false)">Trend</th><th onclick="sortTable('grp-above',24,false)">State</th><th onclick="sortTable('grp-above',25,true)">Template</th><th onclick="sortTable('grp-above',26,true)">EPS Q%</th><th onclick="sortTable('grp-above',27,true)">Sales Q%</th><th onclick="sortTable('grp-above',28,false)">Accelerating</th><th onclick="sortTable('grp-above',29,false)">EPS Qs</th><th onclick="sortTable('grp-above',30,true)">Entry</th><th onclick="sortTable('grp-above',31,true)">Stop</th><th onclick="sortTable('grp-above',32,true)">Target 2R</th><th onclick="sortTable('grp-above',33,false)">vs Pivot</th><th onclick="sortTable('grp-above',34,true)">RVOL</th><th onclick="sortTable('grp-above',35,false)">Dry up</th><th onclick="sortTable('grp-above',36,true)">Proximity</th><th onclick="sortTable('grp-above',37,false)">VCP footprint</th><th onclick="sortTable('grp-above',38,false)">Patterns</th><th onclick="sortTable('grp-above',39,true)">Final-T vol</th><th onclick="sortTable('grp-above',40,false)">PP flag</th><th onclick="sortTable('grp-above',41,true)">PP sessions ago</th><th onclick="sortTable('grp-above',42,false)">PP recent (RichRoad)</th><th onclick="sortTable('grp-above',43,true)">PP vol ×</th><th onclick="sortTable('grp-above',44,true)">PP close %</th><th onclick="sortTable('grp-above',45,true)">PP chg %</th><th onclick="sortTable('grp-above',46,false)">PP notes</th><th onclick="sortTable('grp-above',47,false)">PP zone</th><th onclick="sortTable('grp-above',48,true)">PP stop</th><th onclick="sortTable('grp-above',49,true)">PP risk %</th><th onclick="sortTable('grp-above',50,false)">PP zone state</th><th onclick="sortTable('grp-above',51,false)">Wk base</th><th onclick="sortTable('grp-above',52,false)">EMA guide</th><th onclick="sortTable('grp-above',53,false)">Base type</th><th onclick="sortTable('grp-above',54,false)">Base stage</th><th onclick="sortTable('grp-above',55,false)">Red flags</th><th onclick="sortTable('grp-above',56,false)">MSI lists</th></tr><tr class="flt"><td><input data-c="Symbol" placeholder="filter…"></td><td><input data-c="Company" placeholder="filter…"></td><td><input data-c="Industry_Group" placeholder="filter…"></td><td><input data-c="Price" placeholder="filter…"></td><td><input data-c="Price_Chg" placeholder="filter…"></td><td><input data-c="Price_Pct_Chg" placeholder="filter…"></td><td><input data-c="Pct_off_High" placeholder="filter…"></td><td><input data-c="Vol_Pct_vs_50D" placeholder="filter…"></td><td><input data-c="Avg_Vol_50D" placeholder="filter…"></td><td><input data-c="Avg_Turnover_Cr" placeholder="filter…"></td><td><input data-c="MCap_Cr" placeholder="filter…"></td><td><input data-c="Comp_Rating" placeholder="filter…"></td><td><input data-c="Master_Score" placeholder="filter…"></td><td><input data-c="EPS_Rating" placeholder="filter…"></td><td><input data-c="RS_Rating" placeholder="filter…"></td><td><input data-c="RS_80plus" placeholder="filter…"></td><td><input data-c="Blue_dot_date" placeholder="filter…"></td><td><input data-c="Blue_dot_count" placeholder="filter…"></td><td><input data-c="RS_NH_list" placeholder="filter…"></td><td><input data-c="RS_line_off_high" placeholder="filter…"></td><td><input data-c="AD_Rating" placeholder="filter…"></td><td><input data-c="SMR_Rating" placeholder="filter…"></td><td><input data-c="Grp_rank" placeholder="filter…"></td><td><input data-c="Trend" placeholder="filter…"></td><td><input data-c="State" placeholder="filter…"></td><td><input data-c="Template" placeholder="filter…"></td><td><input data-c="EPS_Q" placeholder="filter…"></td><td><input data-c="Sales_Q" placeholder="filter…"></td><td><input data-c="Accelerating" placeholder="filter…"></td><td><input data-c="EPS_Qs" placeholder="filter…"></td><td><input data-c="Entry" placeholder="filter…"></td><td><input data-c="Stop" placeholder="filter…"></td><td><input data-c="Target_2R" placeholder="filter…"></td><td><input data-c="vs_Pivot" placeholder="filter…"></td><td><input data-c="RVOL" placeholder="filter…"></td><td><input data-c="Dry_up" placeholder="filter…"></td><td><input data-c="Proximity" placeholder="filter…"></td><td><input data-c="VCP_footprint" placeholder="filter…"></td><td><input data-c="Patterns" placeholder="filter…"></td><td><input data-c="FinalT_vol" placeholder="filter…"></td><td><input data-c="Entry_flag" placeholder="filter…"></td><td><input data-c="PP_sessions_ago" placeholder="filter…"></td><td><input data-c="PP_recent" placeholder="filter…"></td><td><input data-c="PP_vol_x" placeholder="filter…"></td><td><input data-c="PP_close_pct" placeholder="filter…"></td><td><input data-c="PP_chg_pct" placeholder="filter…"></td><td><input data-c="PP_notes" placeholder="filter…"></td><td><input data-c="PP_zone" placeholder="filter…"></td><td><input data-c="PP_stop" placeholder="filter…"></td><td><input data-c="PP_risk_pct" placeholder="filter…"></td><td><input data-c="PP_state" placeholder="filter…"></td><td><input data-c="Wk_base" placeholder="filter…"></td><td><input data-c="EMA_guide" placeholder="filter…"></td><td><input data-c="Base_Type_Daily" placeholder="filter…"></td><td><input data-c="Base_Stage_Daily" placeholder="filter…"></td><td><input data-c="Red_flags" placeholder="filter…"></td><td><input data-c="MSI_lists" placeholder="filter…"></td></tr></thead><tbody></tbody></table></div></div><div id="detailHost" hidden></div><script>
+function _fparse(s){
+ s=(s||'').trim(); if(!s) return null;
+ var pos=[],neg=[];
+ s.split(',').map(function(x){return x.trim();}).filter(Boolean).forEach(function(p){
+  var isNeg=false; if(p[0]==='!'){isNeg=true;p=p.slice(1).trim();}
+  var f,m;
+  if((m=p.match(/^(-?\d*\.?\d+)\s*(?:to|\.\.|-)\s*(-?\d*\.?\d+)$/))){
+   var a=parseFloat(m[1]),b=parseFloat(m[2]),lo=Math.min(a,b),hi=Math.max(a,b);
+   f=function(v){return !isNaN(v)&&v>=lo&&v<=hi;};
+  } else if((m=p.match(/^(>=|<=|≥|≤|>|<)\s*(-?\d*\.?\d+)$/))){
+   var op=m[1],x=parseFloat(m[2]);
+   f=function(v){if(isNaN(v))return false;
+    return (op==='>='||op==='≥')?v>=x:(op==='<='||op==='≤')?v<=x:op==='>'?v>x:v<x;};
+  } else if(p[0]==='='){
+   var q=p.slice(1).trim().toLowerCase();
+   f=function(v,t){return t===q||(!isNaN(v)&&q!==''&&v===parseFloat(q));};
+  } else {
+   var q2=p.toLowerCase(),isNum=/^-?\d*\.?\d+$/.test(q2);
+   f=function(v,t){return (isNum&&!isNaN(v))?v===parseFloat(q2):t.indexOf(q2)>=0;};
+  }
+  (isNeg?neg:pos).push(f);
+ });
+ return function(v,t){
+  if(pos.length&&!pos.some(function(f){return f(v,t);})) return false;
+  return !neg.some(function(f){return f(v,t);});
+ };
+}
+function colFilter(grpId){
+ var g=document.getElementById(grpId);
+ var frow=g.querySelector('tr.flt'); if(!frow) return;
+ var fs=[]; frow.querySelectorAll('input').forEach(function(inp,i){fs[i]=_fparse(inp.value);});
+ frow.querySelectorAll('input').forEach(function(inp){inp.classList.toggle('on',!!inp.value.trim());});
+ var n=0;
+ g.querySelectorAll('tbody tr.data').forEach(function(r){
+  var ok=true;
+  for(var i=0;i<fs.length&&ok;i++){
+   if(!fs[i]) continue;
+   var c=r.cells[i]; if(!c){ok=false;break;}
+   var txt=c.textContent.trim().toLowerCase();
+   var v=(c.dataset.v!==undefined)?parseFloat(c.dataset.v):parseFloat(txt.replace(/[,%+₹]/g,''));
+   ok=fs[i](v,txt);
+  }
+  r.style.display=ok?'':'none'; if(ok)n++;
+ });
+ var c2=g.querySelector('.gcount'); if(c2) c2.textContent=n+(n===1?' stock':' stocks');
+}
+function clearCol(grpId){
+ document.querySelectorAll('#'+grpId+' tr.flt input').forEach(function(i){i.value='';});
+ colFilter(grpId);
+}
+// Debounced (2026-10-01, same fix as minervini_sepa.py — user: "search is very slow"):
+// innerText->textContent removes the forced-reflow cost; 120ms waits for a typing pause.
+var _fltTimersPP=new WeakMap();
+document.querySelectorAll('.grp').forEach(function(g){
+ g.querySelectorAll('tr.flt input').forEach(function(inp){
+  inp.addEventListener('input',function(){
+   clearTimeout(_fltTimersPP.get(inp));
+   _fltTimersPP.set(inp,setTimeout(function(){colFilter(g.id);},120));
+  });});
+});
+// ── row-click chart pop-up (same #p-SYM panels minervini_panes.py builds for SEPA) ──
+var _cm={el:null,parent:null,next:null,grp:null};
+function _modal(){
+ var m=document.getElementById('chartModal'); if(m) return m;
+ m=document.createElement('div'); m.id='chartModal';
+ m.innerHTML='<div class="cm-box"><div class="cm-bar"><button type="button" onclick="stepChart(-1)" title="previous row (←)">←</button>'
+  +'<span id="cmPos"></span><button type="button" onclick="stepChart(1)" title="next row (→)">→</button>'
+  +'<button type="button" class="cm-x" onclick="closeChart()" title="close (Esc)">✕</button></div><div id="cmBody"></div></div>';
+ m.addEventListener('click',function(e){if(e.target===m) closeChart();});
+ document.body.appendChild(m); return m;
+}
+function _visibleSyms(grpId){
+ var g=document.getElementById(grpId);
+ return Array.from(g.querySelectorAll('tbody tr.data')).filter(function(r){return r.style.display!=='none';})
+  .map(function(r){return r.dataset.sym;}).filter(Boolean);
+}
+function _putBack(){
+ if(!_cm.el) return;
+ if(_cm.next) _cm.parent.insertBefore(_cm.el,_cm.next); else _cm.parent.appendChild(_cm.el);
+ _cm.el.classList.remove('active'); _cm.el=null;
+}
+function openChart(sym,grpId){
+ var el=document.getElementById('p-'+sym); if(!el) return;
+ var m=_modal(); _putBack();
+ _cm={el:el,parent:el.parentNode,next:el.nextSibling,grp:grpId};
+ el.classList.add('active'); document.getElementById('cmBody').appendChild(el);
+ var v=_visibleSyms(grpId), i=v.indexOf(sym);
+ document.getElementById('cmPos').textContent=(i>=0?(i+1)+' / '+v.length:sym)+' · '+sym;
+ m.classList.add('on'); document.body.style.overflow='hidden';
+ document.getElementById('cmBody').scrollTop=0;
+}
+function closeChart(){
+ var m=document.getElementById('chartModal'); if(!m) return;
+ _putBack(); m.classList.remove('on'); document.body.style.overflow='';
+}
+function stepChart(n){
+ if(!_cm.grp||!_cm.el) return;
+ var sym=_cm.el.id.slice(2);
+ var v=_visibleSyms(_cm.grp); if(!v.length) return;
+ var i=v.indexOf(sym); i=(i<0?0:(i+n+v.length)%v.length); openChart(v[i],_cm.grp);
+}
+document.addEventListener('keydown',function(e){
+ var m=document.getElementById('chartModal'); if(!m||!m.classList.contains('on')) return;
+ if(e.key==='Escape') closeChart();
+ else if(e.key==='ArrowRight'){e.stopImmediatePropagation();stepChart(1);}
+ else if(e.key==='ArrowLeft'){e.stopImmediatePropagation();stepChart(-1);}
+},true);
+function sortTable(grpId,i,numeric){
+ var g=document.getElementById(grpId), tb=g.querySelector('tbody');
+ var rows=Array.prototype.slice.call(tb.querySelectorAll('tr.data'));
+ var dir=tb.getAttribute('data-dir-'+i)==='asc'?'desc':'asc';
+ tb.setAttribute('data-dir-'+i,dir);
+ rows.sort(function(a,b){
+  var ca=a.cells[i],cb=b.cells[i];
+  var va=numeric?(ca.dataset.v!==undefined?parseFloat(ca.dataset.v):parseFloat(ca.textContent)):ca.textContent.toLowerCase();
+  var vb=numeric?(cb.dataset.v!==undefined?parseFloat(cb.dataset.v):parseFloat(cb.textContent)):cb.textContent.toLowerCase();
+  if(numeric){va=isNaN(va)?-Infinity:va; vb=isNaN(vb)?-Infinity:vb;}
+  if(va<vb) return dir==='asc'?-1:1;
+  if(va>vb) return dir==='asc'?1:-1;
+  return 0;
+ });
+ rows.forEach(function(r){tb.appendChild(r);});
+}
+</script>

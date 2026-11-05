@@ -1,0 +1,222 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forward Test 2026-08-21</title><style>
+:root{--bg:#0D1117;--surf:#161B22;--surf2:#1C2128;--bd:#30363D;--tx:#E6EDF3;
+--mu:#8B949E;--dim:#6E7681;--up:#3FB950;--dn:#F85149;--amber:#E3B341;--blue:#58A6FF;
+--open:#58A6FF}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font:13px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+padding:14px 20px 24px;max-width:1340px;margin:0 auto}
+.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;
+border-bottom:1px solid var(--bd);padding-bottom:11px;margin-bottom:12px}
+h1{font-size:20px;margin:0;letter-spacing:-.3px}
+.sub{font-size:11px;color:var(--mu);margin-top:4px}
+.badge{background:var(--surf2);border:1px solid var(--bd);border-radius:6px;padding:6px 14px;
+font-size:11px;color:var(--mu);text-align:right}
+.badge strong{color:var(--amber);display:block;font-size:15px}
+.hero{display:flex;flex-wrap:wrap;gap:16px;align-items:stretch;background:var(--surf);
+border:1px solid var(--bd);border-left:4px solid var(--amber);border-radius:10px;
+padding:14px 20px;margin-bottom:12px}
+.hero-main{flex:1 1 320px}
+.hero-lab{font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--dim);margin-bottom:6px}
+.hero-val{font-size:clamp(30px,5vw,42px);font-weight:800;line-height:1;
+font-variant-numeric:tabular-nums;letter-spacing:-1.5px}
+.hero-val.up{color:var(--up)} .hero-val.dn{color:var(--dn)}
+.hero-sub{font-size:12px;color:var(--mu);margin-top:8px}
+.hero-split{display:flex;gap:14px;align-items:stretch}
+.hs{background:var(--surf2);border:1px solid var(--bd);border-radius:8px;padding:12px 16px;
+min-width:118px;display:flex;flex-direction:column;justify-content:center}
+.hs-lab{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim)}
+.hs-val{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:3px;
+color:var(--tx)}
+.hs.cap{border-color:var(--amber)}
+.hs.cap .hs-val{color:var(--amber)}
+.hs-val.up{color:var(--up)} .hs-val.dn{color:var(--dn)}
+.hs-sub{font-size:10px;color:var(--dim);margin-top:2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px;margin-bottom:12px}
+.card{background:var(--surf);border:1px solid var(--bd);border-radius:8px;padding:8px 12px}
+.lab{font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);margin-bottom:4px}
+.val{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.val.up{color:var(--up)} .val.dn{color:var(--dn)}
+.sub2{font-size:10.5px;color:var(--dim);margin-top:3px}
+.note,.warn{background:var(--surf);border:1px solid var(--bd);border-left:3px solid var(--amber);
+border-radius:6px;padding:12px 16px;font-size:12px;color:var(--mu);margin:16px 0;line-height:1.6}
+details.note summary{cursor:pointer;color:var(--tx);font-weight:600;font-size:12px;
+list-style:none;user-select:none}
+details.note summary::-webkit-details-marker{display:none}
+details.note summary::before{content:"▸ ";color:var(--amber)}
+details.note[open] summary::before{content:"▾ "}
+details.note[open] summary{margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--bd)}
+.warn{border-left-color:var(--dn)}
+.note b,.warn b{color:var(--tx)}
+.ctl{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.ctl button{font:11px ui-monospace,Menlo,monospace;padding:5px 11px;border:1px solid var(--bd);
+background:var(--surf);color:var(--mu);border-radius:3px;cursor:pointer}
+.ctl button[aria-pressed=true]{background:var(--amber);border-color:var(--amber);color:#0D1117;font-weight:700}
+.ctl .ct{opacity:.65;font-size:10px}
+.shown{font:11px ui-monospace,Menlo,monospace;color:var(--dim);align-self:center;margin-left:4px}
+.wrap{overflow-x:auto;border:1px solid var(--bd);border-radius:8px;max-height:640px;overflow-y:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{position:sticky;top:0;z-index:2;background:var(--surf2);text-align:right;padding:9px 10px;
+font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--mu);
+border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer;user-select:none}
+th:first-child,th:nth-child(2){text-align:left}
+th:hover{color:var(--amber)}
+td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--bd);
+font-variant-numeric:tabular-nums;white-space:nowrap}
+td:first-child,td:nth-child(2){text-align:left}
+tr:hover td{background:var(--surf2)}
+a{color:var(--blue);text-decoration:none;font-weight:600} a:hover{text-decoration:underline}
+.pill{display:inline-block;font:10px ui-monospace,Menlo,monospace;padding:2px 7px;border-radius:3px;
+border:1px solid transparent}
+.p-OPEN{background:rgba(88,166,255,.15);color:var(--open);border-color:var(--open)}
+.p-TARGET{background:rgba(63,185,80,.15);color:var(--up);border-color:var(--up)}
+.p-STOPPED{background:rgba(248,81,73,.15);color:var(--dn);border-color:var(--dn)}
+.u2{color:var(--amber);font-weight:700}
+.co{color:var(--mu);font-size:11px}
+.up{color:var(--up)} .dn{color:var(--dn)}
+footer{margin-top:16px;font-size:11px;color:var(--dim);line-height:1.7}
+</style></head><body>
+<div class="hd">
+  <div><h1>📡 Forward Test — Filtered Watchlist</h1>
+  <div class="sub">8% stop · +20% target · 2 units when RS ≥ 90 at entry, 1 unit otherwise
+  · newest entries first</div></div>
+  <div class="badge">2026-08-21<strong>45 entries</strong>
+  basis: intraday</div>
+</div>
+
+<div class="hero">
+  <div class="hero-main">
+    <div class="hero-lab">Total P&amp;L — whole book</div>
+    <div class="hero-val up">
+      ₹35,731</div>
+    <div class="hero-sub">₹1,020,000 deployed
+      → ₹1,055,731
+      &nbsp;·&nbsp; +3.50%
+      &nbsp;·&nbsp; 45 positions
+      &nbsp;·&nbsp; ₹30,000 per RS ≥ 90 name, ₹15,000 otherwise</div>
+  </div>
+  <div class="hero-split">
+    <div class="hs cap">
+      <div class="hs-lab">Capital deployed</div>
+      <div class="hs-val">₹1,020,000</div>
+      <div class="hs-sub">68 units
+        &nbsp;·&nbsp; ₹735,000 still at risk</div>
+    </div>
+    <div class="hs">
+      <div class="hs-lab">Booked</div>
+      <div class="hs-val up">
+        ₹3,090</div>
+      <div class="hs-sub">13 closed</div>
+    </div>
+    <div class="hs">
+      <div class="hs-lab">Open</div>
+      <div class="hs-val up">
+        ₹32,641</div>
+      <div class="hs-sub">32 live</div>
+    </div>
+  </div>
+</div>
+<div class="stats">
+  <div class="card"><div class="lab">Unit-weighted return</div><div class="val up">+3.50%</div><div class="sub2">45 entries · 68 units · ₹30,000/₹15,000 per name</div></div>
+  <div class="card"><div class="lab">RS ≥ 90 · 2 units</div><div class="val up">+4.24%</div><div class="sub2">23 entries · 46 units</div></div>
+  <div class="card"><div class="lab">RS &lt; 90 · 1 unit</div><div class="val up">+1.97%</div><div class="sub2">22 entries · 22 units</div></div>
+  <div class="card"><div class="lab">Target hit</div><div class="val up">+20.77%</div><div class="sub2">4 entries · 6 units</div></div>
+  <div class="card"><div class="lab">Stopped out</div><div class="val dn">-8.00%</div><div class="sub2">9 entries · 13 units</div></div>
+</div>
+
+
+
+<div class="ctl" id="f"></div>
+<div class="wrap"><table><thead><tr>
+<th data-k="entry_date">Entry date</th><th data-k="symbol">Symbol</th>
+<th data-k="company">Company</th><th data-k="status">Status</th>
+<th data-k="ret">Return</th><th data-k="pnl">P&amp;L ₹</th>
+<th data-k="u">Units</th><th data-k="invested">Invested</th>
+<th data-k="entry_price">Entry</th><th data-k="exit_px">Now / exit</th>
+<th data-k="exit_date">As of</th><th data-k="rs">RS</th><th data-k="comp">Comp</th>
+<th data-k="grp_rank">Grp</th><th data-k="same_day_tabs">Tabs</th>
+<th data-k="industry_group">Industry group</th>
+</tr></thead><tbody id="tb"></tbody></table></div>
+<details class="note"><summary>How this is scored — rules, sizing, caveats</summary>
+<b>How to read this.</b> Every name ever published on the Filtered Watchlist
+(Composite ≥ 96 · industry group rank ≤ 60), scored from its entry-day close under a
+<b>8% stop and a +20% target</b>. Those levels come from the exit grid: a 1:1 payoff was the
+<i>worst</i> cell tested at +0.66R, while +20% against the same stop gives +0.92R.
+<b>Status uses intraday highs and lows</b> — a stop is a resting order, so it fills on a touch,
+not on a close. When one bar touches both levels the <b>stop is assumed</b>, since a daily bar
+does not record which came first.<br>
+<b>One entry per stock, on its first appearance.</b> The watchlist relists a name every night it
+stays qualified, so scoring every listing would count the same trade several times and let a
+name that already ran re-enter at each higher price.<br>
+<b>The summary is unit-weighted</b>, not a plain average: an RS ≥ 90 name counts twice.
+Rupee figures use <b>₹30,000 for an RS ≥ 90 name and ₹15,000 otherwise</b> — change with
+<code>--unit</code>. <b>Booked</b> is cash from positions that hit their stop or target;
+<b>Open</b> is mark-to-market and can still move.
+⚠️ Basis is a short, single-regime sample — this page exists to accumulate evidence, not because
+the rule is validated. Method: <code>wiki/analyses/dashboard-forward-test-aug2026.md</code>.
+</details>
+<footer>
+Generated by <code>forward_tab.py</code> from <code>timeseries.db :: filtered_watchlist</code>.
+Prices: yfinance daily OHLC for tracked symbols; entry prices from the MarketSmith snapshot the
+name was published from. Close-to-close, no costs or slippage. Not investment advice.
+</footer>
+<script>
+const DATA = [{"entry_date":"2026-08-20","symbol":"MANINDS","company":"Man Industries (India)","entry_price":646.0,"rs":87.0,"comp":96.0,"grp_rank":28.0,"same_day_tabs":1,"industry_group":"Oil&Gas-Field Services","u":1,"status":"OPEN","exit_px":676.9000244140625,"exit_date":"2026-08-20","ret":4.783285513012769,"sessions":1,"basis":"intraday","ambiguous":false,"invested":15000,"value":15717.492826951915,"pnl":717.492826951915},{"entry_date":"2026-08-20","symbol":"CORONA","company":"Corona Remedies Ltd","entry_price":2121.4,"rs":87.0,"comp":98.0,"grp_rank":17.0,"same_day_tabs":1,"industry_group":"Medical-Ethical Drugs","u":1,"status":"OPEN","exit_px":2165.8,"exit_date":"2026-08-20","ret":2.0929574809088303,"sessions":1,"basis":"intraday","ambiguous":false,"invested":15000,"value":15313.943622136325,"pnl":313.94362213632485},{"entry_date":"2026-08-20","symbol":"BLSE","company":"Bls E-Services Ltd","entry_price":314.0,"rs":93.0,"comp":98.0,"grp_rank":3.0,"same_day_tabs":1,"industry_group":"Computer-Networking","u":2,"status":"OPEN","exit_px":321.1000061035156,"exit_date":"2026-08-20","ret":2.2611484406100724,"sessions":1,"basis":"intraday","ambiguous":false,"invested":30000,"value":30678.344532183022,"pnl":678.3445321830222},{"entry_date":"2026-08-19","symbol":"KENNAMET","company":"Kennametal India","entry_price":3502.2,"rs":90.0,"comp":99.0,"grp_rank":28.0,"same_day_tabs":1,"industry_group":"Machinery-Gen Industrial","u":2,"status":"OPEN","exit_px":3719.60009765625,"exit_date":"2026-08-20","ret":6.207529485930285,"sessions":2,"basis":"intraday","ambiguous":false,"invested":30000,"value":31862.258845779084,"pnl":1862.2588457790844},{"entry_date":"2026-08-18","symbol":"SHANTIGOLD","company":"Shanti Gold International Ltd","entry_price":269.0,"rs":73.0,"comp":98.0,"grp_rank":30.0,"same_day_tabs":1,"industry_group":"Retail/Whlsle-Jewelry","u":1,"status":"STOPPED","exit_px":247.48000000000002,"exit_date":"2026-08-19","ret":-7.9999999999999964,"sessions":null,"basis":"intraday","ambiguous":false,"invested":15000,"value":13800.0,"pnl":-1200.0},{"entry_date":"2026-08-18","symbol":"NEOGEN","company":"Neogen Chemicals","entry_price":2251.10009765625,"rs":92.0,"comp":96.0,"grp_rank":37.0,"same_day_tabs":1,"industry_group":"Chemicals-Specialty","u":2,"status":"OPEN","exit_px":2259.10009765625,"exit_date":"2026-08-20","ret":0.35538179791867464,"sessions":3,"basis":"intraday","ambiguous":false,"invested":30000,"value":30106.6145393756,"pnl":106.61453937560145},{"entry_date":"2026-08-18","symbol":"HSCL","company":"Himadri Speciality Chemical","entry_price":786.9500122070312,"rs":92.0,"comp":97.0,"grp_rank":37.0,"same_day_tabs":1,"industry_group":"Chemicals-Specialty","u":2,"status":"STOPPED","exit_px":723.9940112304688,"exit_date":"2026-08-19","ret":-7.9999999999999964,"sessions":null,"basis":"intraday","ambiguous":false,"invested":30000,"value":27600.0,"pnl":-2400.0},{"entry_date":"2026-08-18","symbol":"BHAGYANGR","company":"Bhagyanagar India","entry_price":388.0,"rs":97.0,"comp":96.0,"grp_rank":34.0,"same_day_tabs":1,"industry_group":"Electrical-Power/Equipmt","u":2,"status":"OPEN","exit_px":384.0,"exit_date":"2026-08-20","ret":-1.0309278350515427,"sessions":3,"basis":"intraday","ambiguous":false,"invested":30000,"value":29690.721649484538,"pnl":-309.2783505154621},{"entry_date":"2026-08-18","symbol":"AVL","company":"Aditya Vision Ltd","entry_price":608.6500244140625,"rs":82.0,"comp":99.0,"grp_rank":8.0,"same_day_tabs":1,"industry_group":"Retail-Consumer Elec","u":1,"status":"OPEN","exit_px":611.0,"exit_date":"2026-08-20","ret":0.386096359430832,"sessions":3,"basis":"intraday","ambiguous":false,"invested":15000,"value":15057.914453914625,"pnl":57.91445391462548},{"entry_date":"2026-08-18","symbol":"AFIL","company":"Akme Fintrade India Ltd","entry_price":9.199999809265137,"rs":87.0,"comp":97.0,"grp_rank":25.0,"same_day_tabs":1,"industry_group":"Finance-Savings & Loan","u":1,"status":"OPEN","exit_px":9.41,"exit_date":"2026-08-20","ret":2.2826108161804193,"sessions":3,"basis":"intraday","ambiguous":false,"invested":15000,"value":15342.391622427063,"pnl":342.39162242706334},{"entry_date":"2026-08-18","symbol":"ADOR","company":"Ador Welding (Nse)","entry_price":1525.300048828125,"rs":91.0,"comp":98.0,"grp_rank":29.0,"same_day_tabs":1,"industry_group":"Machinery-Gen Industrial","u":2,"status":"OPEN","exit_px":1684.0,"exit_date":"2026-08-20","ret":10.40450705379592,"sessions":3,"basis":"intraday","ambiguous":false,"invested":30000,"value":33121.352116138776,"pnl":3121.352116138776},{"entry_date":"2026-08-15","symbol":"VENUSREM","company":"Venus Remedies","entry_price":1782.0999755859375,"rs":98.0,"comp":96.0,"grp_rank":47.0,"same_day_tabs":1,"industry_group":"Medical-Diversified","u":2,"status":"OPEN","exit_px":1765.6,"exit_date":"2026-08-20","ret":-0.9258726116368687,"sessions":4,"basis":"intraday","ambiguous":false,"invested":30000,"value":29722.23821650894,"pnl":-277.76178349105976},{"entry_date":"2026-08-14","symbol":"KRISHANA","company":"Krishana Phoschem","entry_price":188.99000549316406,"rs":93.0,"comp":98.0,"grp_rank":37.0,"same_day_tabs":1,"industry_group":"Chemicals-Specialty","u":2,"status":"OPEN","exit_px":196.52000427246094,"exit_date":"2026-08-20","ret":3.984337033933394,"sessions":5,"basis":"intraday","ambiguous":false,"invested":30000,"value":31195.30111018002,"pnl":1195.3011101800184},{"entry_date":"2026-08-14","symbol":"GOCLCORP","company":"Gocl Corporation","entry_price":417.54998779296875,"rs":88.0,"comp":96.0,"grp_rank":37.0,"same_day_tabs":3,"industry_group":"Chemicals-Specialty","u":1,"status":"OPEN","exit_px":398.25,"exit_date":"2026-08-20","ret":-4.622198145659661,"sessions":5,"basis":"intraday","ambiguous":false,"invested":15000,"value":14306.67027815105,"pnl":-693.3297218489497},{"entry_date":"2026-08-14","symbol":"FONEBOX","company":"Fonebox Retail Ltd","entry_price":100.5,"rs":85.0,"comp":98.0,"grp_rank":6.0,"same_day_tabs":1,"industry_group":"Retail-Consumer Elec","u":1,"status":"OPEN","exit_px":99.65,"exit_date":"2026-08-20","ret":-0.8457711442786064,"sessions":5,"basis":"intraday","ambiguous":false,"invested":15000,"value":14873.134328358208,"pnl":-126.86567164179178},{"entry_date":"2026-08-14","symbol":"AEGISVOPAK","company":"Aegis Vopak Terminals Ltd","entry_price":273.0,"rs":81.0,"comp":99.0,"grp_rank":12.0,"same_day_tabs":1,"industry_group":"Oil&Gas-Transprt/Pipelne","u":1,"status":"OPEN","exit_px":266.6000061035156,"exit_date":"2026-08-20","ret":-2.344320108602338,"sessions":5,"basis":"intraday","ambiguous":false,"invested":15000,"value":14648.35198370965,"pnl":-351.6480162903499},{"entry_date":"2026-08-13","symbol":"MODISONLTD","company":"Modison","entry_price":314.0,"rs":96.0,"comp":98.0,"grp_rank":31.0,"same_day_tabs":1,"industry_group":"Electrical-Power/Equipmt","u":2,"status":"TARGET","exit_px":383.0,"exit_date":"2026-08-19","ret":21.974522292993637,"sessions":null,"basis":"intraday","ambiguous":false,"invested":30000,"value":36592.35668789809,"pnl":6592.356687898093},{"entry_date":"2026-08-12","symbol":"SENCO","company":"Senco Gold Ltd","entry_price":376.0,"rs":81.0,"comp":96.0,"grp_rank":27.0,"same_day_tabs":2,"industry_group":"Retail/Whlsle-Jewelry","u":1,"status":"STOPPED","exit_px":345.92,"exit_date":"2026-08-12","ret":-7.9999999999999964,"sessions":null,"basis":"intraday","ambiguous":false,"invested":15000,"value":13800.0,"pnl":-1200.0},{"entry_date":"2026-08-12","symbol":"INFLUX","company":"Influx Healthtech Ltd","entry_price":290.05,"rs":89.0,"comp":97.0,"grp_rank":24.0,"same_day_tabs":1,"industry_group":"Medical-Supplies","u":1,"status":"OPEN","exit_px":288.55,"exit_date":"2026-08-20","ret":-0.5171522151353192,"sessions":7,"basis":"closes","ambiguous":false,"invested":15000,"value":14922.427167729702,"pnl":-77.57283227029802},{"entry_date":"2026-08-12","symbol":"BLISSGVS","company":"Bliss Gvs Pharma","entry_price":491.1000061035156,"rs":98.0,"comp":98.0,"grp_rank":38.0,"same_day_tabs":1,"industry_group":"Medical-Generic Drugs","u":2,"status":"OPEN","exit_px":580.15,"exit_date":"2026-08-20","ret":18.132761716503442,"sessions":7,"basis":"intraday","ambiguous":false,"invested":30000,"value":35439.828514951034,"pnl":5439.828514951034},{"entry_date":"2026-08-11","symbol":"VIJAYA","company":"Vijaya Diagnostic Centre","entry_price":1389.0999755859375,"rs":82.0,"comp":98.0,"grp_rank":21.0,"same_day_tabs":2,"industry_group":"Medical-Services","u":1,"status":"OPEN","exit_px":1498.4,"exit_date":"2026-08-20","ret":7.868405898427766,"sessions":8,"basis":"intraday","ambiguous":false,"invested":15000,"value":16180.260884764164,"pnl":1180.260884764164},{"entry_date":"2026-08-11","symbol":"POWERINDIA","company":"Hitachi Energy India","entry_price":36230.0,"rs":90.0,"comp":99.0,"grp_rank":32.0,"same_day_tabs":3,"industry_group":"Electrical-Power/Equipmt","u":2,"status":"STOPPED","exit_px":33331.6,"exit_date":"2026-08-20","ret":-8.000000000000007,"sessions":null,"basis":"intraday","ambiguous":false,"invested":30000,"value":27599.999999999996,"pnl":-2400.0000000000036},{"entry_date":"2026-08-11","symbol":"KEI","company":"Kei Industries","entry_price":5658.0,"rs":84.0,"comp":96.0,"grp_rank":32.0,"same_day_tabs":3,"industry_group":"Electrical-Power/Equipmt","u":1,"status":"OPEN","exit_px":5675.0,"exit_date":"2026-08-20","ret":0.30045952633439565,"sessions":8,"basis":"intraday","ambiguous":false,"invested":15000,"value":15045.068928950159,"pnl":45.068928950158806},{"entry_date":"2026-08-11","symbol":"EFFWA","company":"Effwa Infra & Research Ltd","entry_price":373.0,"rs":92.0,"comp":99.0,"grp_rank":30.0,"same_day_tabs":1,"industry_group":"Machinery-Gen Industrial","u":2,"status":"STOPPED","exit_px":343.16,"exit_date":"2026-08-17","ret":-7.9999999999999964,"sessions":null,"basis":"intraday","ambiguous":false,"invested":30000,"value":27600.0,"pnl":-2400.0},{"entry_date":"2026-08-11","symbol":"CRAFTSMAN","company":"Craftsman Automation","entry_price":10282.5,"rs":87.0,"comp":97.0,"grp_rank":25.0,"same_day_tabs":1,"industry_group":"Machinery-Mtl Hdlg/Autmn","u":1,"status":"OPEN","exit_px":10690.5,"exit_date":"2026-08-20","ret":3.9679066374908922,"sessions":8,"basis":"intraday","ambiguous":false,"invested":15000,"value":15595.185995623633,"pnl":595.1859956236331},{"entry_date":"2026-08-08","symbol":"VIVIDEL","company":"Vivid Electromech Ltd","entry_price":1448.0,"rs":98.0,"comp":98.0,"grp_rank":33.0,"same_day_tabs":1,"industry_group":"Electrical-Power/Equipmt","u":2,"status":"OPEN","exit_px":1571.0,"exit_date":"2026-08-20","ret":8.494475138121537,"sessions":9,"basis":"closes","ambiguous":false,"invested":30000,"value":32548.34254143646,"pnl":2548.342541436461},{"entry_date":"2026-08-08","symbol":"VIDYAWIRES","company":"Vidya Wires Ltd","entry_price":95.46,"rs":92.0,"comp":98.0,"grp_rank":33.0,"same_day_tabs":1,"industry_group":"Electrical-Power/Equipmt","u":2,"status":"STOPPED","exit_px":87.8232,"exit_date":"2026-08-14","ret":-7.9999999999999964,"sessions":null,"basis":"intraday","ambiguous":false,"invested":30000,"value":27600.0,"pnl":-2400.0},{"entry_date":"2026-08-08","symbol":"TDPOWERSYS","company":"Td Power Systems","entry_price":1261.0,"rs":93.0,"comp":99.0,"grp_rank":33.0,"same_day_tabs":1,"industry_group":"Electrical-Power/Equipmt","u":2,"status":"TARGET","exit_px":1513.2,"exit_date":"2026-08-12","ret":19.999999999999996,"sessions":null,"basis":"intraday","ambiguous":false,"invested":30000,"value":36000.0,"pnl":6000.0},{"entry_date":"2026-08-08","symbol":"SYRMA","company":"Syrma Sgs Technology","entry_price":1434.0999755859375,"rs":94.0,"comp":99.0,"grp_rank":5.0,"same_day_tabs":2,"industry_group":"Elec-Misc Products","u":2,"status":"OPEN","exit_px":1443.699951171875,"exit_date":"2026-08-20","ret":0.6694076946772931,"sessions":9,"basis":"intraday","ambiguous":false,"invested":30000,"value":30200.82230840319,"pnl":200.8223084031888},{"entry_date":"2026-08-08","symbol":"STLTECH","company":"Sterlite Technologies","entry_price":634.0,"rs":99.0,"comp":99.0,"grp_rank":3.0,"same_day_tabs":2,"industry_group":"Computer-Networking","u":2,"status":"OPEN","exit_px":621.4,"exit_date":"2026-08-20","ret":-1.987381703470037,"sessions":9,"basis":"intraday","ambiguous":false,"invested":30000,"value":29403.785488958987,"pnl":-596.2145110410129},{"entry_date":"2026-08-08","symbol":"RAINBOW","company":"Rainbow Children's Medicare","entry_price":1550.0,"rs":80.0,"comp":96.0,"grp_rank":52.0,"same_day_tabs":1,"industry_group":"Medical-Hospitals","u":1,"status":"STOPPED","exit_px":1426.0,"exit_date":"2026-08-14","ret":-7.9999999999999964,"sessions":null,"basis":"intraday","ambiguous":false,"invested":15000,"value":13800.0,"pnl":-1200.0},{"entry_date":"2026-08-08","symbol":"PRECWIRE","company":"Precision Wires India","entry_price":415.0,"rs":93.0,"comp":97.0,"grp_rank":33.0,"same_day_tabs":2,"industry_group":"Electrical-Power/Equipmt","u":2,"status":"OPEN","exit_px":435.7,"exit_date":"2026-08-20","ret":4.9879518072289075,"sessions":9,"basis":"intraday","ambiguous":false,"invested":30000,"value":31496.38554216867,"pnl":1496.3855421686712},{"entry_date":"2026-08-08","symbol":"NETWEB","company":"Netweb Technologies India Ltd","entry_price":4958.0,"rs":92.0,"comp":99.0,"grp_rank":15.0,"same_day_tabs":6,"industry_group":"Computer Sftwr-Database","u":2,"status":"OPEN","exit_px":5419.7998046875,"exit_date":"2026-08-20","ret":9.314235673406612,"sessions":9,"basis":"intraday","ambiguous":false,"invested":30000,"value":32794.27070202198,"pnl":2794.2707020219823},{"entry_date":"2026-08-08","symbol":"KRN","company":"Krn Heat Exchanger And Refrigeration Ltd","entry_price":1217.0,"rs":87.0,"comp":99.0,"grp_rank":18.0,"same_day_tabs":2,"industry_group":"Elec-Contract Mfg","u":1,"status":"TARGET","exit_px":1468.300048828125,"exit_date":"2026-08-14","ret":20.649141234850042,"sessions":null,"basis":"intraday","ambiguous":false,"invested":15000,"value":18097.37118522751,"pnl":3097.3711852275082},{"entry_date":"2026-08-08","symbol":"JAMNAAUTO","company":"Jamna Auto Inds.","entry_price":136.0,"rs":86.0,"comp":98.0,"grp_rank":31.0,"same_day_tabs":4,"industry_group":"Auto/Truck-Original Eqp","u":1,"status":"STOPPED","exit_px":125.12,"exit_date":"2026-08-10","ret":-7.9999999999999964,"sessions":null,"basis":"intraday","ambiguous":false,"invested":15000,"value":13800.0,"pnl":-1200.0},{"entry_date":"2026-08-08","symbol":"DPEL","company":"Divine Power Energy Ltd","entry_price":555.0,"rs":97.0,"comp":98.0,"grp_rank":33.0,"same_day_tabs":1,"industry_group":"Electrical-Power/Equipmt","u":2,"status":"OPEN","exit_px":576.95,"exit_date":"2026-08-20","ret":3.95495495495497,"sessions":9,"basis":"intraday","ambiguous":false,"invested":30000,"value":31186.48648648649,"pnl":1186.4864864864903},{"entry_date":"2026-08-08","symbol":"APARINDS","company":"Apar Industries (Nse)","entry_price":16660.0,"rs":94.0,"comp":98.0,"grp_rank":33.0,"same_day_tabs":2,"industry_group":"Electrical-Power/Equipmt","u":2,"status":"OPEN","exit_px":16784.0,"exit_date":"2026-08-20","ret":0.7442977190876388,"sessions":9,"basis":"intraday","ambiguous":false,"invested":30000,"value":30223.28931572629,"pnl":223.28931572629153},{"entry_date":"2026-08-08","symbol":"AEROENTER","company":"Aeroflex Enterprises Ltd","entry_price":132.0,"rs":87.0,"comp":96.0,"grp_rank":5.0,"same_day_tabs":1,"industry_group":"Elec-Misc Products","u":1,"status":"STOPPED","exit_px":121.44000000000001,"exit_date":"2026-08-14","ret":-7.9999999999999964,"sessions":null,"basis":"intraday","ambiguous":false,"invested":15000,"value":13800.0,"pnl":-1200.0},{"entry_date":"2026-08-05","symbol":"SHAILY","company":"Shaily Engineering Plastics","entry_price":3075.89990234375,"rs":90.0,"comp":98.0,"grp_rank":50.0,"same_day_tabs":1,"industry_group":"Chemicals-Plastics","u":2,"status":"OPEN","exit_px":3350.0,"exit_date":"2026-08-20","ret":8.91121643611983,"sessions":12,"basis":"intraday","ambiguous":false,"invested":30000,"value":32673.36493083595,"pnl":2673.364930835949},{"entry_date":"2026-08-05","symbol":"RAMRAT","company":"Ram Ratna Wires","entry_price":429.29998779296875,"rs":81.0,"comp":96.0,"grp_rank":28.0,"same_day_tabs":1,"industry_group":"Electrical-Power/Equipmt","u":1,"status":"OPEN","exit_px":486.5,"exit_date":"2026-08-20","ret":13.32401906207743,"sessions":12,"basis":"intraday","ambiguous":false,"invested":15000,"value":16998.602859311613,"pnl":1998.6028593116134},{"entry_date":"2026-08-05","symbol":"QPOWER","company":"Quality Power Electrical Equipments Ltd","entry_price":1138.800048828125,"rs":81.0,"comp":99.0,"grp_rank":28.0,"same_day_tabs":1,"industry_group":"Electrical-Power/Equipmt","u":1,"status":"OPEN","exit_px":1334.9,"exit_date":"2026-08-20","ret":17.21987555002922,"sessions":12,"basis":"intraday","ambiguous":false,"invested":15000,"value":17582.981332504383,"pnl":2582.9813325043833},{"entry_date":"2026-08-05","symbol":"POLYCAB","company":"Polycab India","entry_price":9200.0,"rs":80.0,"comp":96.0,"grp_rank":28.0,"same_day_tabs":1,"industry_group":"Electrical-Power/Equipmt","u":1,"status":"OPEN","exit_px":9125.0,"exit_date":"2026-08-20","ret":-0.8152173913043459,"sessions":12,"basis":"intraday","ambiguous":false,"invested":15000,"value":14877.717391304348,"pnl":-122.28260869565202},{"entry_date":"2026-08-05","symbol":"LUMAXTECH","company":"Lumax Auto Technologies","entry_price":1638.4000244140625,"rs":80.0,"comp":96.0,"grp_rank":43.0,"same_day_tabs":1,"industry_group":"Auto/Truck-Original Eqp","u":1,"status":"TARGET","exit_px":1966.080029296875,"exit_date":"2026-08-11","ret":19.999999999999996,"sessions":null,"basis":"intraday","ambiguous":false,"invested":15000,"value":18000.0,"pnl":3000.0},{"entry_date":"2026-08-05","symbol":"GOLDIAM","company":"Goldiam International","entry_price":364.5,"rs":85.0,"comp":97.0,"grp_rank":33.0,"same_day_tabs":1,"industry_group":"Retail/Whlsle-Jewelry","u":1,"status":"OPEN","exit_px":363.1499938964844,"exit_date":"2026-08-20","ret":-0.37037204486025654,"sessions":12,"basis":"intraday","ambiguous":false,"invested":15000,"value":14944.444193270961,"pnl":-55.55580672903852},{"entry_date":"2026-08-05","symbol":"FCL","company":"Fineotex Chemical","entry_price":38.54999923706055,"rs":93.0,"comp":98.0,"grp_rank":48.0,"same_day_tabs":1,"industry_group":"Chemicals-Specialty","u":2,"status":"OPEN","exit_px":43.55,"exit_date":"2026-08-20","ret":12.970170847974071,"sessions":12,"basis":"intraday","ambiguous":false,"invested":30000,"value":33891.05125439222,"pnl":3891.051254392223}];
+const f2 = v => (v===null||v===undefined) ? "—" : (v>=0?"+":"−")+Math.abs(v).toFixed(2)+"%";
+const rup = v => (v===null||v===undefined) ? "—"
+  : (v<0?"−₹":"₹")+Math.abs(Math.round(v)).toLocaleString("en-IN");
+let active="ALL", key="entry_date", dir=-1;
+const BTN=[["ALL","All"],["OPEN","Open"],["TARGET","Target hit"],["STOPPED","Stopped"],
+           ["CONV","RS ≥ 90"]];
+const COUNT = k => k==="ALL" ? DATA.length
+  : k==="CONV" ? DATA.filter(x=>x.u===2).length
+  : DATA.filter(x=>x.status===k).length;
+document.getElementById("f").innerHTML = BTN.map(([k,t])=>
+  `<button data-k="${k}" aria-pressed="${k===active}">${t} <span class="ct">${COUNT(k)}</span></button>`).join("")
+  + `<span class="shown" id="shown"></span>`;
+function rowsFor(){
+  let r = DATA.slice();
+  if(active==="CONV") r=r.filter(x=>x.u===2);
+  else if(active!=="ALL") r=r.filter(x=>x.status===active);
+  return r.sort((a,b)=>{
+    let x=a[key], y=b[key];
+    if(typeof x==="string"||typeof y==="string")
+      return dir*String(x??"").localeCompare(String(y??""));
+    return dir*(((x??-1e9))-((y??-1e9)));
+  });
+}
+function draw(){
+  const rs = rowsFor();
+  document.getElementById("shown").textContent =
+    rs.length===DATA.length ? `showing all ${DATA.length} trades`
+                            : `showing ${rs.length} of ${DATA.length} trades`;
+  document.getElementById("tb").innerHTML = rs.map(r=>`<tr>
+   <td>${r.entry_date}</td>
+   <td><a href="https://marketsmithindia.com/mstool/eval/${r.symbol.toLowerCase()}/evaluation.jsp#/"
+       target="_blank" rel="noopener">${r.symbol}</a></td>
+   <td class="co">${(r.company||"").slice(0,30)}</td>
+   <td><span class="pill p-${r.status}">${r.status}</span>${r.ambiguous?' <span class="co" title="stop and target both touched in one bar; stop assumed">±</span>':''}</td>
+   <td class="${r.ret>=0?'up':'dn'}">${f2(r.ret)}</td>
+   <td class="${r.pnl>=0?'up':'dn'}"><b>${rup(r.pnl)}</b></td>
+   <td class="${r.u===2?'u2':''}">${r.u}×</td>
+   <td class="co">${rup(r.invested)}</td>
+   <td>${r.entry_price==null?"—":r.entry_price.toFixed(1)}</td>
+   <td>${r.exit_px==null?"—":r.exit_px.toFixed(1)}</td>
+   <td class="co">${r.exit_date||"—"}</td>
+   <td>${r.rs??"—"}</td><td>${r.comp??"—"}</td><td>${r.grp_rank??"—"}</td>
+   <td>${r.same_day_tabs??"—"}</td>
+   <td class="co">${(r.industry_group||"").slice(0,26)}</td>
+  </tr>`).join("");
+}
+document.getElementById("f").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  active=b.dataset.k;
+  document.querySelectorAll("#f button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  draw();
+});
+document.querySelectorAll("th").forEach(th=>th.addEventListener("click",()=>{
+  const k=th.dataset.k; dir = (k===key)? -dir : -1; key=k; draw();
+}));
+draw();
+</script></body></html>
