@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stock Lists</title><style>:root{--bg:#fff;--fg:#1F2328;--mut:#59636E;--bd:#D0D7DE;--warn:#9A6700}
+@media (prefers-color-scheme: dark){:root{--bg:#0D1117;--fg:#E6EDF3;--mut:#8B949E;--bd:#30363D;--warn:#D29922}}
+body{margin:0;padding:24px 16px;background:var(--bg);color:var(--fg);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.c{max-width:760px;margin:0 auto}h1{font-size:22px;margin:0 0 6px}.m{color:var(--mut)}.w{color:var(--warn);font-weight:600}
+a{color:inherit}.r{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)}</style></head><body><div class="c"><h1>Stock Lists</h1>
+<p class="m">Data 2026-11-14 · generated 2026-11-14 · full NSE/BSE universe</p><p>🟢  CONFIRMED UPTREND  (since 2026-10-16, Nifty +9.11%)</p><div class="r"><a href="2026-11-14_SL_Top_50.html">Top 50</a><span class="m">50</span></div><div class="r"><a href="2026-11-14_SL_Sector_Leaders.html">Sector Leaders</a><span class="m">57</span></div><div class="r"><a href="2026-11-14_SL_Big_Cap_20.html">Big Cap 20</a><span class="m">20</span></div><div class="r"><a href="2026-11-14_SL_IPO_Leaders.html">IPO Leaders</a><span class="m">50</span></div><div class="r"><a href="2026-11-14_SL_Stock_Spotlight.html">Stock Spotlight</a><span class="m">50</span></div><div class="r"><a href="2026-11-14_SL_Near_Buy_Zone.html">Stocks Near Buy Zone</a><span class="m">44</span></div><div class="r"><a href="2026-11-14_SL_RS_Line_New_High.html">RS Line At New High</a><span class="m">265</span></div><div class="r"><a href="2026-11-14_SL_New_Highs.html">New Highs</a><span class="m">50</span></div><div class="r"><a href="2026-11-14_SL_On_The_Move.html">Stocks On The Move</a><span class="m">13</span></div><div class="r"><a href="2026-11-14_SL_Breakouts.html">Breakout Stocks</a><span class="m">24</span></div></div><script id="msi-table-tools">
+(function(){
+ if(window.__msiSort) return; window.__msiSort=1;
+ var css=document.createElement('style');
+ css.textContent='th.msi-s{cursor:pointer;user-select:none}th.msi-s:hover{text-decoration:underline}th.msi-s .msi-a{font-size:10px;opacity:.75;margin-left:4px}';
+ document.head.appendChild(css);
+ var NUMRE=/^[\s₹+\-]*[\d,]*\.?\d+\s*(%|x|cr|Cr)?\s*$/;
+ function raw(c){var d=c.getAttribute('data-v');if(d===null||d==='')d=c.getAttribute('data-sort');
+  return (d!==null&&d!=='')?String(d):c.textContent.trim();}
+ function num(t){var s=String(t).replace(/[,₹%+\s]/g,'');return /^-?\d*\.?\d+/.test(s)?parseFloat(s):NaN;}
+ function alreadySortable(ths){
+  for(var i=0;i<ths.length;i++){var th=ths[i];
+   if(th.hasAttribute('onclick')||/sort/i.test(th.className||'')) return true;
+   try{if(getComputedStyle(th).cursor==='pointer') return true;}catch(e){}}
+  return false;}
+ function span(r){var n=0,spanned=false;for(var i=0;i<r.cells.length;i++){var c=r.cells[i];n+=(c.colSpan||1);if((c.colSpan||1)>1||(c.rowSpan||1)>1)spanned=true;}return {n:n,spanned:spanned};}
+ function init(t){
+  if(t.dataset.msiDone) return; t.dataset.msiDone='1';
+  if(t.parentElement&&t.parentElement.closest('table')) return;
+  var all=Array.prototype.slice.call(t.rows),lead=0;
+  while(lead<all.length && !all[lead].querySelector('td')) lead++;      // leading rows that hold only <th>
+  if(lead===0||lead>=all.length) return;
+  var body=all.slice(lead); if(body.length<3) return;
+  var bi=span(body[0]); var n=bi.n; if(!n) return;
+  for(var i=0;i<body.length;i++){var si=span(body[i]); if(si.n!==n||si.spanned||body[i].querySelector('th[colspan]')) return;}
+  var hrow=null;
+  for(var j=lead-1;j>=0;j--){var sh=span(all[j]); if(sh.n===n&&!sh.spanned){hrow=all[j];break;}}
+  if(!hrow) return;
+  var ths=Array.prototype.slice.call(hrow.cells);
+  if(alreadySortable(ths)) return;
+  var parents=[]; body.forEach(function(r){if(parents.indexOf(r.parentNode)<0)parents.push(r.parentNode);});
+  ths.forEach(function(th,ci){
+   th.classList.add('msi-s'); th.title=(th.title?th.title+' · ':'')+'click to sort';
+   var arrow=document.createElement('span');arrow.className='msi-a';th.appendChild(arrow);
+   th.addEventListener('click',function(e){
+    if(e.target.closest&&e.target.closest('input,select,button,a')) return;
+    var asc=th.dataset.asc!=='1'; th.dataset.asc=asc?'1':'0';
+    ths.forEach(function(o){var a=o.querySelector('.msi-a');if(a&&o!==th)a.textContent='';});
+    arrow.textContent=asc?'▲':'▼';
+    parents.forEach(function(par){
+     var rs=body.filter(function(r){return r.parentNode===par;}),
+      k=rs.map(function(r,idx){var c=r.cells[ci],v=raw(c);
+       return {r:r,v:v,n:(NUMRE.test(v)||c.hasAttribute('data-v'))?num(v):NaN,i:idx};});
+     k.sort(function(a,b2){
+      var ea=a.v==='',eb=b2.v==='';if(ea!==eb)return ea?1:-1;
+      var na=!isNaN(a.n),nb=!isNaN(b2.n),d;
+      if(na&&nb)d=a.n-b2.n; else d=String(a.v).localeCompare(String(b2.v),undefined,{numeric:true,sensitivity:'base'});
+      if(d===0)return a.i-b2.i; return asc?d:-d;});
+     k.forEach(function(o){par.appendChild(o.r);});});});});}
+ function run(){Array.prototype.slice.call(document.querySelectorAll('table')).forEach(init);}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();
+ window.addEventListener('load',run);
+ var tm=null;try{new MutationObserver(function(){clearTimeout(tm);tm=setTimeout(run,300);}).observe(document.body||document.documentElement,{childList:true,subtree:true});}catch(e){}
+})();
+</script></body></html>

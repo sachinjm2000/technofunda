@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Groups — India Screener</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+h2{font-size:16px;margin:4px 0 8px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:12px 0}
+.tabs button,.pill{font:inherit;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+.tabs button{border-radius:8px 8px 0 0;border-bottom:none}
+.tabs button.on,.pill.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.chip{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:2px;vertical-align:middle}
+.cat{font-size:12px;padding:1px 8px;border-radius:999px;background:var(--tint);color:var(--link);white-space:nowrap}
+#drawer{position:fixed;top:0;right:0;height:100%;width:min(560px,100%);background:var(--card);border-left:1px solid var(--line);box-shadow:-4px 0 16px rgba(0,0,0,.2);z-index:20;padding:14px;overflow:auto;display:none}
+#drawer.open{display:block}
+#drawer .x{float:right;font:inherit;font-size:20px;cursor:pointer;background:transparent;border:0;color:var(--muted);border-radius:6px;padding:2px 10px}
+.svgbox{max-width:640px;width:100%;margin:0 auto}
+.svgbox svg{width:100%;height:auto;display:block}
+.heat td.c{text-align:center;min-width:56px}
+.heat td.off{cursor:pointer}
+.heat td.diag{color:var(--muted);background:var(--tint)}
+.cell{display:inline-block;min-width:38px;padding:1px 6px;border-radius:4px;text-align:center}
+.t{display:inline-block;width:20px;height:20px;margin:1px;border-radius:3px;text-align:center;font-size:11px;line-height:20px;color:#fff;text-decoration:none}
+.t.miss{background:repeating-linear-gradient(45deg,#c9c5cf,#c9c5cf 3px,#eceaef 3px,#eceaef 6px);color:#555}
+.mx td{white-space:normal;vertical-align:top;text-align:left;min-width:0}
+.mx td.g{white-space:nowrap}
+.tw{display:flex;flex-wrap:wrap;max-width:300px}
+.lgd{display:inline-flex;align-items:center;gap:3px;font-size:12px;margin-right:8px}
+.lgd i{display:inline-block;width:14px;height:14px;border-radius:3px}
+.clus{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.clus .card{margin:0;padding:6px;min-width:0}
+.clus svg{width:100%;height:auto}
+.lbl{font-size:12px;color:var(--muted)}
+@media (max-width:640px){.tw{max-width:220px}
+.tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}.tabs button{flex:0 0 auto;white-space:nowrap}
+.sr-ctl{flex-wrap:nowrap!important;overflow-x:auto;gap:4px!important}.sr-ctl>*{flex:0 0 auto}.sr-ctl select{max-width:150px}.sr-ctl input{width:90px}.sr-ctl .pill{padding:3px 8px;font-size:12px}}
+</style></head><body><div id="shell"></div><main id="app"></main><div id="drawer"></div>
+<script src="pages/colfilter.js"></script><script src="app.js"></script>
+<script src="pages/rrg-chart.js"></script><script src="pages/groups-rrg.js"></script><script src="pages/groups-trans.js"></script><script src="pages/groups-matrix.js"></script><script src="pages/groups-hist.js"></script><script src="pages/groups-stock-rrg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script><script src="pages/stock-chart.js"></script><script src="pages/groups-table.js"></script>
+<script src="pages/groups.js"></script></body></html>

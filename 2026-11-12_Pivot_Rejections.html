@@ -1,0 +1,92 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Pivot Rejections 2026-11-12</title><style>
+body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#0d1117;color:#e6edf3;margin:0;padding:18px 22px}
+h1{margin:0 0 4px;font-size:22px}.sub{color:#8b949e;font-size:13px;margin-bottom:12px}
+.box{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px 14px;margin:10px 0;font-size:13px;line-height:1.5}
+.funnel span{display:inline-block;margin-right:14px;color:#8b949e}.funnel b{color:#e6edf3}
+.ctl{margin:12px 0}.ctl button{background:#21262d;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:5px 11px;margin-right:6px;cursor:pointer}
+.ctl button.on{background:#1f6feb;border-color:#1f6feb}.ctl input{background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:5px 9px;width:200px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}th,td{padding:6px 8px;border-bottom:1px solid #21262d;text-align:left;white-space:nowrap}
+th{position:sticky;top:0;background:#161b22;cursor:pointer;color:#8b949e}tr:hover td{background:#161b22}
+a{color:#58a6ff;text-decoration:none}.nm{color:#8b949e;font-size:11px;max-width:230px;overflow:hidden;text-overflow:ellipsis}
+.dim{color:#6e7681}.P1{color:#3fb950}.P2{color:#d29922}.P3{color:#f85149}
+.tag{border-radius:10px;padding:1px 8px;font-size:11px}.tag.brief{background:#1f6feb33;color:#79c0ff}
+h2{font-size:16px;margin:18px 0 6px}</style></head><body>
+<h1>Pivot Rejections - RS &ge; 90 · heavy-volume rejection at the pivot · A/D not below C</h1>
+<div class="sub">File date 2026-11-12 · 2 live (last 10 sessions) · 4 in the track record since 2026-06-15 · no score</div>
+<div class="box"><b>Rule.</b> The session's high reached the pivot but it closed back below (within 4%), on &ge;1.5x the 50-day volume, RS &ge; 90, A/D not below C, liquid (&ge; ₹3 Cr/day, cap &ge; ₹300 Cr). Group rank is an optional filter (default Any); EPS and A/D are shown, not ranked on.<br>
+<b>Evidence (descriptive, small samples).</b> Across 253 matured rejections of RS&ge;80 stocks (Jun-Aug), 55% later closed &ge;10% above the pivot (30% &ge;20%) vs 49% / 24% for stocks near the pivot without a rejection, so the rejection candle itself adds only a few points; RS&ge;90: 63% / 37% (n=46). The recoverers took a median 18 sessions to +10%, and 32% first dipped &ge;8% below the pivot, so a tight stop is shaken out. A re-break of a pivot that had rejected before did <b>not</b> beat a first-time breakout (3,709 events). One uptrend regime; CLAUDE.md gates still apply (no new entries in a Downtrend; Tier 1 EPS &ge; 70 is a separate check). Matured track record here (n=1): reached &ge;+10% above the pivot 0%, &ge;+20% 0%, never back above the pivot 100%.</div>
+<div class="ctl">Rejection volume: <button data-vol="1.5" class="on">&ge;1.5x</button><button data-vol="2">&ge;2x</button><button data-vol="3">&ge;3x</button><button data-vol="5">&ge;5x</button>
+&nbsp;|&nbsp;Group rank: <button data-grp="0" class="on">Any</button><button data-grp="40">&le;40</button><button data-grp="20">&le;20</button>
+&nbsp;<input id="q" placeholder="filter symbol / group..."></div>
+<h2>Live - rejected in the last 10 sessions <span id="c_live" class="dim"></span></h2>
+<table id="live"><thead><tr><th>Stock</th><th>Rejected</th><th>Volume</th><th>Pierce</th><th>Close</th><th>Pivot (reclaim)</th><th>Base status</th><th>Now</th><th>RS</th><th>A/D</th><th>EPS Rtg</th><th>Group (rank)</th><th>MCap Cr</th></tr></thead><tbody><tr data-vx="2.87" data-grp="79"><td><a href="https://marketsmithindia.com/mstool/eval/rpel/evaluation.jsp" target="_blank">RPEL</a><div class="nm">Raghav Productivity Enhancers</div></td><td data-v="1794182400000000000">2026-11-09</td><td data-v="2.87"><b>2.9x</b></td><td data-v="0.26">+0.3% hi</td><td data-v="0.54">−0.5% close</td><td data-v="1930.05">1,930.0</td><td>Forming</td><td data-v="-2.05">-2.1% vs pivot</td><td data-v="97.0">97</td><td>B+</td><td data-v="92">92</td><td>Steel-Producers          <span class="dim">#79</span></td><td data-v="8177.79">8,178</td></tr><tr data-vx="2.44" data-grp="45"><td><a href="https://marketsmithindia.com/mstool/eval/sansera/evaluation.jsp" target="_blank">SANSERA</a><div class="nm">Sansera Engineering</div></td><td data-v="1794182400000000000">2026-11-09</td><td data-v="2.44"><b>2.4x</b></td><td data-v="0.19">+0.2% hi</td><td data-v="1.12">−1.1% close</td><td data-v="4706.17">4,706.2</td><td>Forming</td><td data-v="-1.09">-1.1% vs pivot</td><td data-v="97.0">97</td><td>B-</td><td data-v="86">86</td><td>Auto/Truck-Original Eqp  <span class="dim">#45</span></td><td data-v="26981.43">26,981</td></tr></tbody></table>
+<h2>Track record since 2026-06-15 <span id="c_hist" class="dim"></span></h2>
+<table id="hist"><thead><tr><th>Stock</th><th>Rejected</th><th>Volume</th><th>Pierce</th><th>Close</th><th>Pivot</th><th>Base status</th><th>Best close vs pivot</th><th>Worst dip vs pivot</th><th>Sessions to +10%</th><th>Outcome</th><th>RS</th><th>A/D</th><th>EPS Rtg</th><th>Group (rank)</th><th>MCap Cr</th></tr></thead><tbody><tr data-vx="2.87" data-grp="79"><td><a href="https://marketsmithindia.com/mstool/eval/rpel/evaluation.jsp" target="_blank">RPEL</a><div class="nm">Raghav Productivity Enhancers</div></td><td data-v="1794182400000000000">2026-11-09</td><td data-v="2.87"><b>2.9x</b></td><td data-v="0.26">+0.3% hi</td><td data-v="0.54">−0.5% close</td><td data-v="1930.05">1,930.0</td><td>Forming</td><td data-v="-2.0542228759089176">-2.1%</td><td data-v="-2.0542228759089176">-2.1%</td><td data-v=""></td><td>in progress: BELOW PIVOT</td><td data-v="97.0">97</td><td>B+</td><td data-v="92">92</td><td>Steel-Producers          <span class="dim">#79</span></td><td data-v="8177.79">8,178</td></tr><tr data-vx="2.44" data-grp="45"><td><a href="https://marketsmithindia.com/mstool/eval/sansera/evaluation.jsp" target="_blank">SANSERA</a><div class="nm">Sansera Engineering</div></td><td data-v="1794182400000000000">2026-11-09</td><td data-v="2.44"><b>2.4x</b></td><td data-v="0.19">+0.2% hi</td><td data-v="1.12">−1.1% close</td><td data-v="4706.17">4,706.2</td><td>Forming</td><td data-v="-1.0852002898402713">-1.1%</td><td data-v="-1.0852002898402713">-1.1%</td><td data-v=""></td><td>in progress: BELOW PIVOT</td><td data-v="97.0">97</td><td>B-</td><td data-v="86">86</td><td>Auto/Truck-Original Eqp  <span class="dim">#45</span></td><td data-v="26981.43">26,981</td></tr><tr data-vx="3.52" data-grp="50"><td><a href="https://marketsmithindia.com/mstool/eval/qpower/evaluation.jsp" target="_blank">QPOWER</a><div class="nm">Quality Power Electrical Equipments Ltd</div></td><td data-v="1788134400000000000">2026-08-31</td><td data-v="3.52"><b>3.5x</b></td><td data-v="4.28">+4.3% hi</td><td data-v="0.36">−0.4% close</td><td data-v="1440.98">1,441.0</td><td>Forming</td><td data-v="14.422030743386705">14.4%</td><td data-v="-9.408952612556387">-9.4%</td><td data-v="19.0">19</td><td>in progress: UP10</td><td data-v="93.0">93</td><td>A</td><td data-v="97">97</td><td>Electrical-Power/Equipmt <span class="dim">#50</span></td><td data-v="11083.78">11,084</td></tr><tr data-vx="2.23" data-grp="43"><td><a href="https://marketsmithindia.com/mstool/eval/ricoauto/evaluation.jsp" target="_blank">RICOAUTO</a><div class="nm">Rico Auto Inds. (Nse)</div></td><td data-v="1785888000000000000">2026-08-05</td><td data-v="2.23"><b>2.2x</b></td><td data-v="0.69">+0.7% hi</td><td data-v="0.70">−0.7% close</td><td data-v="156.90">156.9</td><td>Forming</td><td data-v="-2.881844868546546">-2.9%</td><td data-v="-36.78843269498914">-36.8%</td><td data-v=""></td><td>BELOW PIVOT</td><td data-v="94.0">94</td><td>A+</td><td data-v="68">68</td><td>Auto/Truck-Original Eqp  <span class="dim">#43</span></td><td data-v="2107.88">2,108</td></tr></tbody></table>
+<script>
+let vol=1.5,grp=0;
+function apply(){const q=document.getElementById('q').value.toLowerCase();
+['live','hist'].forEach(id=>{let n=0;const rows=[...document.querySelectorAll('#'+id+' tbody tr')];
+rows.forEach(r=>{let ok=+r.dataset.vx>=vol; if(grp>0)ok=ok&&(+r.dataset.grp<=grp); if(q&&!r.innerText.toLowerCase().includes(q))ok=false;r.style.display=ok?'':'none';if(ok)n++});
+document.getElementById('c_'+id).textContent=n+' shown of '+rows.length})}
+document.querySelectorAll('button[data-vol]').forEach(b=>b.onclick=()=>{vol=+b.dataset.vol;document.querySelectorAll('button[data-vol]').forEach(x=>x.classList.toggle('on',x===b));apply()});
+document.querySelectorAll('button[data-grp]').forEach(b=>b.onclick=()=>{grp=+b.dataset.grp;document.querySelectorAll('button[data-grp]').forEach(x=>x.classList.toggle('on',x===b));apply()});
+document.getElementById('q').oninput=apply;
+document.querySelectorAll('table th').forEach(th=>th.onclick=()=>{const t=th.closest('table'),i=[...th.parentNode.children].indexOf(th),tb=t.querySelector('tbody');
+const dir=th.dataset.d=th.dataset.d==='a'?'d':'a';const val=r=>{const c=r.children[i];const v=c.dataset.v;return v!==undefined&&v!==''?+v:c.innerText.toLowerCase()};
+[...tb.children].sort((a,b)=>{const x=val(a),y=val(b);return (x>y?1:x<y?-1:0)*(dir==='a'?1:-1)}).forEach(r=>tb.appendChild(r))});
+apply();
+</script><script id="msi-table-tools">
+(function(){
+ if(window.__msiSort) return; window.__msiSort=1;
+ var css=document.createElement('style');
+ css.textContent='th.msi-s{cursor:pointer;user-select:none}th.msi-s:hover{text-decoration:underline}th.msi-s .msi-a{font-size:10px;opacity:.75;margin-left:4px}';
+ document.head.appendChild(css);
+ var NUMRE=/^[\s₹+\-]*[\d,]*\.?\d+\s*(%|x|cr|Cr)?\s*$/;
+ function raw(c){var d=c.getAttribute('data-v');if(d===null||d==='')d=c.getAttribute('data-sort');
+  return (d!==null&&d!=='')?String(d):c.textContent.trim();}
+ function num(t){var s=String(t).replace(/[,₹%+\s]/g,'');return /^-?\d*\.?\d+/.test(s)?parseFloat(s):NaN;}
+ function alreadySortable(ths){
+  for(var i=0;i<ths.length;i++){var th=ths[i];
+   if(th.hasAttribute('onclick')||/sort/i.test(th.className||'')) return true;
+   try{if(getComputedStyle(th).cursor==='pointer') return true;}catch(e){}}
+  return false;}
+ function span(r){var n=0,spanned=false;for(var i=0;i<r.cells.length;i++){var c=r.cells[i];n+=(c.colSpan||1);if((c.colSpan||1)>1||(c.rowSpan||1)>1)spanned=true;}return {n:n,spanned:spanned};}
+ function init(t){
+  if(t.dataset.msiDone) return; t.dataset.msiDone='1';
+  if(t.parentElement&&t.parentElement.closest('table')) return;
+  var all=Array.prototype.slice.call(t.rows),lead=0;
+  while(lead<all.length && !all[lead].querySelector('td')) lead++;      // leading rows that hold only <th>
+  if(lead===0||lead>=all.length) return;
+  var body=all.slice(lead); if(body.length<3) return;
+  var bi=span(body[0]); var n=bi.n; if(!n) return;
+  for(var i=0;i<body.length;i++){var si=span(body[i]); if(si.n!==n||si.spanned||body[i].querySelector('th[colspan]')) return;}
+  var hrow=null;
+  for(var j=lead-1;j>=0;j--){var sh=span(all[j]); if(sh.n===n&&!sh.spanned){hrow=all[j];break;}}
+  if(!hrow) return;
+  var ths=Array.prototype.slice.call(hrow.cells);
+  if(alreadySortable(ths)) return;
+  var parents=[]; body.forEach(function(r){if(parents.indexOf(r.parentNode)<0)parents.push(r.parentNode);});
+  ths.forEach(function(th,ci){
+   th.classList.add('msi-s'); th.title=(th.title?th.title+' · ':'')+'click to sort';
+   var arrow=document.createElement('span');arrow.className='msi-a';th.appendChild(arrow);
+   th.addEventListener('click',function(e){
+    if(e.target.closest&&e.target.closest('input,select,button,a')) return;
+    var asc=th.dataset.asc!=='1'; th.dataset.asc=asc?'1':'0';
+    ths.forEach(function(o){var a=o.querySelector('.msi-a');if(a&&o!==th)a.textContent='';});
+    arrow.textContent=asc?'▲':'▼';
+    parents.forEach(function(par){
+     var rs=body.filter(function(r){return r.parentNode===par;}),
+      k=rs.map(function(r,idx){var c=r.cells[ci],v=raw(c);
+       return {r:r,v:v,n:(NUMRE.test(v)||c.hasAttribute('data-v'))?num(v):NaN,i:idx};});
+     k.sort(function(a,b2){
+      var ea=a.v==='',eb=b2.v==='';if(ea!==eb)return ea?1:-1;
+      var na=!isNaN(a.n),nb=!isNaN(b2.n),d;
+      if(na&&nb)d=a.n-b2.n; else d=String(a.v).localeCompare(String(b2.v),undefined,{numeric:true,sensitivity:'base'});
+      if(d===0)return a.i-b2.i; return asc?d:-d;});
+     k.forEach(function(o){par.appendChild(o.r);});});});});}
+ function run(){Array.prototype.slice.call(document.querySelectorAll('table')).forEach(init);}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();
+ window.addEventListener('load',run);
+ var tm=null;try{new MutationObserver(function(){clearTimeout(tm);tm=setTimeout(run,300);}).observe(document.body||document.documentElement,{childList:true,subtree:true});}catch(e){}
+})();
+</script></body></html>
