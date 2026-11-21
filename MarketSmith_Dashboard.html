@@ -94,6 +94,33 @@ body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSyst
           transition:color .15s,border-color .15s}
 .vid-btn:hover{color:#FF4D4D;border-color:#FF4D4D}
 
+
+/* 2026-11-21 redesign: toolbar + grouped, compact cards */
+.toolbar{position:sticky;top:-24px;z-index:5;background:var(--bg);margin:-24px -24px 16px;padding:14px 24px 10px;
+         border-bottom:1px solid var(--border)}
+.tb-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.search{flex:1;min-width:220px;max-width:460px;padding:8px 12px;border:1px solid var(--border2);border-radius:8px;
+         background:var(--surface);color:var(--fg);font-size:13px;outline:none}
+.search:focus{border-color:var(--blue)}
+.tb-opt{font-size:12px;color:var(--dim);display:flex;gap:5px;align-items:center;cursor:pointer}
+.chips{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin-top:10px;padding-bottom:4px}
+.chip{font-size:11.5px;color:var(--dim);border:1px solid var(--border2);background:var(--surface);border-radius:20px;
+       padding:3px 11px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.chip:hover{color:var(--blue);border-color:var(--blue)}
+.chip b{color:var(--fg);font-weight:700;margin-left:3px}
+.sec{margin-top:22px;scroll-margin-top:var(--tbh,140px)}
+.sec h3{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);
+         margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:baseline}
+.sec h3 span{font-size:11px;font-weight:600;color:var(--dim2);text-transform:none;letter-spacing:0}
+.grid.compact{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.grid.compact .card{padding:12px 14px;border-radius:8px}
+.grid.compact .card-header{margin-bottom:6px;gap:9px}
+.grid.compact .card-emoji{font-size:20px}
+.grid.compact .card-title{font-size:14px}
+.grid.compact .card-desc{font-size:11.5px;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;
+                          -webkit-box-orient:vertical;overflow:hidden}
+.none{color:var(--dim);padding:30px 0;text-align:center}
+
 /* Missing card */
 .card.missing{opacity:.4;pointer-events:none;border-style:dashed}
 .card.missing .card-title{color:var(--dim)}
@@ -253,56 +280,65 @@ function selectDate(dateStr, btn) {
   renderMain(dateStr);
 }
 
+const CATS = [["Start here", ["Daily_ActionList", "Quality_Screen", "Minervini_SEPA", "Stock_Screen_Lookup"]], ["Breakouts & entry setups", ["Pivot_Breakouts", "Pivot_Rejections", "Entry_Flag_Screen", "First_Touch_50EMA", "Base_Low_Screen", "Shallow_Consolidation", "Qullamaggie_Setups", "RMV_MMT", "Near_Pivot_Stocks", "Potential_High_Tight_Flag"]], ["Pullbacks & patterns", ["Pullback_Continuation", "Inside_Bar", "NR4_NR7", "VCP_Darvas", "Pullback_Watchlist", "Harris_Pullback_Watchlist", "Harris_Pullback_RS90", "Harris_Quality_Tracker"]], ["Relative strength & leaders", ["Relative_Strength", "RS_Momentum_Radar", "RS_Blue_Dot", "Spotting_Market_Leaders", "Highest_EPS_RS", "New_High_Best_EPS_Rank", "High52_Daily", "Growth_50", "Top_Rated_IPOs"]], ["Industry groups", ["MSI_Group_Leaders", "MSI_Group_Stocks", "Group_Flag_Charts", "Group_Plot_Filters", "Bottom_Up_Groups", "Industry_Group_Rank_Up"]], ["Fundamentals & catalysts", ["Catalyst_Radar", "MSI_Catalysts", "Funda_A", "Funda_B", "Funda_C", "Funda_D", "Funda_E", "Fundamental_Screens"]], ["GSI (Growth Stock Intelligence)", ["GSI_FormingBase_AI_Radar", "GSI_Search", "GSI_RedFlag_Catalyst"]], ["MarketSmith lists & combined screens", ["MS_Screens_Watchlist", "Minervini_1M_TT", "Minervini_5M_TT", "Combined_Filter", "ExitMantra_Style", "Stock_Lists", "IN_Volume_Watchlist"]], ["Research & trackers", ["Multibagger_Study", "RS_Base_Forward_Test", "PP_Playbook", "US_Disciple_Charts"]]];
+let Q = '', SHOWMISS = false, CUR = DEFAULT;
+function esc(t) { return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function cardHtml(suffix, f, dateStr, isToday) {
+  const [emoji, title, desc, color, video] = META[suffix];
+  const vidBtn = video
+    ? `<span class="vid-btn" title="Watch the method"
+         onclick="event.preventDefault();event.stopPropagation();window.open('${video}','_blank','noopener')">▶ Method</span>`
+    : '';
+  if (!f) {
+    return `<div class="card missing" style="--accent:${color}" title="${esc(desc)}">
+      <div class="card-accent"></div>
+      <div class="card-header"><div class="card-emoji">${emoji}</div>
+        <div><div class="card-title">${esc(title)}</div><div class="card-sub">Not generated</div></div></div>
+      <div class="card-desc">${esc(desc)}</div></div>`;
+  }
+  return `<a class="card" href="${f.path}" target="_blank" style="--accent:${color}" title="${esc(desc)}">
+    <div class="card-accent"></div>
+    <div class="card-header"><div class="card-emoji">${emoji}</div>
+      <div><div class="card-title">${esc(title)}</div><div class="card-sub">${dateStr}${isToday ? ' · Today' : ''}</div></div></div>
+    <div class="card-desc">${esc(desc)}</div>
+    <div class="card-footer"><span class="open-btn">Open</span>${vidBtn}</div></a>`;
+}
 function renderMain(dateStr) {
+  CUR = dateStr;
   const entry = DATA.find(d => d.date === dateStr);
   const main = document.getElementById('main');
   if (!entry) { main.innerHTML = '<div class="empty"><h2>No data</h2></div>'; return; }
-
   const fileMap = {};
   entry.files.forEach(f => fileMap[f.suffix] = f);
-
   const isToday = dateStr === new Date().toISOString().slice(0,10);
-  const cards = ORDER.map(suffix => {
-    const f = fileMap[suffix];
-    const [emoji, title, desc, color, video] = META[suffix];
-    // Rendered inside an <a> card, so this cannot itself be an <a>.
-    const vidBtn = video
-      ? `<span class="vid-btn" title="Watch the method"
-           onclick="event.preventDefault();event.stopPropagation();window.open('${video}','_blank','noopener')">▶ Method</span>`
-      : '';
-    if (!f) {
-      return `<div class="card missing" style="--accent:${color}">
-        <div class="card-accent"></div>
-        <div class="card-header">
-          <div class="card-emoji">${emoji}</div>
-          <div><div class="card-title">${title}</div><div class="card-sub">Not generated</div></div>
-        </div>
-        <div class="card-desc">${desc}</div>
-        ${video ? `<div class="card-footer">${vidBtn}</div>` : ''}
-      </div>`;
-    }
-    return `<a class="card" href="${f.path}" target="_blank" style="--accent:${color}">
-      <div class="card-accent"></div>
-      <div class="card-header">
-        <div class="card-emoji">${emoji}</div>
-        <div>
-          <div class="card-title">${title}</div>
-          <div class="card-sub">${dateStr}${isToday ? ' · Today' : ''}</div>
-        </div>
-      </div>
-      <div class="card-desc">${desc}</div>
-      <div class="card-footer">
-        <span class="open-btn">Open in browser</span>
-        ${vidBtn}
-      </div>
-    </a>`;
-  }).join('');
-
+  const q = Q.trim().toLowerCase();
+  let shown = 0, secs = '', chips = '';
+  CATS.forEach(([name, list], i) => {
+    const items = list.filter(s => META[s]).filter(s => {
+      if (!fileMap[s] && !SHOWMISS) return false;
+      if (!q) return true;
+      const m = META[s];
+      return (m[1] + ' ' + m[2] + ' ' + s).toLowerCase().includes(q);
+    });
+    if (!items.length) return;
+    shown += items.length;
+    const have = items.filter(s => fileMap[s]).length;
+    chips += `<a class="chip" href="#sec${i}">${esc(name)}<b>${items.length}</b></a>`;
+    secs += `<div class="sec" id="sec${i}"><h3>${esc(name)}<span>${have} available</span></h3>
+      <div class="grid compact">${items.map(s => cardHtml(s, fileMap[s], dateStr, isToday)).join('')}</div></div>`;
+  });
   const count = entry.files.length;
   main.innerHTML = `
-    <div class="date-label">${dateStr}${isToday ? ' <span style="font-size:13px;color:var(--green);font-weight:500">· Today</span>' : ''}</div>
-    <div class="date-sub">${count} of 59 files available</div>
-    <div class="grid">${cards}</div>
+    <div class="toolbar">
+      <div class="tb-row">
+        <div class="date-label" style="margin:0;font-size:18px">${dateStr}${isToday ? ' <span style="font-size:12px;color:var(--green);font-weight:500">· Today</span>' : ''}</div>
+        <input id="q" class="search" type="search" placeholder="Search pages (e.g. pullback, RS, group, funda)…" value="${esc(Q)}" autocomplete="off">
+        <label class="tb-opt"><input type="checkbox" id="miss" ${SHOWMISS ? 'checked' : ''}> show not generated</label>
+        <span class="date-sub" style="margin:0">${count} of 59 files available</span>
+      </div>
+      <div class="chips">${chips}</div>
+    </div>
+    ${shown ? secs : '<div class="none">No page matches that search.</div>'}
     
 <div class="guide-hint">New here? Start with these two &mdash; click either to expand.</div>
 
@@ -470,6 +506,10 @@ function renderMain(dateStr) {
 </details>
 
   `;
+  main.style.setProperty('--tbh', (document.querySelector('.toolbar').offsetHeight + 8) + 'px');
+  const qi = document.getElementById('q');
+  qi.oninput = () => { Q = qi.value; const pos = qi.selectionStart; renderMain(CUR); const n = document.getElementById('q'); n.focus(); n.setSelectionRange(pos, pos); };
+  document.getElementById('miss').onchange = e => { SHOWMISS = e.target.checked; renderMain(CUR); };
 }
 
 buildSidebar();
