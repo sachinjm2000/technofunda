@@ -1,0 +1,6 @@
+India Screener front end
+This product includes software from xang1234/stock-screener (https://github.com/xang1234/stock-screener),
+licensed under the Apache License, Version 2.0 (see LICENSE). Modifications: patches/india-screener.patch
+(branding/theme, nav limited to published pages, MSI column group on Groups table, chart viewer from group constituents).
+Inter font: SIL Open Font License 1.1.
+Data: MarketSmith India (MSI) snapshots and own price calculations; not part of the licensed software.
